@@ -1,0 +1,979 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simulasi Sifat Kelengkapan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=JetBrains+Mono:wght@300;400;600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #06080f;
+  --surface:   #0c1220;
+  --surface2:  #111a2e;
+  --border:    rgba(99,179,237,0.15);
+  --cyan:      #63b3ed;
+  --cyan-glow: rgba(99,179,237,0.35);
+  --gold:      #f6c05c;
+  --gold-glow: rgba(246,192,92,0.3);
+  --red:       #fc8181;
+  --green:     #68d391;
+  --text:      #e2e8f0;
+  --muted:     rgba(226,232,240,0.45);
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-serif:'Crimson Pro', serif;
+  --font-disp: 'Playfair Display', serif;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font-serif);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* ─── Background ─── */
+.bg-grid {
+  position: fixed; inset: 0; z-index: 0;
+  background-image:
+    linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
+  background-size: 48px 48px;
+  pointer-events: none;
+}
+.bg-orb {
+  position: fixed; border-radius: 50%;
+  pointer-events: none; z-index: 0;
+  filter: blur(100px);
+}
+.bg-orb-1 { width:500px;height:400px;top:-100px;left:-100px; background:rgba(30,60,130,0.25); }
+.bg-orb-2 { width:400px;height:400px;bottom:-100px;right:-80px; background:rgba(20,80,100,0.2); }
+.bg-orb-3 { width:300px;height:300px;top:40%;left:50%;transform:translate(-50%,-50%); background:rgba(246,192,92,0.04); }
+
+/* ─── Layout ─── */
+.container {
+  position: relative; z-index: 1;
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 40px 24px 60px;
+}
+
+/* ─── Header ─── */
+.header {
+  text-align: center;
+  margin-bottom: 36px;
+  animation: fadeDown 0.8s ease both;
+}
+.header-badge {
+  display: inline-block;
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 5px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  border: 1px solid rgba(99,179,237,0.3);
+  padding: 5px 16px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+  background: rgba(99,179,237,0.05);
+}
+.header-title {
+  font-family: var(--font-disp);
+  font-size: 38px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.15;
+  margin-bottom: 8px;
+}
+.header-title span { color: var(--gold); font-style: italic; }
+.header-sub {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 3px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ─── Concept card ─── */
+.concept-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 28px;
+  position: relative;
+  overflow: hidden;
+  animation: fadeUp 0.8s 0.1s ease both;
+}
+.concept-card::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:2px;
+  background: linear-gradient(90deg,transparent,var(--cyan),transparent);
+  opacity:0.5;
+}
+.concept-card p {
+  font-size: 17px;
+  line-height: 1.75;
+  color: rgba(226,232,240,0.85);
+  font-weight: 300;
+}
+.concept-card p + p { margin-top: 10px; }
+.concept-card strong { color: var(--gold); font-weight: 600; }
+.concept-card em { color: var(--cyan); font-style: italic; }
+
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ─── Section title ─── */
+.section-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--cyan);
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.section-title::after {
+  content:''; flex:1; height:1px;
+  background: linear-gradient(90deg,rgba(99,179,237,0.3),transparent);
+}
+
+/* ─── Sequence builder ─── */
+.sim-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s 0.2s ease both;
+}
+
+/* Target selector */
+.target-section {
+  margin-bottom: 22px;
+}
+.target-label {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+  letter-spacing: 1px;
+}
+.target-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+}
+.target-btn {
+  background: var(--surface2);
+  border: 1px solid rgba(99,179,237,0.15);
+  border-radius: 8px;
+  padding: 10px 6px;
+  cursor: pointer;
+  text-align: center;
+  transition: all 0.2s;
+  color: var(--text);
+}
+.target-btn:hover { border-color: var(--cyan); background: rgba(99,179,237,0.08); }
+.target-btn.active {
+  border-color: var(--gold);
+  background: rgba(246,192,92,0.1);
+  box-shadow: 0 0 12px rgba(246,192,92,0.15);
+}
+.target-btn .tb-symbol {
+  font-family: var(--font-disp);
+  font-size: 18px;
+  font-style: italic;
+  color: var(--gold);
+  display: block;
+  margin-bottom: 2px;
+}
+.target-btn .tb-label {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  color: var(--muted);
+  letter-spacing: 1px;
+}
+
+/* Controls */
+.controls-row {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+.ctrl-group {
+  display: flex; align-items: center; gap: 8px;
+}
+.ctrl-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  letter-spacing: 1px;
+  white-space: nowrap;
+}
+.ctrl-input {
+  background: var(--surface2);
+  border: 1px solid rgba(99,179,237,0.2);
+  border-radius: 6px;
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 6px 10px;
+  width: 60px;
+  outline: none;
+  text-align: center;
+  transition: border-color 0.2s;
+}
+.ctrl-input:focus { border-color: var(--cyan); }
+
+.btn-primary {
+  background: linear-gradient(135deg, rgba(99,179,237,0.2), rgba(99,179,237,0.1));
+  border: 1px solid rgba(99,179,237,0.4);
+  border-radius: 8px;
+  color: var(--cyan);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary:hover {
+  background: rgba(99,179,237,0.2);
+  box-shadow: 0 0 16px rgba(99,179,237,0.2);
+}
+
+.btn-reset {
+  background: transparent;
+  border: 1px solid rgba(226,232,240,0.1);
+  border-radius: 8px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 8px 16px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-reset:hover { border-color: rgba(226,232,240,0.25); color: var(--text); }
+
+/* Sequence display */
+.seq-display {
+  background: #070b14;
+  border: 1px solid rgba(99,179,237,0.1);
+  border-radius: 10px;
+  padding: 18px 20px;
+  margin-bottom: 20px;
+  min-height: 80px;
+  position: relative;
+  overflow: hidden;
+}
+.seq-display::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0; height:1px;
+  background: linear-gradient(90deg,transparent,rgba(99,179,237,0.2),transparent);
+}
+
+.seq-row {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.seq-row:last-child { margin-bottom: 0; }
+
+.seq-label {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  color: var(--muted);
+  min-width: 24px;
+  letter-spacing: 1px;
+}
+
+.seq-term {
+  font-family: var(--font-mono);
+  font-size: 13px;
+  padding: 4px 10px;
+  border-radius: 6px;
+  border: 1px solid rgba(99,179,237,0.12);
+  background: rgba(99,179,237,0.04);
+  color: var(--cyan);
+  opacity: 0;
+  transform: translateY(8px);
+  animation: termIn 0.3s ease forwards;
+  transition: all 0.2s;
+  cursor: default;
+  position: relative;
+}
+.seq-term:hover {
+  border-color: rgba(99,179,237,0.4);
+  background: rgba(99,179,237,0.1);
+}
+.seq-term.rational { color: var(--cyan); border-color: rgba(99,179,237,0.15); }
+.seq-term.irrational { color: var(--gold); border-color: rgba(246,192,92,0.25); background: rgba(246,192,92,0.05); }
+.seq-term.limit-term {
+  color: var(--green);
+  border-color: rgba(104,211,145,0.4);
+  background: rgba(104,211,145,0.08);
+  box-shadow: 0 0 12px rgba(104,211,145,0.2);
+  animation: termIn 0.3s ease forwards, limitPulse 2s 0.3s ease-in-out infinite;
+}
+
+@keyframes termIn {
+  to { opacity:1; transform:translateY(0); }
+}
+@keyframes limitPulse {
+  0%,100% { box-shadow: 0 0 12px rgba(104,211,145,0.2); }
+  50%      { box-shadow: 0 0 24px rgba(104,211,145,0.4); }
+}
+
+.seq-arrow {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--muted);
+}
+
+/* Convergence meter */
+.conv-section { margin-bottom: 20px; }
+.conv-header {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 8px;
+}
+.conv-title {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.conv-value {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--green);
+}
+.conv-bar-track {
+  height: 8px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 4px;
+  overflow: hidden;
+  position: relative;
+}
+.conv-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--cyan), var(--green));
+  transition: width 0.5s cubic-bezier(0.34,1.56,0.64,1);
+  box-shadow: 0 0 10px rgba(104,211,145,0.4);
+  width: 0%;
+}
+
+/* Number line */
+.numline-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s 0.3s ease both;
+}
+.numline-wrap { position: relative; height: 90px; margin: 10px 0; }
+canvas#numline {
+  width: 100%; height: 90px;
+  display: block;
+}
+
+/* Cauchy table */
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 24px 28px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+.cauchy-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+.cauchy-table th {
+  text-align: left;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(99,179,237,0.15);
+  color: var(--cyan);
+  letter-spacing: 2px;
+  font-size: 9px;
+  text-transform: uppercase;
+  font-weight: 400;
+}
+.cauchy-table td {
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255,255,255,0.04);
+  color: var(--text);
+  vertical-align: middle;
+}
+.cauchy-table tr:last-child td { border-bottom: none; }
+.cauchy-table tr:hover td { background: rgba(99,179,237,0.04); }
+
+.td-n { color: var(--muted); width: 40px; }
+.td-xn { color: var(--cyan); font-size: 11px; }
+.td-diff { color: var(--gold); }
+.td-class { }
+.badge {
+  display: inline-block;
+  font-size: 8px;
+  letter-spacing: 1px;
+  padding: 2px 8px;
+  border-radius: 10px;
+  text-transform: uppercase;
+}
+.badge-r { background:rgba(99,179,237,0.1); color:var(--cyan); border:1px solid rgba(99,179,237,0.2); }
+.badge-i { background:rgba(246,192,92,0.1); color:var(--gold); border:1px solid rgba(246,192,92,0.2); }
+
+/* Info boxes */
+.info-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-bottom: 24px;
+  animation: fadeUp 0.8s 0.5s ease both;
+}
+.info-box {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 18px 20px;
+  position: relative;
+  overflow: hidden;
+}
+.info-box::after {
+  content:'';
+  position:absolute; bottom:0; left:0; right:0; height:2px;
+}
+.info-box.real::after { background:linear-gradient(90deg,transparent,var(--green),transparent); }
+.info-box.rational::after { background:linear-gradient(90deg,transparent,var(--red),transparent); }
+
+.info-box-title {
+  font-family: var(--font-mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.info-box.real .info-box-title { color: var(--green); }
+.info-box.rational .info-box-title { color: var(--red); }
+.info-box-body {
+  font-size: 15px;
+  line-height: 1.65;
+  color: rgba(226,232,240,0.8);
+  font-weight: 300;
+}
+.info-box-icon {
+  font-family: var(--font-disp);
+  font-size: 32px;
+  font-style: italic;
+  position: absolute;
+  top: 14px; right: 18px;
+  opacity: 0.15;
+}
+.info-box.real .info-box-icon { color: var(--green); }
+.info-box.rational .info-box-icon { color: var(--red); }
+
+/* Legend */
+.legend {
+  display: flex; gap: 20px; flex-wrap: wrap; margin-top: 12px;
+}
+.legend-item {
+  display: flex; align-items: center; gap: 7px;
+  font-family: var(--font-mono);
+  font-size: 10px; color: var(--muted);
+  letter-spacing: 1px;
+}
+.legend-dot {
+  width: 10px; height: 10px; border-radius: 50%;
+}
+.ld-cyan { background: var(--cyan); box-shadow: 0 0 6px var(--cyan); }
+.ld-gold { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+.ld-green { background: var(--green); box-shadow: 0 0 6px var(--green); }
+
+/* tooltip */
+.tooltip-box {
+  position: fixed;
+  background: #1a2540;
+  border: 1px solid rgba(99,179,237,0.3);
+  border-radius: 8px;
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text);
+  pointer-events: none;
+  z-index: 100;
+  display: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+  max-width: 220px;
+}
+
+@media (max-width: 600px) {
+  .info-grid { grid-template-columns: 1fr; }
+  .target-grid { grid-template-columns: repeat(2,1fr); }
+  .header-title { font-size: 28px; }
+  .controls-row { gap: 10px; }
+}
+</style>
+</head>
+<body>
+<div class="bg-grid"></div>
+<div class="bg-orb bg-orb-1"></div>
+<div class="bg-orb bg-orb-2"></div>
+<div class="bg-orb bg-orb-3"></div>
+
+<div class="tooltip-box" id="tooltip"></div>
+
+<div class="container">
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-badge">Analisis Real · Materi 05</div>
+    <h1 class="header-title">Sifat <span>Kelengkapan</span></h1>
+    <div class="header-sub">Completeness Property of ℝ</div>
+  </div>
+
+  <!-- Concept -->
+  <div class="concept-card">
+    <p>Himpunan bilangan real <strong>bersifat lengkap</strong> — tidak ada <em>"lubang"</em> dalam garis bilangan ℝ. Jika kita memiliki barisan desimal yang semakin panjang:</p>
+    <p style="text-align:center; font-family:var(--font-mono); font-size:14px; margin:14px 0; color:var(--cyan); letter-spacing:1px;">
+      x₁ = 0,a₁ &nbsp;·&nbsp; x₂ = 0,a₁a₂ &nbsp;·&nbsp; x₃ = 0,a₁a₂a₃ &nbsp;·&nbsp; ···
+    </p>
+    <p>Maka barisan <strong>(xₙ)</strong> adalah <em>barisan Cauchy</em> yang selalu <strong>konvergen ke suatu bilangan real</strong>. Di himpunan bilangan rasional ℚ, ini <strong>tidak selalu berlaku</strong> — limitnya bisa berupa bilangan irasional.</p>
+  </div>
+
+  <!-- Simulator -->
+  <div class="sim-card">
+    <div class="section-title">Pilih Bilangan Target</div>
+
+    <div class="target-section">
+      <div class="target-label">Pilih bilangan yang ingin didekati oleh barisan:</div>
+      <div class="target-grid">
+        <div class="target-btn active" onclick="selectTarget(this,'sqrt2',Math.sqrt(2),'√2','√2 ≈ 1.41421…','Irasional')">
+          <span class="tb-symbol">√2</span>
+          <span class="tb-label">≈ 1.41421…</span>
+        </div>
+        <div class="target-btn" onclick="selectTarget(this,'pi',Math.PI,'π','π ≈ 3.14159…','Irasional')">
+          <span class="tb-symbol">π</span>
+          <span class="tb-label">≈ 3.14159…</span>
+        </div>
+        <div class="target-btn" onclick="selectTarget(this,'e',Math.E,'e','e ≈ 2.71828…','Irasional')">
+          <span class="tb-symbol">e</span>
+          <span class="tb-label">≈ 2.71828…</span>
+        </div>
+        <div class="target-btn" onclick="selectTarget(this,'sqrt3',Math.sqrt(3),'√3','√3 ≈ 1.73205…','Irasional')">
+          <span class="tb-symbol">√3</span>
+          <span class="tb-label">≈ 1.73205…</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="controls-row">
+      <div class="ctrl-group">
+        <span class="ctrl-label">Suku n =</span>
+        <input class="ctrl-input" type="number" id="nInput" value="6" min="1" max="12">
+      </div>
+      <button class="btn-primary" onclick="runSimulation()">▶ Jalankan</button>
+      <button class="btn-reset" onclick="resetSim()">↺ Reset</button>
+    </div>
+
+    <!-- Sequence display -->
+    <div class="section-title">Barisan Desimal (xₙ)</div>
+    <div class="seq-display" id="seqDisplay">
+      <div style="color:var(--muted);font-family:var(--font-mono);font-size:11px;text-align:center;padding-top:14px;">
+        Tekan ▶ Jalankan untuk memulai simulasi…
+      </div>
+    </div>
+
+    <!-- Convergence bar -->
+    <div class="conv-section">
+      <div class="conv-header">
+        <span class="conv-title">Kekonvergenan (|xₙ − L|)</span>
+        <span class="conv-value" id="convValue">—</span>
+      </div>
+      <div class="conv-bar-track">
+        <div class="conv-bar-fill" id="convBar"></div>
+      </div>
+    </div>
+
+    <div class="legend">
+      <div class="legend-item"><div class="legend-dot ld-cyan"></div>Pendekatan Rasional</div>
+      <div class="legend-item"><div class="legend-dot ld-gold"></div>Irisan Irasional</div>
+      <div class="legend-item"><div class="legend-dot ld-green"></div>Limit (bilangan real)</div>
+    </div>
+  </div>
+
+  <!-- Number line -->
+  <div class="numline-card">
+    <div class="section-title">Visualisasi Garis Bilangan</div>
+    <div class="numline-wrap">
+      <canvas id="numline"></canvas>
+    </div>
+    <div style="font-family:var(--font-mono);font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:6px;text-align:center;">
+      TITIK BIRU = SUKU BARISAN &nbsp;·&nbsp; TITIK HIJAU = LIMIT L
+    </div>
+  </div>
+
+  <!-- Cauchy table -->
+  <div class="table-card">
+    <div class="section-title">Tabel Barisan Cauchy</div>
+    <div style="overflow-x:auto;">
+      <table class="cauchy-table">
+        <thead>
+          <tr>
+            <th>n</th>
+            <th>xₙ (desimal)</th>
+            <th>|xₙ − L|</th>
+            <th>|xₙ₊₁ − xₙ|</th>
+            <th>Klasifikasi</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+          <tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">Jalankan simulasi terlebih dahulu…</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Info boxes -->
+  <div class="info-grid">
+    <div class="info-box real">
+      <div class="info-box-icon">ℝ</div>
+      <div class="info-box-title">Bilangan Real (Lengkap)</div>
+      <div class="info-box-body">Setiap barisan Cauchy di ℝ <strong style="color:var(--green)">pasti konvergen</strong> ke elemen ℝ. Tidak ada lubang — setiap limit barisan desimal adalah bilangan real.</div>
+    </div>
+    <div class="info-box rational">
+      <div class="info-box-icon">ℚ</div>
+      <div class="info-box-title">Bilangan Rasional (Tidak Lengkap)</div>
+      <div class="info-box-body">Barisan di ℚ bisa mendekati √2, π, atau e — namun bilangan-bilangan ini <strong style="color:var(--red)">tidak ada di ℚ</strong>. Inilah "lubang" dalam garis bilangan rasional.</div>
+    </div>
+  </div>
+
+</div><!-- /container -->
+
+<script>
+// ─── State ───
+let targetValue = Math.sqrt(2);
+let targetLabel = '√2';
+let targetDesc  = '√2 ≈ 1.41421…';
+let targetType  = 'Irasional';
+let seqTerms    = [];
+let animTimer   = null;
+
+function selectTarget(el, key, val, lbl, desc, type) {
+  document.querySelectorAll('.target-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  targetValue = val;
+  targetLabel = lbl;
+  targetDesc  = desc;
+  targetType  = type;
+  resetSim();
+}
+
+// ─── Generate decimal truncations ───
+function getTerms(target, n) {
+  const str = target.toFixed(15);
+  const terms = [];
+  // Find decimal point
+  const dotIdx = str.indexOf('.');
+  const digits = str.replace('.','');
+  const intPart = str.slice(0, dotIdx);
+
+  for (let i = 1; i <= n; i++) {
+    // Reconstruct with i decimal places
+    let val = parseFloat(target.toFixed(i));
+    terms.push(val);
+  }
+  return terms;
+}
+
+function isRational(val, target) {
+  // For display, terms truncated to finite decimals are "rational approximations"
+  return true; // all truncations are rational
+}
+
+// ─── Run simulation ───
+function runSimulation() {
+  if (animTimer) { clearTimeout(animTimer); }
+  const n = Math.min(12, Math.max(1, parseInt(document.getElementById('nInput').value) || 6));
+  seqTerms = getTerms(targetValue, n);
+
+  renderSequence(seqTerms);
+  renderTable(seqTerms);
+  drawNumberLine(seqTerms, targetValue);
+}
+
+function resetSim() {
+  if (animTimer) clearTimeout(animTimer);
+  seqTerms = [];
+  document.getElementById('seqDisplay').innerHTML =
+    '<div style="color:var(--muted);font-family:var(--font-mono);font-size:11px;text-align:center;padding-top:14px;">Tekan ▶ Jalankan untuk memulai simulasi…</div>';
+  document.getElementById('convBar').style.width = '0%';
+  document.getElementById('convValue').textContent = '—';
+  document.getElementById('tableBody').innerHTML =
+    '<tr><td colspan="5" style="text-align:center;color:var(--muted);padding:20px;">Jalankan simulasi terlebih dahulu…</td></tr>';
+  const canvas = document.getElementById('numline');
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawEmptyLine();
+}
+
+// ─── Render sequence pills ───
+function renderSequence(terms) {
+  const wrap = document.getElementById('seqDisplay');
+  wrap.innerHTML = '';
+
+  // Row 1: terms
+  const row = document.createElement('div');
+  row.className = 'seq-row';
+
+  terms.forEach((val, i) => {
+    if (i > 0) {
+      const arr = document.createElement('span');
+      arr.className = 'seq-arrow';
+      arr.textContent = '→';
+      row.appendChild(arr);
+    }
+    const pill = document.createElement('div');
+    pill.className = 'seq-term rational';
+    pill.style.animationDelay = (i * 0.1) + 's';
+    pill.textContent = 'x' + subscript(i+1) + ' = ' + val.toFixed(i+1);
+    addTooltip(pill, `x${i+1} = ${val.toFixed(i+1)}\n|x${i+1} − L| = ${Math.abs(val - targetValue).toExponential(2)}`);
+    row.appendChild(pill);
+  });
+
+  // Arrow to limit
+  const arr2 = document.createElement('span');
+  arr2.className = 'seq-arrow';
+  arr2.style.fontSize = '16px';
+  arr2.textContent = ' ⟶ ';
+  row.appendChild(arr2);
+
+  const limitPill = document.createElement('div');
+  limitPill.className = 'seq-term limit-term';
+  limitPill.style.animationDelay = (terms.length * 0.1) + 's';
+  limitPill.textContent = 'L = ' + targetLabel;
+  addTooltip(limitPill, `Limit = ${targetLabel}\n${targetDesc}\nTipe: ${targetType}`);
+  row.appendChild(limitPill);
+
+  wrap.appendChild(row);
+
+  // Convergence
+  updateConvergence(terms);
+}
+
+function subscript(n) {
+  const subs = ['₀','₁','₂','₃','₄','₅','₆','₇','₈','₉','₁₀','₁₁','₁₂'];
+  return subs[n] || n;
+}
+
+function updateConvergence(terms) {
+  const lastDiff = Math.abs(terms[terms.length - 1] - targetValue);
+  const firstDiff = Math.abs(terms[0] - targetValue);
+  const ratio = Math.max(0, 1 - lastDiff / firstDiff);
+  const pct = (ratio * 100).toFixed(1);
+
+  document.getElementById('convValue').textContent = lastDiff.toExponential(3);
+  setTimeout(() => {
+    document.getElementById('convBar').style.width = pct + '%';
+  }, 300);
+}
+
+// ─── Render table ───
+function renderTable(terms) {
+  const tbody = document.getElementById('tableBody');
+  tbody.innerHTML = '';
+
+  terms.forEach((val, i) => {
+    const diff = Math.abs(val - targetValue);
+    const cauchy = i < terms.length - 1 ? Math.abs(terms[i+1] - val) : 0;
+    const tr = document.createElement('tr');
+    tr.innerHTML = `
+      <td class="td-n">${i+1}</td>
+      <td class="td-xn">${val.toFixed(i+2)}</td>
+      <td class="td-diff">${diff.toExponential(4)}</td>
+      <td class="td-diff" style="color:var(--muted)">${i < terms.length-1 ? Math.abs(terms[i+1]-val).toExponential(4) : '—'}</td>
+      <td><span class="badge badge-r">Rasional</span></td>
+    `;
+    tbody.appendChild(tr);
+  });
+
+  // Limit row
+  const tr = document.createElement('tr');
+  tr.innerHTML = `
+    <td class="td-n" style="color:var(--green)">L</td>
+    <td class="td-xn" style="color:var(--green)">${targetValue.toFixed(10)}</td>
+    <td class="td-diff" style="color:var(--green)">0</td>
+    <td class="td-diff" style="color:var(--muted)">—</td>
+    <td><span class="badge badge-i">${targetType}</span></td>
+  `;
+  tbody.appendChild(tr);
+}
+
+// ─── Number line ───
+function drawEmptyLine() {
+  const canvas = document.getElementById('numline');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth;
+  const H = 90;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  drawLineBase(ctx, W, H, targetValue, []);
+}
+
+function drawNumberLine(terms, target) {
+  const canvas = document.getElementById('numline');
+  const dpr = window.devicePixelRatio || 1;
+  const W = canvas.offsetWidth;
+  const H = 90;
+  canvas.width = W * dpr;
+  canvas.height = H * dpr;
+  const ctx = canvas.getContext('2d');
+  ctx.scale(dpr, dpr);
+  drawLineBase(ctx, W, H, target, terms);
+}
+
+function drawLineBase(ctx, W, H, target, terms) {
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = 40;
+  const margin = 0.5;
+  const lo = Math.max(0, target - margin);
+  const hi = target + margin;
+
+  function toX(v) { return pad + (v - lo) / (hi - lo) * (W - 2*pad); }
+
+  const lineY = H / 2;
+
+  // Axis line
+  ctx.strokeStyle = 'rgba(99,179,237,0.15)';
+  ctx.lineWidth = 1.5;
+  ctx.beginPath();
+  ctx.moveTo(pad, lineY);
+  ctx.lineTo(W - pad, lineY);
+  ctx.stroke();
+
+  // Tick marks
+  ctx.strokeStyle = 'rgba(99,179,237,0.1)';
+  ctx.lineWidth = 1;
+  for (let v = Math.ceil(lo * 10) / 10; v <= hi; v = Math.round((v + 0.1) * 1000) / 1000) {
+    const x = toX(v);
+    ctx.beginPath();
+    ctx.moveTo(x, lineY - 5);
+    ctx.lineTo(x, lineY + 5);
+    ctx.stroke();
+    ctx.fillStyle = 'rgba(99,179,237,0.3)';
+    ctx.font = '8px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText(v.toFixed(1), x, lineY + 16);
+  }
+
+  // Term dots
+  terms.forEach((val, i) => {
+    const x = toX(val);
+    const alpha = 0.4 + 0.6 * (i / terms.length);
+    const r = 5 + (i / terms.length) * 3;
+
+    // Glow
+    const grad = ctx.createRadialGradient(x, lineY, 0, x, lineY, r * 2.5);
+    grad.addColorStop(0, `rgba(99,179,237,${alpha * 0.4})`);
+    grad.addColorStop(1, 'transparent');
+    ctx.beginPath();
+    ctx.arc(x, lineY, r * 2.5, 0, Math.PI * 2);
+    ctx.fillStyle = grad;
+    ctx.fill();
+
+    // Dot
+    ctx.beginPath();
+    ctx.arc(x, lineY, r, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(99,179,237,${alpha})`;
+    ctx.fill();
+
+    // Label
+    ctx.fillStyle = `rgba(99,179,237,${alpha})`;
+    ctx.font = '8px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('x' + (i+1), x, lineY - 14 + (i % 2 === 0 ? 0 : 8));
+  });
+
+  // Target dot
+  if (target !== undefined && terms.length > 0) {
+    const tx = toX(target);
+
+    // Connecting line from last term
+    const lx = toX(terms[terms.length - 1]);
+    ctx.strokeStyle = 'rgba(104,211,145,0.2)';
+    ctx.lineWidth = 1;
+    ctx.setLineDash([3,4]);
+    ctx.beginPath(); ctx.moveTo(lx, lineY); ctx.lineTo(tx, lineY); ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Glow ring
+    const tGrad = ctx.createRadialGradient(tx, lineY, 0, tx, lineY, 18);
+    tGrad.addColorStop(0, 'rgba(104,211,145,0.35)');
+    tGrad.addColorStop(1, 'transparent');
+    ctx.beginPath(); ctx.arc(tx, lineY, 18, 0, Math.PI * 2);
+    ctx.fillStyle = tGrad; ctx.fill();
+
+    // Dot
+    ctx.beginPath(); ctx.arc(tx, lineY, 8, 0, Math.PI * 2);
+    ctx.fillStyle = 'rgba(104,211,145,0.9)'; ctx.fill();
+
+    // Label
+    ctx.fillStyle = 'rgba(104,211,145,0.9)';
+    ctx.font = 'bold 11px JetBrains Mono, monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('L=' + targetLabel, tx, lineY - 16);
+  }
+}
+
+// ─── Tooltips ───
+function addTooltip(el, text) {
+  const tip = document.getElementById('tooltip');
+  el.addEventListener('mouseenter', (e) => {
+    tip.style.display = 'block';
+    tip.innerHTML = text.replace(/\n/g,'<br>');
+  });
+  el.addEventListener('mousemove', (e) => {
+    tip.style.left = (e.clientX + 14) + 'px';
+    tip.style.top  = (e.clientY - 8) + 'px';
+  });
+  el.addEventListener('mouseleave', () => { tip.style.display = 'none'; });
+}
+
+// ─── Init ───
+window.addEventListener('load', () => {
+  drawEmptyLine();
+});
+window.addEventListener('resize', () => {
+  if (seqTerms.length > 0) drawNumberLine(seqTerms, targetValue);
+  else drawEmptyLine();
+});
+</script>
+</body>
+</html>
