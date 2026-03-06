@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Contoh Soal & Penyelesaian – Analisis Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;0,700;1,300;1,400;1,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #faf7f2;
+  --bg2:       #f3ede3;
+  --ink:       #1c1810;
+  --ink2:      #3d3526;
+  --ink3:      #6b5e48;
+  --gold:      #a0722a;
+  --gold-lt:   #c9943e;
+  --gold-pale: #f0e4c8;
+  --teal:      #1d5f6e;
+  --teal-lt:   #e8f4f7;
+  --red:       #8b2020;
+  --red-pale:  #faeaea;
+  --green:     #1a5c35;
+  --green-pale:#e6f4ec;
+  --border:    rgba(160,114,42,0.2);
+  --shadow:    rgba(28,24,16,0.08);
+
+  --serif:  'Cormorant Garamond', serif;
+  --body:   'Lora', serif;
+  --mono:   'DM Mono', monospace;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--body);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ── Paper texture overlay ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+.page {
+  position: relative; z-index: 1;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 56px 48px 72px;
+}
+
+/* ── Page Header ── */
+.page-header {
+  border-bottom: 2px solid var(--gold);
+  padding-bottom: 22px;
+  margin-bottom: 40px;
+  animation: fadeIn 0.7s ease both;
+}
+.ph-tag {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 5px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 8px;
+  display: flex; align-items: center; gap: 10px;
+}
+.ph-tag::before {
+  content: '';
+  width: 32px; height: 1px;
+  background: var(--gold);
+}
+.ph-title {
+  font-family: var(--serif);
+  font-size: 46px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.1;
+  letter-spacing: -0.5px;
+}
+.ph-title em {
+  font-style: italic;
+  color: var(--gold);
+}
+.ph-sub {
+  margin-top: 8px;
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+
+@keyframes fadeIn {
+  from { opacity:0; transform:translateY(-16px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes fadeUp {
+  from { opacity:0; transform:translateY(20px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+
+/* ── Soal Card ── */
+.soal-card {
+  background: white;
+  border: 1px solid var(--border);
+  border-radius: 3px;
+  margin-bottom: 36px;
+  overflow: hidden;
+  box-shadow: 0 2px 20px var(--shadow), 0 0 0 1px rgba(255,255,255,0.8);
+  animation: fadeUp 0.7s ease both;
+}
+.soal-card:nth-child(2) { animation-delay: 0.1s; }
+.soal-card:nth-child(3) { animation-delay: 0.2s; }
+
+/* Card top accent bar */
+.soal-card::before {
+  content: '';
+  display: block;
+  height: 4px;
+  background: linear-gradient(90deg, var(--gold), var(--gold-lt), transparent);
+}
+
+/* ── Card Header ── */
+.card-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 20px;
+  padding: 24px 32px 20px;
+  border-bottom: 1px solid rgba(160,114,42,0.12);
+  background: linear-gradient(180deg, rgba(240,228,200,0.25), transparent);
+}
+
+.card-num {
+  flex-shrink: 0;
+  width: 48px; height: 48px;
+  background: linear-gradient(135deg, var(--gold), var(--gold-lt));
+  border-radius: 2px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: white;
+  box-shadow: 0 4px 12px rgba(160,114,42,0.3);
+}
+
+.card-head-text {}
+.card-head-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  margin-bottom: 4px;
+}
+.card-head-title {
+  font-family: var(--serif);
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--ink);
+  line-height: 1.2;
+}
+
+/* ── Question block ── */
+.question-block {
+  margin: 24px 32px;
+  padding: 18px 22px;
+  background: var(--teal-lt);
+  border-left: 4px solid var(--teal);
+  border-radius: 0 3px 3px 0;
+  position: relative;
+}
+.question-block::before {
+  content: '?';
+  position: absolute;
+  right: 18px; top: 12px;
+  font-family: var(--serif);
+  font-size: 52px;
+  font-style: italic;
+  font-weight: 700;
+  color: rgba(29,95,110,0.08);
+  line-height: 1;
+}
+.q-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--teal);
+  margin-bottom: 8px;
+}
+.q-text {
+  font-size: 16px;
+  color: var(--ink2);
+  line-height: 1.65;
+}
+.q-text .math {
+  font-family: var(--mono);
+  font-size: 15px;
+  color: var(--teal);
+  background: rgba(29,95,110,0.08);
+  padding: 1px 6px;
+  border-radius: 3px;
+}
+.q-text .frac {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  vertical-align: middle;
+  margin: 0 3px;
+  font-family: var(--mono);
+  font-size: 13px;
+  line-height: 1.2;
+}
+.q-text .frac .num { border-bottom: 1px solid currentColor; padding: 0 2px; }
+.q-text .frac .den { padding: 0 2px; }
+
+/* ── Solution block ── */
+.solution-block {
+  padding: 0 32px 28px;
+}
+.sol-header {
+  display: flex; align-items: center; gap: 12px;
+  margin: 20px 0 18px;
+}
+.sol-header-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, rgba(160,114,42,0.3), transparent);
+}
+.sol-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--gold);
+  white-space: nowrap;
+}
+
+/* Steps */
+.steps { counter-reset: step; }
+.step {
+  display: flex;
+  gap: 18px;
+  margin-bottom: 18px;
+  padding-bottom: 18px;
+  border-bottom: 1px dashed rgba(160,114,42,0.12);
+  position: relative;
+}
+.step:last-of-type {
+  border-bottom: none;
+  margin-bottom: 0; padding-bottom: 0;
+}
+
+.step-num {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  border: 1.5px solid var(--gold);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--gold);
+  margin-top: 1px;
+  background: var(--gold-pale);
+}
+
+.step-body {
+  flex: 1;
+  font-size: 15.5px;
+  color: var(--ink2);
+  line-height: 1.7;
+}
+.step-body .step-action {
+  font-weight: 600;
+  color: var(--ink);
+}
+.step-body .step-note {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--ink3);
+  letter-spacing: 1px;
+}
+
+/* Math display blocks */
+.math-display {
+  margin: 12px 0;
+  padding: 14px 24px;
+  background: #fdfcfa;
+  border: 1px solid rgba(160,114,42,0.15);
+  border-radius: 3px;
+  font-family: var(--mono);
+  font-size: 14px;
+  color: var(--ink2);
+  text-align: center;
+  line-height: 1.9;
+  position: relative;
+  overflow: hidden;
+}
+.math-display::before {
+  content: '';
+  position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px;
+  background: linear-gradient(180deg, var(--gold), var(--gold-lt));
+}
+.math-display .eq-line {
+  display: block;
+}
+.math-display .highlight {
+  color: var(--gold);
+  font-weight: 500;
+}
+.math-display .result {
+  color: var(--green);
+  font-weight: 500;
+  font-size: 16px;
+}
+
+/* Conclusion */
+.conclusion {
+  margin-top: 20px;
+  padding: 16px 22px;
+  background: var(--green-pale);
+  border: 1px solid rgba(26,92,53,0.2);
+  border-left: 4px solid var(--green);
+  border-radius: 0 3px 3px 0;
+  display: flex; align-items: flex-start; gap: 14px;
+}
+.concl-icon {
+  flex-shrink: 0;
+  width: 28px; height: 28px;
+  background: var(--green);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: white;
+  font-size: 14px;
+  margin-top: 1px;
+}
+.concl-body {}
+.concl-label {
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--green);
+  margin-bottom: 4px;
+}
+.concl-text {
+  font-size: 15.5px;
+  color: var(--green);
+  font-weight: 600;
+  line-height: 1.55;
+}
+.concl-text span { color: var(--ink2); font-weight: 400; }
+
+/* Warning conclusion (for irrational) */
+.conclusion.warn {
+  background: var(--red-pale);
+  border-color: rgba(139,32,32,0.2);
+  border-left-color: var(--red);
+}
+.conclusion.warn .concl-icon { background: var(--red); }
+.conclusion.warn .concl-label { color: var(--red); }
+.conclusion.warn .concl-text { color: var(--red); }
+
+/* Separator between soals */
+.soal-separator {
+  display: flex; align-items: center; gap: 16px;
+  margin: 4px 0 36px;
+  animation: fadeUp 0.5s ease both;
+}
+.sep-line {
+  flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border), transparent);
+}
+.sep-diamond {
+  width: 8px; height: 8px;
+  background: var(--gold);
+  transform: rotate(45deg);
+  opacity: 0.5;
+}
+
+/* Inline math formatting */
+.im { font-family: var(--mono); font-size: 0.93em; color: var(--ink2); }
+.im.blue { color: var(--teal); background: rgba(29,95,110,0.07); padding: 0 4px; border-radius: 2px; }
+.im.gold { color: var(--gold); }
+.im.green { color: var(--green); font-weight: 600; }
+.im.red   { color: var(--red); }
+
+/* Key concept badge */
+.key-badge {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 9px;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 10px;
+  margin: 4px 4px 4px 0;
+}
+.kb-teal { background: rgba(29,95,110,0.1); color: var(--teal); border: 1px solid rgba(29,95,110,0.2); }
+.kb-gold { background: rgba(160,114,42,0.1); color: var(--gold); border: 1px solid rgba(160,114,42,0.2); }
+.kb-red  { background: rgba(139,32,32,0.08); color: var(--red);  border: 1px solid rgba(139,32,32,0.18); }
+
+/* Period visualization */
+.period-vis {
+  margin: 14px 0;
+  padding: 16px 22px;
+  background: #fdfcfa;
+  border: 1px solid rgba(160,114,42,0.15);
+  border-radius: 3px;
+}
+.period-label {
+  font-family: var(--mono);
+  font-size: 10px;
+  letter-spacing: 2px;
+  color: var(--ink3);
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+.period-row {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  flex-wrap: wrap;
+}
+.period-digit {
+  width: 28px; height: 28px;
+  display: flex; align-items: center; justify-content: center;
+  font-family: var(--mono);
+  font-size: 13px;
+  border-radius: 3px;
+  font-weight: 500;
+}
+.pd-base   { background: rgba(29,95,110,0.08); color: var(--teal); }
+.pd-period { background: rgba(160,114,42,0.15); color: var(--gold); border: 1.5px solid rgba(160,114,42,0.3); }
+.pd-gap    { background: rgba(139,32,32,0.06); color: var(--red); border: 1px dashed rgba(139,32,32,0.3); }
+.pd-dot    { background: transparent; color: var(--ink3); width: 16px; }
+.period-note {
+  margin-top: 10px;
+  font-size: 13px;
+  color: var(--ink3);
+  line-height: 1.55;
+  font-family: var(--mono);
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .page { padding: 28px 20px 48px; }
+  .card-head { padding: 18px 20px 16px; gap: 14px; }
+  .question-block { margin: 16px 20px; }
+  .solution-block { padding: 0 20px 22px; }
+  .math-display { font-size: 12px; }
+  .ph-title { font-size: 34px; }
+}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="ph-tag">Analisis Real · Bilangan Desimal</div>
+    <h1 class="ph-title">Contoh Soal &amp;<br><em>Penyelesaian</em></h1>
+    <div class="ph-sub">Bilangan Real Sebagai Bentuk Desimal</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SOAL 1
+  ══════════════════════════════════════ -->
+  <div class="soal-card">
+    <div class="card-head">
+      <div class="card-num">1</div>
+      <div class="card-head-text">
+        <div class="card-head-label">Soal Pertama</div>
+        <div class="card-head-title">Membuktikan Rasionalitas</div>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-label">Pertanyaan</div>
+      <div class="q-text">
+        Ubahlah bilangan desimal berulang &nbsp;<span class="math">x = 0,121212…</span>&nbsp;
+        ke dalam bentuk pecahan
+        <span class="frac"><span class="num">p</span><span class="den">q</span></span>.
+      </div>
+    </div>
+
+    <div class="solution-block">
+      <div class="sol-header">
+        <span class="sol-label">Penyelesaian Deduktif</span>
+        <div class="sol-header-line"></div>
+        <span class="key-badge kb-teal">Metode Aljabar</span>
+      </div>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <span class="step-action">Misalkan</span> nilai awal:
+            <div class="math-display">
+              <span class="eq-line"><span class="highlight">x</span> = 0,121212…</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <span class="step-action">Kalikan dengan 10<sup>k</sup></span>, di mana <span class="im blue">k = 2</span>
+            adalah panjang periode pengulangan:
+            <div class="math-display">
+              <span class="eq-line">100x &nbsp;=&nbsp; 12,121212…</span>
+              <span class="eq-line" style="font-size:10px; color:var(--ink3); margin-top:4px;">( menggeser desimal 2 tempat ke kanan )</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <span class="step-action">Kurangkan</span> persamaan (1) dari persamaan (2) untuk
+            mengeliminasi bagian berulang:
+            <div class="math-display">
+              <span class="eq-line">100x &nbsp;−&nbsp; x &nbsp;=&nbsp; 12,121212… &nbsp;−&nbsp; 0,121212…</span>
+              <span class="eq-line" style="color:var(--ink3); font-size:12px; margin: 2px 0;">↓ &nbsp; bagian desimal berulang saling menghilang</span>
+              <span class="eq-line"><span class="highlight">99x</span> &nbsp;=&nbsp; <span class="highlight">12</span></span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <span class="step-action">Selesaikan</span> nilai <span class="im blue">x</span>:
+            <div class="math-display">
+              <span class="eq-line">
+                x &nbsp;=&nbsp;
+                <span class="frac" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--mono);">
+                  <span style="border-bottom:1.5px solid var(--gold);padding:0 4px;color:var(--gold);">12</span>
+                  <span style="padding:0 4px;">99</span>
+                </span>
+                &nbsp;=&nbsp;
+                <span class="result">
+                  <span class="frac" style="display:inline-flex;flex-direction:column;align-items:center;vertical-align:middle;font-family:var(--mono);color:var(--green);">
+                    <span style="border-bottom:1.5px solid var(--green);padding:0 4px;">4</span>
+                    <span style="padding:0 4px;">33</span>
+                  </span>
+                </span>
+              </span>
+            </div>
+            <div style="margin-top:6px; font-size:13.5px; color:var(--ink3);">
+              Disederhanakan dengan membagi pembilang dan penyebut dengan <span class="im">FPB(12,99) = 3</span>.
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="conclusion">
+        <div class="concl-icon">✓</div>
+        <div class="concl-body">
+          <div class="concl-label">Kesimpulan</div>
+          <div class="concl-text">
+            x = ⁴⁄₃₃ &nbsp;∈ ℚ
+            <br>
+            <span>Karena dapat dinyatakan sebagai pecahan <sup>p</sup>/<sub>q</sub>,
+            maka <strong>0,121212… adalah bilangan rasional</strong>.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Separator -->
+  <div class="soal-separator">
+    <div class="sep-line"></div>
+    <div class="sep-diamond"></div>
+    <div class="sep-line"></div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       SOAL 2
+  ══════════════════════════════════════ -->
+  <div class="soal-card">
+    <div class="card-head">
+      <div class="card-num">2</div>
+      <div class="card-head-text">
+        <div class="card-head-label">Soal Kedua</div>
+        <div class="card-head-title">Analisis Batas (Bound)</div>
+      </div>
+    </div>
+
+    <div class="question-block">
+      <div class="q-label">Pertanyaan</div>
+      <div class="q-text">
+        Tunjukkan bahwa &nbsp;<span class="math">0,1010010001…</span>&nbsp;
+        <span style="font-size:13.5px; color:var(--ink3);">(pola nol bertambah)</span>
+        &nbsp;adalah bilangan <strong>irrasional</strong>.
+      </div>
+    </div>
+
+    <div class="solution-block">
+      <div class="sol-header">
+        <span class="sol-label">Penyelesaian Deduktif</span>
+        <div class="sol-header-line"></div>
+        <span class="key-badge kb-red">Irrasional</span>
+        <span class="key-badge kb-gold">Pola Tak Berulang</span>
+      </div>
+
+      <div class="steps">
+
+        <div class="step">
+          <div class="step-num">1</div>
+          <div class="step-body">
+            <span class="step-action">Perhatikan struktur pola</span> bilangan tersebut. Angka 1 muncul pada posisi tertentu dengan jarak nol yang selalu bertambah:
+            <div class="period-vis">
+              <div class="period-label">Visualisasi Pola Desimal</div>
+              <div class="period-row">
+                <div class="pd-digit pd-base">0</div>
+                <div class="pd-digit pd-dot">,</div>
+                <div class="pd-digit pd-period">1</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-period">1</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-period">1</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-gap">0</div>
+                <div class="pd-digit pd-period">1</div>
+                <div class="pd-digit pd-dot">…</div>
+              </div>
+              <div class="period-note">
+                <span style="color:var(--gold)">■</span> Angka 1 &nbsp;|&nbsp;
+                <span style="color:var(--red)">■</span> Angka 0 (jumlah nol bertambah 1,2,3,… antara setiap angka 1)<br>
+                Jarak antar angka 1: <span class="im gold">1 nol → 2 nol → 3 nol → ···</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">2</div>
+          <div class="step-body">
+            <span class="step-action">Syarat bilangan rasional</span>: Bilangan rasional <em>wajib</em> memiliki
+            representasi desimal yang <span class="im blue">berulang secara periodik</span> — artinya ada blok digit
+            dengan panjang tetap yang terus berulang setelah titik desimal.
+            <div class="math-display" style="text-align:left; padding-left:28px;">
+              <span class="eq-line">Rasional &nbsp;⟺&nbsp; ∃ &nbsp;periode <span class="highlight">T</span> tetap :</span>
+              <span class="eq-line">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;d<sub>n+T</sub> = d<sub>n</sub> &nbsp; untuk semua &nbsp; n &gt; N₀</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">3</div>
+          <div class="step-body">
+            <span class="step-action">Analisis pola bilangan</span> <span class="im blue">0,1010010001…</span>:
+            Jarak antar angka 1 adalah <span class="im gold">1, 2, 3, 4, 5, …</span> yang terus bertambah.
+            <div class="math-display">
+              <span class="eq-line">Jarak ke-<span class="highlight">n</span> antara angka 1 ke-n dan ke-(n+1)</span>
+              <span class="eq-line">= &nbsp; <span class="highlight">n</span> &nbsp; nol</span>
+              <span class="eq-line" style="font-size:11px; color:var(--ink3); margin-top:4px;">( bertambah tak terbatas, tidak pernah konstan )</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">4</div>
+          <div class="step-body">
+            <span class="step-action">Kontradiksi:</span> Misalkan ada periode <span class="im blue">T</span> yang tetap.
+            Maka untuk <span class="im">n &gt; T</span>, jarak antara dua angka 1 berturutan adalah <span class="im gold">n &gt; T</span>,
+            sehingga pola tidak mungkin berulang dengan periode <span class="im blue">T</span>.
+            Karena <span class="im gold">n</span> terus bertambah tanpa batas, <strong>tidak ada periode tetap</strong> yang bisa dibentuk.
+            <div class="math-display">
+              <span class="eq-line">Asumsikan ∃ T : d<sub>n+T</sub> = d<sub>n</sub></span>
+              <span class="eq-line" style="color:var(--red);">⟹ &nbsp; Kontradiksi! &nbsp; (jarak nol terus bertambah)</span>
+              <span class="eq-line" style="color:var(--red);">⟹ &nbsp; Tidak ada periode T yang memenuhi</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="step">
+          <div class="step-num">5</div>
+          <div class="step-body">
+            <span class="step-action">Berdasarkan Teorema Representasi Desimal:</span>
+            <br>
+            Karena pola desimal bilangan ini <strong>tidak periodik</strong> dan tidak pernah membentuk
+            periode yang tetap (statis), maka bilangan tersebut <strong>bukan bilangan rasional</strong>,
+            melainkan termasuk dalam himpunan bilangan <span class="im red">irrasional ℝ∖ℚ</span>.
+          </div>
+        </div>
+
+      </div>
+
+      <div class="conclusion warn">
+        <div class="concl-icon">∉</div>
+        <div class="concl-body">
+          <div class="concl-label">Kesimpulan</div>
+          <div class="concl-text">
+            0,1010010001… &nbsp;∉ ℚ &nbsp; (Bilangan Irrasional)
+            <br>
+            <span>Pola nol yang selalu bertambah memastikan tidak ada periode tetap.
+            Berdasarkan teorema representasi desimal,
+            <strong>bilangan ini adalah irrasional</strong> dan hanya ada di ℝ, bukan di ℚ.</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>
