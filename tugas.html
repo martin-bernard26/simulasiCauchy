@@ -1,0 +1,1212 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Soal Analisis – Bilangan Real sebagai Bentuk Desimal</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,500;0,9..144,700;1,9..144,400;1,9..144,600&family=Outfit:wght@300;400;500;600&family=IBM+Plex+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:          #f7f4ef;
+  --bg2:         #eeeae2;
+  --ink:         #1a1610;
+  --ink2:        #3a3428;
+  --ink3:        #7a6e5e;
+  --cream:       #fffdf8;
+  --amber:       #b5620a;
+  --amber2:      #d4780d;
+  --amber-pale:  #fef3e2;
+  --teal:        #0d5c6b;
+  --teal-pale:   #e2f3f6;
+  --plum:        #5c2d6b;
+  --plum-pale:   #f3e6f7;
+  --green:       #1a6640;
+  --green-pale:  #e3f5eb;
+  --red:         #8b1a1a;
+  --red-pale:    #faeaea;
+  --border:      rgba(90,80,60,0.14);
+  --shadow:      rgba(26,22,16,0.07);
+  --font-h:  'Fraunces', serif;
+  --font-b:  'Outfit', sans-serif;
+  --font-m:  'IBM Plex Mono', monospace;
+}
+
+*, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior:smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font-b);
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Paper texture */
+body::after {
+  content:'';
+  position:fixed; inset:0; z-index:0; pointer-events:none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+}
+
+/* ── SCREENS ── */
+.screen { display:none; position:relative; z-index:1; }
+.screen.active { display:block; }
+
+.shell {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 48px 28px 80px;
+}
+
+/* ════════════════════════════
+   INTRO
+════════════════════════════ */
+#screen-intro { animation: fadeDown .7s ease both; }
+
+.intro-eyebrow {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  letter-spacing: 4px;
+  text-transform: uppercase;
+  color: var(--amber);
+  margin-bottom: 20px;
+}
+.intro-eyebrow::before {
+  content:'';
+  width:28px; height:1.5px;
+  background: var(--amber);
+}
+
+.intro-title {
+  font-family: var(--font-h);
+  font-size: clamp(36px, 6vw, 58px);
+  font-weight: 700;
+  line-height: 1.08;
+  color: var(--ink);
+  letter-spacing: -1px;
+  margin-bottom: 10px;
+}
+.intro-title em { color: var(--amber2); font-style: italic; }
+
+.intro-klass {
+  font-family: var(--font-m);
+  font-size: 11px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink3);
+  margin-bottom: 32px;
+}
+
+.intro-desc {
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-left: 4px solid var(--amber);
+  border-radius: 0 8px 8px 0;
+  padding: 20px 24px;
+  font-size: 15.5px;
+  line-height: 1.75;
+  color: var(--ink2);
+  font-weight: 300;
+  margin-bottom: 32px;
+}
+.intro-desc strong { font-weight: 600; color: var(--ink); }
+
+/* Meta chips */
+.meta-row {
+  display: flex; flex-wrap: wrap; gap: 10px;
+  margin-bottom: 32px;
+}
+.mchip {
+  display:flex; align-items:center; gap:7px;
+  padding:8px 16px;
+  background: var(--cream);
+  border: 1px solid var(--border);
+  border-radius:6px;
+  font-size:13px;
+  font-weight:400;
+  color: var(--ink2);
+}
+.mchip b { font-weight:600; color: var(--ink); }
+
+/* Input fields */
+.input-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 28px;
+}
+.inp-group { display:flex; flex-direction:column; gap:6px; }
+.inp-label {
+  font-family: var(--font-m);
+  font-size: 9.5px;
+  letter-spacing: 3px;
+  text-transform: uppercase;
+  color: var(--ink3);
+}
+.inp-field {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius: 8px;
+  padding: 12px 16px;
+  font-family: var(--font-b);
+  font-size: 15px;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.inp-field::placeholder { color: var(--ink3); }
+.inp-field:focus {
+  border-color: var(--amber2);
+  box-shadow: 0 0 0 3px rgba(181,98,10,0.1);
+}
+
+.btn-mulai {
+  width:100%;
+  padding:16px;
+  background: linear-gradient(135deg, var(--amber), var(--amber2));
+  border:none; border-radius:10px;
+  color:white;
+  font-family: var(--font-h);
+  font-size:18px;
+  font-weight:700;
+  letter-spacing:.3px;
+  cursor:pointer;
+  transition:all .2s;
+  box-shadow: 0 8px 28px rgba(181,98,10,0.28);
+}
+.btn-mulai:hover { transform:translateY(-2px); box-shadow:0 12px 36px rgba(181,98,10,0.35); }
+
+/* ════════════════════════════
+   QUIZ SCREEN
+════════════════════════════ */
+#screen-quiz { animation: fadeDown .4s ease both; }
+
+/* Top bar */
+.quiz-topbar {
+  display:flex; align-items:center; gap:16px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom: 1.5px solid var(--border);
+}
+.qtb-info { flex:1; }
+.qtb-label {
+  font-family: var(--font-m);
+  font-size:9px;
+  letter-spacing:4px;
+  text-transform:uppercase;
+  color: var(--ink3);
+  margin-bottom:6px;
+}
+.qtb-pbar {
+  height:6px;
+  background: var(--bg2);
+  border-radius:10px;
+  overflow:hidden;
+}
+.qtb-pfill {
+  height:100%;
+  background: linear-gradient(90deg, var(--amber), var(--amber2));
+  border-radius:10px;
+  transition: width .5s cubic-bezier(.34,1.56,.64,1);
+  box-shadow: 0 0 10px rgba(181,98,10,0.3);
+}
+.qtb-counter {
+  font-family: var(--font-h);
+  font-size:13px;
+  font-weight:500;
+  color: var(--ink3);
+}
+.qtb-counter span { color: var(--amber); font-weight:700; font-size:18px; }
+
+.score-pill {
+  display:flex; flex-direction:column; align-items:center;
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius:10px;
+  padding:10px 20px;
+  min-width:80px;
+}
+.sp-val {
+  font-family: var(--font-h);
+  font-size:26px;
+  font-weight:700;
+  color: var(--amber);
+  line-height:1;
+}
+.sp-lbl {
+  font-family: var(--font-m);
+  font-size:8px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color: var(--ink3);
+  margin-top:2px;
+}
+
+/* ── Soal Card ── */
+.soal-wrap {
+  background: var(--cream);
+  border: 1.5px solid var(--border);
+  border-radius:14px;
+  overflow:hidden;
+  margin-bottom:18px;
+  box-shadow: 0 4px 24px var(--shadow);
+  transition: border-color .3s;
+}
+.soal-wrap.state-correct { border-color: rgba(26,102,64,.35); }
+.soal-wrap.state-wrong   { border-color: rgba(139,26,26,.3); }
+
+.soal-head {
+  display:flex; align-items:flex-start; gap:16px;
+  padding:24px 28px 20px;
+  background: linear-gradient(180deg, rgba(181,98,10,0.04), transparent);
+  border-bottom:1px solid var(--border);
+}
+.soal-badge {
+  flex-shrink:0;
+  width:40px; height:40px;
+  background: linear-gradient(135deg, var(--amber), var(--amber2));
+  border-radius:8px;
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-h);
+  font-size:18px;
+  font-weight:700;
+  color:white;
+  box-shadow:0 4px 12px rgba(181,98,10,0.25);
+}
+.soal-meta {}
+.soal-tag {
+  font-family: var(--font-m);
+  font-size:8.5px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color: var(--amber);
+  margin-bottom:4px;
+}
+.soal-tipe {
+  font-size:13px;
+  font-weight:500;
+  color: var(--ink3);
+}
+
+/* Question text */
+.soal-body { padding:22px 28px 6px; }
+.soal-q {
+  font-size:17px;
+  font-weight:400;
+  line-height:1.68;
+  color: var(--ink);
+  margin-bottom:18px;
+}
+.soal-q .mth {
+  font-family: var(--font-m);
+  font-size:15px;
+  color: var(--teal);
+  background: var(--teal-pale);
+  padding:2px 7px;
+  border-radius:4px;
+}
+.soal-q .mth-amber {
+  font-family: var(--font-m);
+  font-size:15px;
+  color: var(--amber);
+  background: var(--amber-pale);
+  padding:2px 7px;
+  border-radius:4px;
+}
+
+/* Answer input types */
+/* — Multiple choice — */
+.mc-options { display:flex; flex-direction:column; gap:9px; margin-bottom:20px; padding: 0 28px 20px; }
+.mc-opt {
+  display:flex; align-items:flex-start; gap:13px;
+  padding:13px 17px;
+  background: var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  cursor:pointer;
+  transition:all .17s;
+  user-select:none;
+}
+.mc-opt:hover:not(.locked) { border-color: rgba(181,98,10,.4); background: var(--amber-pale); }
+.mc-opt.sel:not(.locked) { border-color: var(--amber2); background: var(--amber-pale); box-shadow:0 0 0 3px rgba(181,98,10,.09); }
+.mc-opt.ok  { border-color: var(--green); background: var(--green-pale); }
+.mc-opt.err { border-color: var(--red); background: var(--red-pale); }
+.mc-opt.locked { cursor:default; }
+
+.mc-letter {
+  flex-shrink:0;
+  width:28px; height:28px;
+  border-radius:7px;
+  border:1.5px solid var(--border);
+  background: var(--cream);
+  display:flex; align-items:center; justify-content:center;
+  font-family: var(--font-h);
+  font-size:12px;
+  font-weight:600;
+  color: var(--ink3);
+  transition:all .17s;
+}
+.mc-opt.sel:not(.locked) .mc-letter { background: var(--amber2); border-color: var(--amber2); color:white; }
+.mc-opt.ok  .mc-letter { background: var(--green); border-color: var(--green); color:white; }
+.mc-opt.err .mc-letter { background: var(--red); border-color: var(--red); color:white; }
+
+.mc-text { font-size:15px; line-height:1.55; color: var(--ink2); padding-top:3px; font-weight:300; }
+.mc-text .mth { font-family:var(--font-m); font-size:13px; color:var(--teal); }
+
+/* — Essay / isian — */
+.essay-wrap { padding:0 28px 22px; }
+.essay-input {
+  width:100%;
+  background: var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:9px;
+  padding:14px 16px;
+  font-family: var(--font-b);
+  font-size:15px;
+  color: var(--ink);
+  outline:none;
+  transition:border-color .2s;
+  resize:vertical;
+  min-height:90px;
+  line-height:1.6;
+}
+.essay-input:focus { border-color: var(--amber2); box-shadow:0 0 0 3px rgba(181,98,10,0.1); }
+.essay-input.locked { background: var(--bg2); cursor:default; }
+
+.essay-hint {
+  margin-top:8px;
+  font-family: var(--font-m);
+  font-size:10px;
+  letter-spacing:1px;
+  color: var(--ink3);
+}
+
+/* — Feedback bar — */
+.feedback {
+  margin:0 28px 22px;
+  padding:14px 18px;
+  border-radius:9px;
+  font-size:14px;
+  font-weight:300;
+  line-height:1.65;
+  display:flex; gap:12px; align-items:flex-start;
+  animation:slideUp .3s ease;
+}
+.feedback.ok  { background: var(--green-pale); border:1px solid rgba(26,102,64,.2); color: var(--green); }
+.feedback.err { background: var(--red-pale); border:1px solid rgba(139,26,26,.18); color: var(--red); }
+.feedback.info { background: var(--teal-pale); border:1px solid rgba(13,92,107,.2); color: var(--teal); }
+.fb-ico { font-size:17px; flex-shrink:0; margin-top:1px; }
+
+/* Nav buttons */
+.nav-row {
+  display:flex; gap:10px;
+}
+.btn-nav {
+  flex:1;
+  padding:13px;
+  border-radius:10px;
+  font-family: var(--font-h);
+  font-size:15px;
+  font-weight:600;
+  cursor:pointer;
+  transition:all .2s;
+  border:1.5px solid var(--border);
+}
+.btn-nav.primary {
+  background: linear-gradient(135deg, var(--amber), var(--amber2));
+  color:white;
+  border-color:transparent;
+  box-shadow:0 6px 18px rgba(181,98,10,0.22);
+}
+.btn-nav.primary:hover { transform:translateY(-2px); box-shadow:0 10px 26px rgba(181,98,10,0.3); }
+.btn-nav.primary:disabled { opacity:.35; cursor:not-allowed; transform:none; box-shadow:none; background: var(--bg2); border-color: var(--border); color: var(--ink3); }
+.btn-nav.secondary {
+  background: var(--cream);
+  color: var(--ink2);
+}
+.btn-nav.secondary:hover { border-color: var(--amber); color: var(--amber); }
+
+/* ════════════════════════════
+   RESULT SCREEN
+════════════════════════════ */
+#screen-result { animation: fadeDown .6s ease both; }
+
+.result-hero {
+  text-align:center;
+  padding:40px 0 36px;
+  border-bottom:1.5px solid var(--border);
+  margin-bottom:32px;
+}
+.rh-emoji { font-size:68px; display:block; margin-bottom:16px; animation:popIn .6s ease; }
+.rh-score {
+  font-family: var(--font-h);
+  font-size:clamp(60px, 12vw, 92px);
+  font-weight:700;
+  line-height:1;
+  color: var(--amber);
+  margin-bottom:8px;
+  letter-spacing:-2px;
+}
+.rh-label {
+  font-family: var(--font-h);
+  font-size:22px;
+  font-weight:500;
+  color: var(--ink);
+  margin-bottom:6px;
+}
+.rh-sub {
+  font-family: var(--font-m);
+  font-size:10px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color: var(--ink3);
+}
+
+.stat-row {
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:12px;
+  margin-bottom:32px;
+}
+.stat-c {
+  background: var(--cream);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:18px 12px;
+  text-align:center;
+}
+.sc-val {
+  font-family: var(--font-h);
+  font-size:32px;
+  font-weight:700;
+  line-height:1;
+  margin-bottom:5px;
+}
+.sc-val.g { color: var(--green); }
+.sc-val.r { color: var(--red); }
+.sc-val.a { color: var(--amber); }
+.sc-val.t { color: var(--teal); }
+.sc-lbl {
+  font-family: var(--font-m);
+  font-size:8px;
+  letter-spacing:2px;
+  text-transform:uppercase;
+  color: var(--ink3);
+}
+
+/* Rekap */
+.rekap-title {
+  font-family: var(--font-h);
+  font-size:20px;
+  font-weight:700;
+  color: var(--ink);
+  margin-bottom:14px;
+}
+.rekap-item {
+  display:flex; gap:12px; align-items:flex-start;
+  padding:13px 16px;
+  background: var(--cream);
+  border:1px solid var(--border);
+  border-radius:9px;
+  margin-bottom:8px;
+  font-size:13.5px;
+  font-weight:300;
+  line-height:1.55;
+}
+.rekap-item.r-ok  { border-left:3px solid var(--green); }
+.rekap-item.r-err { border-left:3px solid var(--red); }
+.ri-ico { font-size:15px; flex-shrink:0; margin-top:2px; }
+.ri-b .ri-q { color: var(--ink2); margin-bottom:3px; font-size:13px; }
+.ri-b .ri-ans { font-family: var(--font-m); font-size:11px; }
+.ri-b .ri-ans.ok  { color: var(--green); }
+.ri-b .ri-ans.err { color: var(--red); }
+
+/* ════════════════════════════
+   GOOGLE FORM PANEL
+════════════════════════════ */
+.gf-panel {
+  background: var(--cream);
+  border:1.5px solid rgba(13,92,107,.2);
+  border-radius:16px;
+  padding:30px;
+  margin-top:32px;
+  position:relative;
+  overflow:hidden;
+}
+.gf-panel::before {
+  content:'';
+  position:absolute; top:0; left:0; right:0;
+  height:3.5px;
+  background: linear-gradient(90deg, #4285f4, #34a853, #fbbc05, #ea4335);
+}
+
+.gf-head {
+  display:flex; align-items:center; gap:12px;
+  margin-bottom:8px;
+}
+.gf-icon { font-size:26px; }
+.gf-title {
+  font-family: var(--font-h);
+  font-size:22px;
+  font-weight:700;
+  color: var(--ink);
+}
+.gf-desc {
+  font-size:14px;
+  color: var(--ink3);
+  font-weight:300;
+  line-height:1.65;
+  margin-bottom:24px;
+}
+
+.gf-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+  margin-bottom:14px;
+}
+.gf-span2 { grid-column:span 2; }
+
+.gf-group { display:flex; flex-direction:column; gap:5px; }
+.gf-lbl {
+  font-family: var(--font-m);
+  font-size:8.5px;
+  letter-spacing:3px;
+  text-transform:uppercase;
+  color: var(--ink3);
+}
+.gf-inp, .gf-ta {
+  background: var(--bg);
+  border:1.5px solid var(--border);
+  border-radius:7px;
+  padding:10px 13px;
+  font-family: var(--font-b);
+  font-size:14px;
+  color: var(--ink);
+  outline:none;
+  transition:border-color .2s;
+  width:100%;
+}
+.gf-inp:focus,.gf-ta:focus { border-color: var(--amber2); }
+.gf-inp[readonly],.gf-ta[readonly] { background: var(--bg2); cursor:default; }
+.gf-ta { resize:none; height:72px; font-size:11.5px; font-family:var(--font-m); }
+
+/* Setup box */
+.setup-box {
+  background: var(--amber-pale);
+  border:1px solid rgba(181,98,10,.2);
+  border-radius:9px;
+  padding:14px 18px;
+  margin-bottom:18px;
+  font-size:13px;
+  color: var(--amber);
+  line-height:1.65;
+}
+.setup-box strong { font-weight:600; }
+.setup-box code {
+  font-family: var(--font-m);
+  font-size:11px;
+  background: rgba(181,98,10,0.1);
+  padding:1px 5px;
+  border-radius:3px;
+}
+
+.btn-send {
+  width:100%;
+  padding:15px;
+  background: linear-gradient(135deg, #4285f4, #1a73e8);
+  border:none; border-radius:10px;
+  color:white;
+  font-family: var(--font-h);
+  font-size:16px;
+  font-weight:700;
+  cursor:pointer;
+  transition:all .2s;
+  box-shadow:0 8px 24px rgba(66,133,244,.28);
+  display:flex; align-items:center; justify-content:center; gap:10px;
+}
+.btn-send:hover { transform:translateY(-2px); box-shadow:0 12px 32px rgba(66,133,244,.35); }
+
+.gf-note {
+  text-align:center;
+  font-family: var(--font-m);
+  font-size:9px;
+  letter-spacing:1px;
+  color: var(--ink3);
+  margin-top:10px;
+  line-height:1.6;
+}
+
+.send-done {
+  display:none; text-align:center; padding:20px;
+}
+.send-done.show { display:block; animation:fadeDown .4s ease; }
+.sd-ico { font-size:52px; margin-bottom:12px; }
+.sd-title { font-family:var(--font-h); font-size:24px; font-weight:700; color: var(--green); margin-bottom:6px; }
+.sd-sub { font-size:14px; color: var(--ink3); font-weight:300; line-height:1.6; }
+
+/* ── Animations ── */
+@keyframes fadeDown {
+  from { opacity:0; transform:translateY(-14px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes slideUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+@keyframes popIn {
+  0%  { transform:scale(.4); opacity:0; }
+  75% { transform:scale(1.12); }
+  100%{ transform:scale(1); opacity:1; }
+}
+@keyframes blink {
+  0%,100%{opacity:1} 50%{opacity:.3}
+}
+
+@media(max-width:580px){
+  .input-grid { grid-template-columns:1fr; }
+  .stat-row   { grid-template-columns:repeat(2,1fr); }
+  .gf-grid    { grid-template-columns:1fr; }
+  .gf-span2   { grid-column:span 1; }
+  .shell      { padding:28px 16px 60px; }
+  .soal-head, .soal-body, .mc-options, .essay-wrap, .feedback { padding-left:18px; padding-right:18px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ════════════════════════════════
+     INTRO
+════════════════════════════════ -->
+<div id="screen-intro" class="screen active">
+<div class="shell">
+  <div class="intro-eyebrow">Soal Analisis · Analisis Real</div>
+  <h1 class="intro-title">Bilangan <em>Real</em><br>sebagai Bentuk<br>Desimal</h1>
+  <div class="intro-klass">Tes Analisis Mendalam · Materi 01</div>
+
+  <div class="intro-desc">
+    Tes ini mengukur kemampuan <strong>analisis dan penalaran</strong> Anda tentang representasi bilangan real sebagai bentuk desimal. Soal mencakup: konversi, pembuktian rasionalitas/irrasionalitas, barisan Cauchy, sifat kelengkapan, dan isian esai analitik. Jawaban akan dikirim otomatis ke Google Form.
+  </div>
+
+  <div class="meta-row">
+    <div class="mchip">📝 <b>8 Soal</b> Analisis</div>
+    <div class="mchip">🔍 Pilihan Ganda + <b>Esai</b></div>
+    <div class="mchip">⏱ Estimasi <b>15–20 Menit</b></div>
+    <div class="mchip">📤 Auto-kirim ke <b>Google Form</b></div>
+  </div>
+
+  <div class="input-grid">
+    <div class="inp-group">
+      <label class="inp-label">Nama Lengkap</label>
+      <input class="inp-field" id="iNama" type="text" placeholder="Nama lengkap Anda…">
+    </div>
+    <div class="inp-group">
+      <label class="inp-label">NIM / NPM</label>
+      <input class="inp-field" id="iNIM" type="text" placeholder="Nomor induk…">
+    </div>
+    <div class="inp-group">
+      <label class="inp-label">Kelas / Semester</label>
+      <input class="inp-field" id="iKelas" type="text" placeholder="Contoh: 3A / Sem 3">
+    </div>
+    <div class="inp-group">
+      <label class="inp-label">Tanggal</label>
+      <input class="inp-field" id="iTgl" type="text" readonly>
+    </div>
+  </div>
+
+  <button class="btn-mulai" onclick="mulaiTes()">Mulai Tes Analisis →</button>
+</div>
+</div>
+
+<!-- ════════════════════════════════
+     QUIZ
+════════════════════════════════ -->
+<div id="screen-quiz" class="screen">
+<div class="shell">
+  <div class="quiz-topbar">
+    <div class="qtb-info">
+      <div class="qtb-label">Progress — <span id="qtbPct">0%</span></div>
+      <div class="qtb-pbar"><div class="qtb-pfill" id="qtbFill" style="width:0%"></div></div>
+    </div>
+    <div class="qtb-counter">Soal <span id="qtbN">1</span> / 8</div>
+    <div class="score-pill">
+      <div class="sp-val" id="liveScore">0</div>
+      <div class="sp-lbl">Skor</div>
+    </div>
+  </div>
+
+  <div id="soalWrap"></div>
+
+  <div class="nav-row">
+    <button class="btn-nav secondary" onclick="prevQ()" id="btnPrev">← Kembali</button>
+    <button class="btn-nav primary" id="btnNext" onclick="nextQ()">Lanjut →</button>
+  </div>
+</div>
+</div>
+
+<!-- ════════════════════════════════
+     RESULT
+════════════════════════════════ -->
+<div id="screen-result" class="screen">
+<div class="shell">
+
+  <div class="result-hero">
+    <span class="rh-emoji" id="rhEmoji">🏆</span>
+    <div class="rh-score" id="rhScore">0</div>
+    <div class="rh-label" id="rhLabel">Selesai!</div>
+    <div class="rh-sub" id="rhSub">Analisis Real · Bilangan Desimal</div>
+  </div>
+
+  <div class="stat-row">
+    <div class="stat-c"><div class="sc-val g" id="stBenar">0</div><div class="sc-lbl">Benar</div></div>
+    <div class="stat-c"><div class="sc-val r" id="stSalah">0</div><div class="sc-lbl">Salah</div></div>
+    <div class="stat-c"><div class="sc-val a" id="stNilai">0</div><div class="sc-lbl">Nilai</div></div>
+    <div class="stat-c"><div class="sc-val t" id="stPred">A</div><div class="sc-lbl">Predikat</div></div>
+  </div>
+
+  <div class="rekap-title">📋 Rekap Jawaban</div>
+  <div id="rekapList"></div>
+
+  <!-- Google Form Panel -->
+  <div class="gf-panel">
+    <div class="gf-head">
+      <span class="gf-icon">
+        <svg width="28" height="28" viewBox="0 0 48 48"><rect width="48" height="48" rx="6" fill="#4285f4"/><path d="M14 12h20v4H14zm0 8h20v4H14zm0 8h12v4H14z" fill="white"/><circle cx="36" cy="32" r="8" fill="#34a853"/><path d="M33 32l2 2 4-4" stroke="white" stroke-width="1.8" fill="none" stroke-linecap="round"/></svg>
+      </span>
+      <div class="gf-title">Kirim ke Google Form</div>
+    </div>
+    <div class="gf-desc">
+      Data hasil tes di bawah sudah terisi otomatis. Klik <strong>Kirim Sekarang</strong> untuk mengirim langsung ke Google Form dosen. Tab konfirmasi akan terbuka otomatis.
+    </div>
+
+    <div class="setup-box">
+      ⚙️ <strong>Untuk Dosen:</strong> Ganti <code>FORM_ACTION_URL</code> dan <code>entry.XXXXXXX</code> di bagian JavaScript dengan URL Google Form dan Entry ID Anda. Cara: Buka Google Form → klik kanan → Inspect → cari <code>name="entry.XXXXXXXXX"</code> pada setiap field input.
+    </div>
+
+    <div id="gfFormWrap">
+      <div class="gf-grid">
+        <div class="gf-group"><label class="gf-lbl">Nama Mahasiswa</label><input class="gf-inp" id="gNama" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">NIM / NPM</label><input class="gf-inp" id="gNIM" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Kelas / Semester</label><input class="gf-inp" id="gKelas" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Tanggal Tes</label><input class="gf-inp" id="gTgl" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Jumlah Benar</label><input class="gf-inp" id="gBenar" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Jumlah Salah</label><input class="gf-inp" id="gSalah" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Nilai (0–100)</label><input class="gf-inp" id="gNilai" readonly></div>
+        <div class="gf-group"><label class="gf-lbl">Predikat</label><input class="gf-inp" id="gPred" readonly></div>
+        <div class="gf-group gf-span2"><label class="gf-lbl">Detail Jawaban per Soal</label><textarea class="gf-ta" id="gDetail" readonly></textarea></div>
+        <div class="gf-group gf-span2"><label class="gf-lbl">Jawaban Esai (Soal 7 & 8)</label><textarea class="gf-ta" id="gEsai" readonly style="height:90px"></textarea></div>
+      </div>
+
+      <button class="btn-send" onclick="kirimForm()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="white"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+        Kirim Sekarang ke Google Form
+      </button>
+      <div class="gf-note">Data dikirim via pre-filled Google Forms URL · Tidak memerlukan server</div>
+    </div>
+
+    <div class="send-done" id="sendDone">
+      <div class="sd-ico">✅</div>
+      <div class="sd-title">Berhasil Terkirim!</div>
+      <div class="sd-sub">Jawaban Anda telah dikirim ke Google Form.<br>Tab konfirmasi sudah dibuka di jendela baru.</div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════
+//  GOOGLE FORM CONFIG — GANTI SESUAI FORM ANDA
+// ══════════════════════════════════════════════════════
+const GF_URL = 'https://docs.google.com/forms/u/0/d/e/1FAIpQLSdWTETAT6QbK-42jQY5Qa2S4Fd2mGZ1WYbR1Z3JLOJTM0gcsQ/formResponse';
+const GF_ENTRIES = {
+  nama:   'entry.1393058901',
+  nim:    'entry.1736676266',
+  kelas:  'entry.2115147348',
+  tgl:    'entry.373816750',
+  benar:  'entry.373816750',
+  salah:  'entry.2141170467',
+  nilai:  'entry.1030229175',
+  pred:   'entry.1163297176',
+  detail: 'entry.592763397',
+  esai:   'entry.1881267246'
+};
+
+// ══════════════════════════════════════════════════════
+//  SOAL DATA
+// ══════════════════════════════════════════════════════
+const soalData = [
+  // 1 – MC
+  {
+    tipe: 'mc',
+    tag: 'Konversi Desimal Berulang',
+    q: "Bilangan <span class='mth'>x = 0,272727…</span> (27 berulang). Langkah yang tepat untuk mengonversi ke pecahan adalah mengalikan x dengan…",
+    opts:[
+      {t:"<span class='mth'>10</span>, karena ada 1 digit berulang", c:false},
+      {t:"<span class='mth'>100</span>, karena ada 2 digit berulang", c:true},
+      {t:"<span class='mth'>1000</span>, karena ada 3 digit berulang", c:false},
+      {t:"<span class='mth'>27</span>, karena periode = 27", c:false}
+    ],
+    fb:{ok:"✅ Benar! Periode k = 2 digit (27), maka kalikan dengan 10² = 100. Hasil: 100x = 27,272727…, kurangi: 99x = 27, sehingga x = 27/99 = 3/11.",
+        err:"❌ Aturannya: untuk periode k digit, kalikan dengan 10^k. Di sini k = 2 (digit '2' dan '7'), maka pengali = 10² = 100."}
+  },
+  // 2 – MC
+  {
+    tipe:'mc',
+    tag:'Identifikasi Sifat Desimal',
+    q:"Manakah pasangan yang <strong>keduanya merupakan bilangan irrasional</strong>?",
+    opts:[
+      {t:"<span class='mth'>0,666…</span> dan <span class='mth'>22/7</span>", c:false},
+      {t:"<span class='mth'>√5</span> dan <span class='mth'>π</span>", c:true},
+      {t:"<span class='mth'>√9</span> dan <span class='mth'>1,414…</span>", c:false},
+      {t:"<span class='mth'>e</span> dan <span class='mth'>3/4</span>", c:false}
+    ],
+    fb:{ok:"✅ Tepat! √5 ≈ 2,2360679… dan π ≈ 3,14159… keduanya memiliki desimal tak berhenti dan tak berulang, sehingga keduanya irrasional.",
+        err:"❌ √9 = 3 (rasional), 0,666… = 2/3 (rasional), 22/7 adalah rasional (bukan π), dan 3/4 rasional. Hanya √5 dan π yang irrasional."}
+  },
+  // 3 – MC
+  {
+    tipe:'mc',
+    tag:'Sifat Kelengkapan ℝ',
+    q:"Barisan bilangan rasional <span class='mth'>1, 1.7, 1.73, 1.732, 1.7320, …</span> yang mendekati √3. Pernyataan yang BENAR adalah…",
+    opts:[
+      {t:"Barisan konvergen di ℚ karena semua sukunya rasional", c:false},
+      {t:"Barisan tidak Cauchy karena nilai bertambah terus", c:false},
+      {t:"Barisan Cauchy di ℚ namun limitnya √3 ∉ ℚ — membuktikan ℚ tidak lengkap", c:true},
+      {t:"Barisan divergen karena tidak memiliki batas atas", c:false}
+    ],
+    fb:{ok:"✅ Tepat! Barisan ini adalah barisan Cauchy (|xₘ − xₙ| → 0), tetapi limitnya √3 ∉ ℚ. Inilah bukti ketidaklengkapan ℚ. Di ℝ barisan ini konvergen sempurna.",
+        err:"❌ Barisan ini Cauchy, tetapi limitnya √3 tidak ada di ℚ. Fakta ini membuktikan ℚ tidak lengkap — berbeda dengan ℝ yang lengkap (setiap barisan Cauchy konvergen di ℝ)."}
+  },
+  // 4 – MC
+  {
+    tipe:'mc',
+    tag:'Analisis Desimal Tak Berulang',
+    q:"Bilangan <span class='mth'>0,12112111211112…</span> (jumlah digit 1 antar 2 bertambah). Berdasarkan teorema representasi desimal, bilangan ini…",
+    opts:[
+      {t:"Rasional, karena ada angka 2 yang muncul berulang", c:false},
+      {t:"Irrasional, karena pola periodenya tidak konstan", c:true},
+      {t:"Bilangan bulat yang sangat kecil", c:false},
+      {t:"Bukan anggota ℝ", c:false}
+    ],
+    fb:{ok:"✅ Benar! Bilangan rasional harus punya blok berulang dengan panjang periode TETAP. Karena jarak antar angka 2 terus bertambah (tidak periodik), bilangan ini irrasional ∈ ℝ∖ℚ.",
+        err:"❌ Meskipun ada pola, panjang blok berulangnya tidak konstan. Teorema representasi desimal mensyaratkan periode tetap untuk bilangan rasional. Karena tidak ada periode tetap, bilangan ini irrasional."}
+  },
+  // 5 – MC
+  {
+    tipe:'mc',
+    tag:'Manipulasi Aljabar Desimal',
+    q:"Hasil paling sederhana dari <span class='mth'>0,181818… + 0,272727…</span> adalah…",
+    opts:[
+      {t:"<span class='mth'>0,454545…</span> = 5/11", c:true},
+      {t:"<span class='mth'>0,45</span> = 9/20", c:false},
+      {t:"<span class='mth'>45/99</span> (belum disederhanakan)", c:false},
+      {t:"<span class='mth'>1/2</span>", c:false}
+    ],
+    fb:{ok:"✅ Benar! 0,181818… = 18/99 = 2/11 dan 0,272727… = 27/99 = 3/11. Jumlahnya = 2/11 + 3/11 = 5/11 = 0,454545…",
+        err:"❌ Konversi dulu: 0,181818… = 2/11 dan 0,272727… = 3/11. Jumlah = 5/11 = 0,454545… Perhatikan 45/99 = 5/11 (bisa disederhanakan)."}
+  },
+  // 6 – MC
+  {
+    tipe:'mc',
+    tag:'Teorema Representasi Desimal',
+    q:"Mengapa <span class='mth'>0,999… = 1</span> secara persis (bukan hampir sama)?",
+    opts:[
+      {t:"Karena pembulatan nilai 0,999… ke atas menjadi 1", c:false},
+      {t:"Karena secara limit: misalkan x=0,999…, maka 10x−x = 9 → x = 1", c:true},
+      {t:"Karena komputer tidak bisa merepresentasikan perbedaannya", c:false},
+      {t:"Itu hanya konvensi notasi, nilai sebenarnya berbeda", c:false}
+    ],
+    fb:{ok:"✅ Tepat! Pembuktian formal: misalkan x = 0,999…, maka 10x = 9,999…. Kurangi: 9x = 9, sehingga x = 1. Ini bukan pendekatan — ini persamaan eksak. Konsekuensi sifat kelengkapan ℝ.",
+        err:"❌ Bukti aljabar: x = 0,999…, maka 10x = 9,999…, sehingga 10x − x = 9, jadi 9x = 9 → x = 1. Tidak ada pembulatan — 0,999… adalah representasi desimal lain dari 1."}
+  },
+  // 7 – ESAI
+  {
+    tipe:'esai',
+    tag:'Soal Esai Analisis',
+    q:"<strong>Buktikan secara singkat</strong> bahwa bilangan <span class='mth-amber'>x = 0,585858…</span> (58 berulang) adalah bilangan rasional dengan menyatakan x sebagai pecahan p/q dalam bentuk paling sederhana. Jelaskan setiap langkahnya.",
+    hint:"Gunakan metode aljabar: misalkan x, kalikan dengan 10^k sesuai panjang periode, kurangkan, lalu sederhanakan.",
+    kunci:"x = 58/99 (tidak bisa disederhanakan lebih lanjut karena GCD(58,99)=1). Langkah: x=0,585858…; 100x=58,5858…; 99x=58; x=58/99."
+  },
+  // 8 – ESAI
+  {
+    tipe:'esai',
+    tag:'Soal Esai Konseptual',
+    q:"Jelaskan dengan kata-kata Anda sendiri: <strong>mengapa himpunan bilangan rasional ℚ dikatakan 'tidak lengkap'</strong>, dan bagaimana contoh barisan desimal yang mendekati √2 membuktikan hal tersebut?",
+    hint:"Kaitkan dengan definisi barisan Cauchy, sifat kelengkapan, dan keberadaan 'lubang' di garis bilangan ℚ.",
+    kunci:"ℚ tidak lengkap karena ada barisan Cauchy di ℚ yang limitnya tidak ada di ℚ. Contoh: 1, 1.4, 1.41, 1.414, … adalah barisan Cauchy di ℚ, namun limitnya √2 ∉ ℚ. Ini menunjukkan 'lubang' di ℚ. ℝ bersifat lengkap karena setiap barisan Cauchy di ℝ selalu konvergen ke anggota ℝ."
+  }
+];
+
+// ══════════════════════════════════════════════════════
+//  STATE
+// ══════════════════════════════════════════════════════
+let curQ = 0;
+let answers = new Array(soalData.length).fill(null); // null | {val, correct}
+let mahasiswa = {};
+let answered = false;
+
+// ══════════════════════════════════════════════════════
+//  INIT
+// ══════════════════════════════════════════════════════
+window.onload = () => {
+  const d = new Date();
+  document.getElementById('iTgl').value =
+    d.toLocaleDateString('id-ID',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+};
+
+function mulaiTes() {
+  mahasiswa = {
+    nama:  document.getElementById('iNama').value.trim() || 'Mahasiswa',
+    nim:   document.getElementById('iNIM').value.trim()  || '-',
+    kelas: document.getElementById('iKelas').value.trim()|| '-',
+    tgl:   document.getElementById('iTgl').value
+  };
+  curQ = 0;
+  showScreen('screen-quiz');
+  renderSoal();
+}
+
+// ══════════════════════════════════════════════════════
+//  RENDER SOAL
+// ══════════════════════════════════════════════════════
+function renderSoal() {
+  const total = soalData.length;
+  const pct = Math.round((curQ / total) * 100);
+  document.getElementById('qtbN').textContent = curQ + 1;
+  document.getElementById('qtbFill').style.width = pct + '%';
+  document.getElementById('qtbPct').textContent = pct + '%';
+  document.getElementById('liveScore').textContent = calcScore();
+  document.getElementById('btnPrev').style.opacity = curQ === 0 ? '.35' : '1';
+  document.getElementById('btnPrev').disabled = curQ === 0;
+  document.getElementById('btnNext').textContent = curQ === total - 1 ? 'Selesai & Lihat Hasil →' : 'Lanjut →';
+  document.getElementById('btnNext').disabled = false;
+
+  const s = soalData[curQ];
+  const prev = answers[curQ];
+
+  let html = `
+    <div class="soal-wrap ${prev ? (prev.correct ? 'state-correct' : 'state-wrong') : ''}" id="soalCard">
+      <div class="soal-head">
+        <div class="soal-badge">${curQ+1}</div>
+        <div class="soal-meta">
+          <div class="soal-tag">Soal ${curQ+1} dari ${total} · ${s.tipe === 'mc' ? 'Pilihan Ganda' : 'Esai Analisis'}</div>
+          <div class="soal-tipe">${s.tag}</div>
+        </div>
+      </div>
+      <div class="soal-body"><div class="soal-q">${s.q}</div></div>`;
+
+  if (s.tipe === 'mc') {
+    const letters = ['A','B','C','D'];
+    const locked = prev !== null;
+    html += `<div class="mc-options" id="mcOpts">`;
+    s.opts.forEach((o, i) => {
+      let cls = '';
+      if (prev !== null) {
+        if (o.c) cls = 'ok';
+        else if (prev.val === i && !o.c) cls = 'err';
+      } else if (!locked && false) { /* nothing */ }
+      html += `<div class="mc-opt ${cls} ${locked ? 'locked' : ''}" id="opt${i}" onclick="pilihMC(${i})">
+        <div class="mc-letter">${letters[i]}</div>
+        <div class="mc-text">${o.t}</div>
+      </div>`;
+    });
+    html += `</div>`;
+    if (prev !== null) {
+      const ok = prev.correct;
+      html += `<div class="feedback ${ok ? 'ok' : 'err'}"><span class="fb-ico">${ok ? '✅' : '❌'}</span><span>${ok ? s.fb.ok : s.fb.err}</span></div>`;
+    }
+  } else {
+    // Esai
+    const saved = prev ? prev.val : '';
+    const locked = prev !== null;
+    html += `
+      <div class="essay-wrap">
+        <textarea class="essay-input ${locked ? 'locked' : ''}" id="essayTA" placeholder="Tuliskan analisis Anda di sini…" ${locked ? 'readonly' : ''}>${saved}</textarea>
+        <div class="essay-hint">💡 Petunjuk: ${s.hint}</div>
+      </div>`;
+    if (prev !== null) {
+      html += `<div class="feedback info"><span class="fb-ico">📖</span><span><strong>Kunci Jawaban:</strong> ${s.kunci}</span></div>`;
+    }
+  }
+
+  html += `</div>`;
+  document.getElementById('soalWrap').innerHTML = html;
+
+  // Highlight selected MC if prev exists but not in DOM yet
+  if (s.tipe === 'mc' && prev !== null && !prev.correct) {
+    // err already set above
+  }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function pilihMC(idx) {
+  if (answers[curQ] !== null) return;
+  const s = soalData[curQ];
+  const correct = s.opts[idx].c;
+  answers[curQ] = { val: idx, correct };
+
+  document.getElementById('liveScore').textContent = calcScore();
+
+  // Style options
+  s.opts.forEach((o, i) => {
+    const el = document.getElementById('opt' + i);
+    el.classList.add('locked');
+    if (o.c) el.classList.add('ok');
+    else if (i === idx) el.classList.add('err');
+  });
+
+  // Show feedback
+  const card = document.getElementById('soalCard');
+  card.classList.add(correct ? 'state-correct' : 'state-wrong');
+
+  // Inject feedback after mc-options
+  const mcOpts = document.getElementById('mcOpts');
+  const fb = document.createElement('div');
+  fb.className = `feedback ${correct ? 'ok' : 'err'}`;
+  fb.innerHTML = `<span class="fb-ico">${correct ? '✅' : '❌'}</span><span>${correct ? s.fb.ok : s.fb.err}</span>`;
+  mcOpts.insertAdjacentElement('afterend', fb);
+}
+
+function simpanEsai() {
+  const ta = document.getElementById('essayTA');
+  if (!ta) return;
+  const val = ta.value.trim();
+  if (val && answers[curQ] === null) {
+    answers[curQ] = { val, correct: val.length > 10 }; // essay: always partial credit
+  } else if (answers[curQ] !== null && answers[curQ].val !== undefined) {
+    // update if not locked
+    if (!document.getElementById('essayTA').readOnly) {
+      answers[curQ].val = val;
+    }
+  }
+}
+
+function nextQ() {
+  const s = soalData[curQ];
+  if (s.tipe === 'esai') simpanEsai();
+  if (s.tipe === 'esai' && answers[curQ] === null) {
+    const val = (document.getElementById('essayTA')?.value || '').trim();
+    answers[curQ] = { val: val || '(tidak dijawab)', correct: val.length > 10 };
+  }
+  if (curQ < soalData.length - 1) {
+    curQ++;
+    renderSoal();
+  } else {
+    showResult();
+  }
+}
+
+function prevQ() {
+  if (curQ > 0) { curQ--; renderSoal(); }
+}
+
+function calcScore() {
+  return answers.filter(a => a && a.correct).length;
+}
+
+// ══════════════════════════════════════════════════════
+//  RESULT
+// ══════════════════════════════════════════════════════
+function showResult() {
+  const total   = soalData.length;
+  const mcCount = soalData.filter(s => s.tipe === 'mc').length;
+  const correct = answers.filter(a => a && a.correct).length;
+  const wrong   = total - correct;
+  const nilai   = Math.round((correct / total) * 100);
+
+  let emoji, label, pred;
+  if (nilai >= 88)      { emoji='🏆'; label='Luar Biasa!';       pred='A'; }
+  else if (nilai >= 75) { emoji='🌟'; label='Sangat Baik!';      pred='B'; }
+  else if (nilai >= 62) { emoji='👍'; label='Baik';              pred='C'; }
+  else if (nilai >= 50) { emoji='📚'; label='Cukup';             pred='D'; }
+  else                  { emoji='💪'; label='Perlu Ditingkatkan'; pred='E'; }
+
+  document.getElementById('rhEmoji').textContent = emoji;
+  document.getElementById('rhScore').textContent = nilai;
+  document.getElementById('rhLabel').textContent = label;
+  document.getElementById('rhSub').textContent   = `${mahasiswa.nama} · ${correct}/${total} benar`;
+  document.getElementById('stBenar').textContent = correct;
+  document.getElementById('stSalah').textContent = wrong;
+  document.getElementById('stNilai').textContent = nilai;
+  document.getElementById('stPred').textContent  = pred;
+
+  // Rekap
+  const rekapHTML = answers.map((a, i) => {
+    const s = soalData[i];
+    const ok = a && a.correct;
+    let ansText = '';
+    if (s.tipe === 'mc') {
+      ansText = a ? s.opts[a.val].t.replace(/<[^>]*>/g,'') : '(tidak dijawab)';
+    } else {
+      ansText = a ? (a.val.substring(0,80) + (a.val.length > 80 ? '…' : '')) : '(tidak dijawab)';
+    }
+    return `<div class="rekap-item ${ok ? 'r-ok' : 'r-err'}">
+      <span class="ri-ico">${ok ? '✅' : '❌'}</span>
+      <div class="ri-b">
+        <div class="ri-q">Soal ${i+1} [${s.tag}]: ${s.q.replace(/<[^>]*>/g,'').substring(0,60)}…</div>
+        <div class="ri-ans ${ok ? 'ok' : 'err'}">${ok ? '✔ ' : '✘ '}${ansText}</div>
+      </div>
+    </div>`;
+  }).join('');
+  document.getElementById('rekapList').innerHTML = rekapHTML;
+
+  // Pre-fill Google Form
+  document.getElementById('gNama').value  = mahasiswa.nama;
+  document.getElementById('gNIM').value   = mahasiswa.nim;
+  document.getElementById('gKelas').value = mahasiswa.kelas;
+  document.getElementById('gTgl').value   = mahasiswa.tgl;
+  document.getElementById('gBenar').value = `${correct} dari ${total} (MC: ${soalData.filter((s,i)=>s.tipe==='mc'&&answers[i]?.correct).length}/${mcCount})`;
+  document.getElementById('gSalah').value = `${wrong} dari ${total}`;
+  document.getElementById('gNilai').value = `${nilai} / 100`;
+  document.getElementById('gPred').value  = pred;
+
+  const detail = answers.map((a,i) => `S${i+1}:${soalData[i].tipe==='mc'?(a?.correct?'✓':'✗'):'Esai'}`).join(' | ');
+  document.getElementById('gDetail').value = detail;
+
+  const esaiJawaban = answers
+    .map((a,i) => soalData[i].tipe === 'esai' ? `Soal ${i+1}: ${a?.val || '-'}` : '')
+    .filter(Boolean)
+    .join('\n\n');
+  document.getElementById('gEsai').value = esaiJawaban;
+
+  showScreen('screen-result');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ══════════════════════════════════════════════════════
+//  SEND TO GOOGLE FORM
+// ══════════════════════════════════════════════════════
+function kirimForm() {
+  const params = new URLSearchParams({
+    [GF_ENTRIES.nama]:   document.getElementById('gNama').value,
+    [GF_ENTRIES.nim]:    document.getElementById('gNIM').value,
+    [GF_ENTRIES.kelas]:  document.getElementById('gKelas').value,
+    [GF_ENTRIES.tgl]:    document.getElementById('gTgl').value,
+    [GF_ENTRIES.benar]:  document.getElementById('gBenar').value,
+    [GF_ENTRIES.salah]:  document.getElementById('gSalah').value,
+    [GF_ENTRIES.nilai]:  document.getElementById('gNilai').value,
+    [GF_ENTRIES.pred]:   document.getElementById('gPred').value,
+    [GF_ENTRIES.detail]: document.getElementById('gDetail').value,
+    [GF_ENTRIES.esai]:   document.getElementById('gEsai').value,
+  });
+
+  const url = GF_URL + '?' + params.toString();
+  window.open(url, '_blank');
+
+  document.getElementById('gfFormWrap').style.display = 'none';
+  document.getElementById('sendDone').classList.add('show');
+}
+
+// ══════════════════════════════════════════════════════
+//  UTILS
+// ══════════════════════════════════════════════════════
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+}
+</script>
+</body>
+</html>
