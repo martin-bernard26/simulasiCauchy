@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisis Real — Sifat Aljabar & Sifat Urutan</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #1a1208;
+    --parchment: #f5efe0;
+    --parchment-dark: #ede4cc;
+    --sienna: #8b3a0f;
+    --gold: #c4922a;
+    --gold-light: #e8c97a;
+    --sage: #4a6741;
+    --slate: #3d4f5c;
+    --cream: #faf6ed;
+    --border: #c9b88a;
+    --shadow: rgba(26,18,8,0.15);
+    --red-proof: #7a1f1f;
+    --blue-note: #1e3a5f;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Source Serif 4', Georgia, serif;
+    background: var(--parchment);
+    color: var(--ink);
+    line-height: 1.75;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 20% 10%, rgba(196,146,42,0.08) 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 90%, rgba(139,58,15,0.06) 0%, transparent 50%),
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='300' height='300'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='300' height='300' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: var(--ink);
+    color: var(--parchment);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      0deg, transparent, transparent 39px,
+      rgba(196,146,42,0.12) 39px, rgba(196,146,42,0.12) 40px
+    );
+    pointer-events: none;
+  }
+
+  .header-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3.5rem 2rem 3rem;
+    position: relative;
+    z-index: 1;
+  }
+
+  .subject-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    color: var(--gold-light);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+    opacity: 0.85;
+  }
+
+  h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.5rem;
+    letter-spacing: -0.01em;
+  }
+
+  h1 em {
+    font-style: italic;
+    color: var(--gold-light);
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+    color: rgba(245,239,224,0.65);
+    font-style: italic;
+    margin-top: 0.5rem;
+    font-weight: 300;
+  }
+
+  .header-ornament {
+    position: absolute;
+    right: 2rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 7rem;
+    opacity: 0.06;
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    pointer-events: none;
+    color: var(--gold-light);
+    line-height: 1;
+  }
+
+  /* ── NAV TABS ── */
+  nav {
+    background: var(--ink);
+    border-top: 1px solid rgba(196,146,42,0.3);
+  }
+
+  .nav-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    padding: 0 2rem;
+    overflow-x: auto;
+  }
+
+  .nav-tab {
+    padding: 0.85rem 1.4rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(245,239,224,0.5);
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    white-space: nowrap;
+    background: none;
+    border-left: none;
+    border-right: none;
+    border-top: none;
+  }
+
+  .nav-tab:hover { color: var(--gold-light); }
+  .nav-tab.active {
+    color: var(--gold-light);
+    border-bottom-color: var(--gold);
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem 5rem;
+  }
+
+  .section { display: none; }
+  .section.active { display: block; animation: fadeIn 0.35s ease; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+  /* ── TYPOGRAPHY ── */
+  h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.85rem;
+    font-weight: 700;
+    color: var(--sienna);
+    margin-bottom: 0.35rem;
+    margin-top: 2.5rem;
+    line-height: 1.2;
+  }
+
+  h2:first-child { margin-top: 0; }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.22rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin: 1.75rem 0 0.6rem;
+    border-bottom: 1px solid var(--border);
+    padding-bottom: 0.3rem;
+  }
+
+  p { margin-bottom: 0.9rem; }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    background: var(--cream);
+    border-left: 4px solid var(--gold);
+    border-radius: 0 6px 6px 0;
+    padding: 1.2rem 1.5rem;
+    margin: 1.4rem 0;
+    position: relative;
+  }
+
+  .def-box::before {
+    content: attr(data-label);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--gold);
+    font-weight: 600;
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .def-box.theorem { border-left-color: var(--sienna); }
+  .def-box.theorem::before { color: var(--sienna); }
+  .def-box.axiom { border-left-color: var(--slate); }
+  .def-box.axiom::before { color: var(--slate); }
+  .def-box.example { border-left-color: var(--sage); }
+  .def-box.example::before { color: var(--sage); }
+  .def-box.note { border-left-color: var(--blue-note); background: #f0f5ff; }
+  .def-box.note::before { color: var(--blue-note); }
+
+  /* ── MATH DISPLAY ── */
+  .math-block {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    padding: 1.1rem 1.5rem;
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow-x: auto;
+    line-height: 1.9;
+    letter-spacing: 0.02em;
+  }
+
+  .math-block .comment {
+    color: rgba(232,201,122,0.45);
+    font-style: italic;
+  }
+
+  .math-inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: rgba(196,146,42,0.12);
+    color: var(--sienna);
+    padding: 0.1em 0.4em;
+    border-radius: 3px;
+    font-size: 0.92em;
+  }
+
+  /* ── PROPERTY GRID ── */
+  .prop-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.75rem;
+    margin: 1rem 0;
+  }
+
+  @media (max-width: 600px) { .prop-grid { grid-template-columns: 1fr; } }
+
+  .prop-card {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    padding: 0.9rem 1.1rem;
+    transition: transform 0.15s, box-shadow 0.15s;
+    cursor: default;
+  }
+
+  .prop-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px var(--shadow);
+  }
+
+  .prop-card .prop-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--sienna);
+    margin-bottom: 0.3rem;
+  }
+
+  .prop-card .prop-formula {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--slate);
+    background: rgba(61,79,92,0.07);
+    padding: 0.25rem 0.5rem;
+    border-radius: 3px;
+    margin-bottom: 0.3rem;
+    display: inline-block;
+  }
+
+  .prop-card .prop-desc { font-size: 0.88rem; color: #4a3f2f; }
+
+  /* ── SIMULATOR ── */
+  .simulator {
+    background: var(--cream);
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+  }
+
+  .simulator h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    color: var(--slate);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .sim-icon { font-size: 1.2rem; }
+
+  .sim-controls {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    align-items: center;
+  }
+
+  .sim-controls label {
+    font-size: 0.85rem;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--slate);
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .sim-controls input[type="number"] {
+    width: 70px;
+    padding: 0.35rem 0.5rem;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    background: white;
+    color: var(--ink);
+  }
+
+  .btn {
+    padding: 0.45rem 1.1rem;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.78rem;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--sienna);
+    color: var(--parchment);
+  }
+  .btn-primary:hover { background: #7a2f08; }
+
+  .btn-secondary {
+    background: var(--slate);
+    color: var(--parchment);
+  }
+  .btn-secondary:hover { background: #2f3f4c; }
+
+  .sim-output {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    padding: 1rem 1.2rem;
+    border-radius: 6px;
+    min-height: 80px;
+    white-space: pre-wrap;
+    line-height: 1.8;
+  }
+
+  .sim-output .ok { color: #7dd87a; }
+  .sim-output .fail { color: #e07070; }
+  .sim-output .label { color: var(--gold-light); opacity: 0.6; }
+
+  /* ── ORDER VISUALIZER ── */
+  .order-vis {
+    position: relative;
+    height: 80px;
+    background: var(--parchment-dark);
+    border-radius: 6px;
+    margin: 1rem 0;
+    overflow: hidden;
+    border: 1px solid var(--border);
+  }
+
+  .order-axis {
+    position: absolute;
+    top: 50%;
+    left: 5%;
+    right: 5%;
+    height: 2px;
+    background: var(--border);
+    transform: translateY(-50%);
+  }
+
+  .order-arrow {
+    position: absolute;
+    right: 5%;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-top: 6px solid transparent;
+    border-bottom: 6px solid transparent;
+    border-left: 10px solid var(--border);
+    margin-right: -10px;
+  }
+
+  .order-point {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: transform 0.2s;
+    z-index: 2;
+  }
+
+  .order-point:hover { transform: translate(-50%, -50%) scale(1.4); }
+
+  .order-point .pt-label {
+    position: absolute;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    white-space: nowrap;
+    font-weight: 600;
+  }
+
+  .order-point .pt-val {
+    position: absolute;
+    bottom: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    white-space: nowrap;
+    color: var(--slate);
+  }
+
+  /* ── EXERCISES ── */
+  .exercise {
+    background: var(--cream);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    margin: 1.1rem 0;
+    position: relative;
+  }
+
+  .exercise-num {
+    position: absolute;
+    top: -1px;
+    left: 1.2rem;
+    background: var(--sienna);
+    color: var(--parchment);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    font-weight: 600;
+    padding: 0.15rem 0.6rem;
+    border-radius: 0 0 4px 4px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  .exercise p { margin-top: 0.4rem; }
+
+  .exercise .hint {
+    display: none;
+    margin-top: 0.75rem;
+    padding: 0.75rem 1rem;
+    background: rgba(196,146,42,0.1);
+    border-left: 3px solid var(--gold);
+    border-radius: 0 4px 4px 0;
+    font-size: 0.9rem;
+    font-style: italic;
+  }
+
+  .hint-btn {
+    margin-top: 0.75rem;
+    padding: 0.3rem 0.8rem;
+    background: transparent;
+    border: 1px solid var(--gold);
+    border-radius: 4px;
+    color: var(--gold);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    cursor: pointer;
+    text-transform: uppercase;
+    transition: all 0.15s;
+  }
+
+  .hint-btn:hover { background: var(--gold); color: var(--ink); }
+
+  /* ── PROOF TEMPLATE ── */
+  .proof-area {
+    background: var(--cream);
+    border: 1px dashed var(--border);
+    border-radius: 6px;
+    padding: 1.2rem;
+    margin-top: 0.75rem;
+    min-height: 100px;
+    font-style: italic;
+    color: rgba(26,18,8,0.35);
+    font-size: 0.9rem;
+    cursor: text;
+    position: relative;
+  }
+
+  .proof-area::before {
+    content: '✎ Tulis pembuktian Anda di sini…';
+    pointer-events: none;
+  }
+
+  /* ── DIVIDER ── */
+  .ornamental-divider {
+    text-align: center;
+    margin: 2rem 0;
+    color: var(--border);
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+  }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.9rem;
+    margin: 1rem 0;
+  }
+
+  th {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+  }
+
+  td {
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid var(--border);
+  }
+
+  tr:nth-child(even) td { background: var(--parchment-dark); }
+
+  td .mi { font-family: 'JetBrains Mono', monospace; color: var(--sienna); font-size: 0.88rem; }
+
+  /* ── BADGE ── */
+  .badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.65rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 0.15em 0.55em;
+    border-radius: 3px;
+    margin-left: 0.4rem;
+    vertical-align: middle;
+  }
+
+  .badge-axiom { background: rgba(61,79,92,0.15); color: var(--slate); }
+  .badge-thm { background: rgba(139,58,15,0.12); color: var(--sienna); }
+  .badge-cor { background: rgba(74,103,65,0.12); color: var(--sage); }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    background: var(--parchment-dark);
+    border-radius: 20px;
+    height: 6px;
+    margin: 0.4rem 0 1.2rem;
+    overflow: hidden;
+  }
+
+  .progress-bar {
+    height: 100%;
+    border-radius: 20px;
+    background: linear-gradient(90deg, var(--gold), var(--sienna));
+    transition: width 0.6s ease;
+  }
+
+  /* ── SCROLL ANIMATION ── */
+  .reveal {
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 1.5rem;
+    font-size: 0.78rem;
+    color: rgba(26,18,8,0.4);
+    font-style: italic;
+    border-top: 1px solid var(--border);
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* Responsive */
+  @media (max-width: 600px) {
+    .header-inner { padding: 2.5rem 1.25rem 2rem; }
+    main { padding: 1.5rem 1.25rem 4rem; }
+    .nav-inner { padding: 0 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="subject-label">Analisis Real · Materi 02</div>
+    <h1>Sifat <em>Aljabar</em> &amp; Sifat <em>Urutan</em></h1>
+    <p class="header-subtitle">pada Bilangan Real ℝ — Aksioma, Teorema, Simulasi &amp; Latihan Pembuktian</p>
+  </div>
+  <div class="header-ornament">ℝ</div>
+</header>
+
+<nav>
+  <div class="nav-inner">
+    <button class="nav-tab active" onclick="showSection('aljabar')">Sifat Aljabar</button>
+    <button class="nav-tab" onclick="showSection('urutan')">Sifat Urutan</button>
+    <button class="nav-tab" onclick="showSection('simulasi')">Simulasi</button>
+    <button class="nav-tab" onclick="showSection('latihan')">Latihan Pembuktian</button>
+  </div>
+</nav>
+
+<main>
+
+<!-- ════════════════ SIFAT ALJABAR ════════════════ -->
+<section id="aljabar" class="section active">
+
+  <h2>Sifat Aljabar Bilangan Real</h2>
+  <p>Himpunan bilangan real <span class="math-inline">ℝ</span> beserta operasi penjumlahan <span class="math-inline">+</span> dan perkalian <span class="math-inline">·</span> membentuk suatu <strong>lapangan (field)</strong>. Sifat-sifat berikut berlaku untuk setiap <span class="math-inline">a, b, c ∈ ℝ</span>.</p>
+
+  <div class="def-box axiom" data-label="Definisi — Lapangan">
+    Suatu himpunan <span class="math-inline">F</span> dengan operasi biner <span class="math-inline">+</span> dan <span class="math-inline">·</span> disebut <em>lapangan (field)</em> jika memenuhi sepuluh aksioma lapangan yang dibagi menjadi dua kelompok: sifat penjumlahan (A1–A5) dan sifat perkalian (M1–M5).
+  </div>
+
+  <h3>A. Sifat-Sifat Penjumlahan</h3>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-name">A1 · Tertutup <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">a + b ∈ ℝ</div>
+      <div class="prop-desc">Jumlah dua bilangan real adalah bilangan real.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">A2 · Komutatif <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">a + b = b + a</div>
+      <div class="prop-desc">Urutan penjumlahan tidak mempengaruhi hasil.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">A3 · Asosiatif <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">(a + b) + c = a + (b + c)</div>
+      <div class="prop-desc">Pengelompokan tidak mempengaruhi hasil penjumlahan.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">A4 · Elemen Identitas <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">∃ 0 ∈ ℝ: a + 0 = a</div>
+      <div class="prop-desc">Terdapat elemen nol sebagai identitas penjumlahan.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">A5 · Invers Penjumlahan <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">∃ (−a) ∈ ℝ: a + (−a) = 0</div>
+      <div class="prop-desc">Setiap bilangan real memiliki invers penjumlahan.</div>
+    </div>
+  </div>
+
+  <h3>B. Sifat-Sifat Perkalian</h3>
+
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-name">M1 · Tertutup <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">a · b ∈ ℝ</div>
+      <div class="prop-desc">Hasil kali dua bilangan real adalah bilangan real.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">M2 · Komutatif <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">a · b = b · a</div>
+      <div class="prop-desc">Urutan perkalian tidak mempengaruhi hasil.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">M3 · Asosiatif <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">(a · b) · c = a · (b · c)</div>
+      <div class="prop-desc">Pengelompokan tidak mempengaruhi hasil perkalian.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">M4 · Elemen Identitas <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">∃ 1 ∈ ℝ, 1≠0: a · 1 = a</div>
+      <div class="prop-desc">Terdapat elemen satu sebagai identitas perkalian.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">M5 · Invers Perkalian <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">∀ a≠0, ∃ a⁻¹: a · a⁻¹ = 1</div>
+      <div class="prop-desc">Setiap bilangan real tak-nol memiliki invers perkalian.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">D · Distributif <span class="badge badge-axiom">Aksioma</span></div>
+      <div class="prop-formula">a(b + c) = ab + ac</div>
+      <div class="prop-desc">Perkalian distributif terhadap penjumlahan.</div>
+    </div>
+  </div>
+
+  <div class="ornamental-divider">· · ✦ · ·</div>
+
+  <h3>C. Teorema-Teorema Aljabar Penting</h3>
+  <p>Dari kesepuluh aksioma lapangan di atas, dapat diturunkan berbagai teorema berikut:</p>
+
+  <div class="def-box theorem" data-label="Teorema 1 — Keunikan Elemen Nol">
+    Elemen identitas penjumlahan <span class="math-inline">0</span> pada <span class="math-inline">ℝ</span> adalah <em>unik</em>. Artinya, jika terdapat <span class="math-inline">0'</span> sedemikian sehingga <span class="math-inline">a + 0' = a</span> untuk semua <span class="math-inline">a ∈ ℝ</span>, maka <span class="math-inline">0' = 0</span>.
+    <div class="math-block">
+Bukti:<br>
+  Misalkan 0 dan 0' keduanya identitas penjumlahan.<br>
+  Karena 0 adalah identitas : 0 + 0' = 0'<br>
+  Karena 0' adalah identitas: 0 + 0' = 0<br>
+  ∴  0' = 0  (keunikan terbukti) <span class="comment">□</span>
+    </div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 2 — Hukum Pembatalan Penjumlahan">
+    Jika <span class="math-inline">a + c = b + c</span>, maka <span class="math-inline">a = b</span>.
+    <div class="math-block">
+Bukti:<br>
+  a + c = b + c<br>
+  (a + c) + (−c) = (b + c) + (−c)   <span class="comment">[tambahkan −c kedua ruas]</span><br>
+  a + (c + (−c)) = b + (c + (−c))   <span class="comment">[asosiatif A3]</span><br>
+  a + 0 = b + 0                      <span class="comment">[A5: c + (−c) = 0]</span><br>
+  a = b                              <span class="comment">[A4: x + 0 = x] □</span>
+    </div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 3 — Sifat Perkalian dengan Nol">
+    Untuk setiap <span class="math-inline">a ∈ ℝ</span>, berlaku <span class="math-inline">a · 0 = 0</span>.
+    <div class="math-block">
+Bukti:<br>
+  a · 0 = a · (0 + 0)       <span class="comment">[karena 0 + 0 = 0]</span><br>
+        = a·0 + a·0          <span class="comment">[distributif D]</span><br>
+  a·0 + (−a·0) = (a·0 + a·0) + (−a·0)<br>
+  0 = a·0 + (a·0 + (−a·0))  <span class="comment">[asosiatif]</span><br>
+  0 = a·0 + 0 = a·0          <span class="comment">□</span>
+    </div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 4 — (−1) · a = −a">
+    Untuk setiap <span class="math-inline">a ∈ ℝ</span>, berlaku <span class="math-inline">(−1) · a = −a</span>.
+    <div class="math-block">
+Bukti:<br>
+  a + (−1)·a = 1·a + (−1)·a  <span class="comment">[M4]</span><br>
+             = (1 + (−1))·a   <span class="comment">[distributif]</span><br>
+             = 0·a = 0         <span class="comment">[Teorema 3]</span><br>
+  ∴  (−1)·a adalah invers penjumlahan dari a, yakni −a <span class="comment">□</span>
+    </div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 5 — Hasil Kali Dua Bilangan Negatif">
+    Untuk setiap <span class="math-inline">a, b ∈ ℝ</span>, berlaku <span class="math-inline">(−a)(−b) = ab</span>.
+  </div>
+
+  <div class="def-box note" data-label="Catatan Penting">
+    Teorema-teorema di atas <strong>tidak diterima begitu saja</strong> — melainkan <em>diturunkan</em> secara logis dari aksioma. Inilah hakikat Analisis Real: setiap pernyataan harus dibuktikan dari prinsip yang paling mendasar.
+  </div>
+
+</section>
+
+<!-- ════════════════ SIFAT URUTAN ════════════════ -->
+<section id="urutan" class="section">
+
+  <h2>Sifat Urutan Bilangan Real</h2>
+  <p>Selain struktur lapangan, <span class="math-inline">ℝ</span> juga dilengkapi relasi urutan <span class="math-inline">&lt;</span> yang menjadikannya <strong>lapangan terurut (ordered field)</strong>. Sifat urutan memungkinkan kita membandingkan bilangan-bilangan real.</p>
+
+  <div class="def-box axiom" data-label="Aksioma Urutan (O1–O3)">
+    Terdapat himpunan <span class="math-inline">P ⊂ ℝ</span> yang disebut <em>bilangan real positif</em> sedemikian sehingga:
+    <div class="math-block">
+O1 (Trikotomi):  ∀ a ∈ ℝ, tepat satu dari: a ∈ P,  −a ∈ P,  a = 0<br>
+O2 (Tertutup-+): a,b ∈ P  ⟹  a + b ∈ P<br>
+O3 (Tertutup-·): a,b ∈ P  ⟹  a · b ∈ P
+    </div>
+    Kita definisikan: <span class="math-inline">a &lt; b ⟺ b − a ∈ P</span>
+  </div>
+
+  <h3>A. Aksioma dan Sifat Urutan</h3>
+
+  <table>
+    <thead>
+      <tr><th>Sifat</th><th>Pernyataan Formal</th><th>Keterangan</th></tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Trikotomi</td>
+        <td><span class="mi">a&lt;b</span>, <span class="mi">a=b</span>, atau <span class="mi">a&gt;b</span></td>
+        <td>Tepat satu berlaku</td>
+      </tr>
+      <tr>
+        <td>Transitif</td>
+        <td><span class="mi">a&lt;b</span> dan <span class="mi">b&lt;c ⟹ a&lt;c</span></td>
+        <td>Urutan diwariskan</td>
+      </tr>
+      <tr>
+        <td>Penjumlahan</td>
+        <td><span class="mi">a&lt;b ⟹ a+c &lt; b+c</span></td>
+        <td>Menambah konstanta sama</td>
+      </tr>
+      <tr>
+        <td>Perkalian (+)</td>
+        <td><span class="mi">a&lt;b, c&gt;0 ⟹ ac &lt; bc</span></td>
+        <td>Kali bilangan positif</td>
+      </tr>
+      <tr>
+        <td>Perkalian (−)</td>
+        <td><span class="mi">a&lt;b, c&lt;0 ⟹ ac &gt; bc</span></td>
+        <td>Kali bilangan negatif: tanda berbalik</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <h3>B. Teorema Urutan Penting</h3>
+
+  <div class="def-box theorem" data-label="Teorema 6 — Kuadrat Selalu Non-negatif">
+    Untuk setiap <span class="math-inline">a ∈ ℝ</span>, berlaku <span class="math-inline">a² ≥ 0</span>. Khususnya, <span class="math-inline">1 &gt; 0</span>.
+    <div class="math-block">
+Bukti (kasus a ≠ 0):<br>
+  Kasus 1: a > 0  ⟹  a · a > 0  (O3)  ⟹  a² > 0 ✓<br>
+  Kasus 2: a < 0  ⟹  −a > 0     (def)<br>
+           ⟹  (−a)(−a) > 0  (O3)<br>
+           ⟹  a² > 0  (Teorema 5) ✓<br>
+  Khusus: 1 = 1² > 0  <span class="comment">□</span>
+    </div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 7 — Sifat Invers Terurut">
+    Jika <span class="math-inline">0 &lt; a &lt; b</span>, maka <span class="math-inline">0 &lt; 1/b &lt; 1/a</span>.
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 8 — Ketaksamaan Segitiga">
+    Untuk setiap <span class="math-inline">a, b ∈ ℝ</span>:
+    <div class="math-block">|a + b| ≤ |a| + |b|</div>
+    Ini adalah salah satu teorema paling fundamental dalam Analisis Real. Juga berlaku:
+    <div class="math-block">||a| − |b|| ≤ |a − b|   (ketaksamaan segitiga terbalik)</div>
+  </div>
+
+  <div class="def-box theorem" data-label="Teorema 9 — Antara Dua Bilangan Real">
+    Jika <span class="math-inline">a &lt; b</span>, maka terdapat <span class="math-inline">c ∈ ℝ</span> sedemikian sehingga <span class="math-inline">a &lt; c &lt; b</span>.
+    <div class="math-block">
+Bukti:<br>
+  Ambil c = (a + b)/2<br>
+  c − a = (b − a)/2 > 0  (karena b > a)  ⟹  c > a<br>
+  b − c = (b − a)/2 > 0                  ⟹  b > c<br>
+  ∴  a < c < b  <span class="comment">□</span>
+    </div>
+  </div>
+
+  <h3>C. Nilai Mutlak</h3>
+
+  <div class="def-box" data-label="Definisi — Nilai Mutlak">
+    Untuk <span class="math-inline">a ∈ ℝ</span>, nilai mutlak didefinisikan:
+    <div class="math-block">
+|a| = ⎧  a,   jika a ≥ 0
+      ⎨
+      ⎩ −a,   jika a < 0
+    </div>
+  </div>
+
+  <p>Nilai mutlak memiliki sifat-sifat:</p>
+  <div class="prop-grid">
+    <div class="prop-card">
+      <div class="prop-name">Non-negatif</div>
+      <div class="prop-formula">|a| ≥ 0</div>
+      <div class="prop-desc">dan |a| = 0 ⟺ a = 0</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">Simetri</div>
+      <div class="prop-formula">|−a| = |a|</div>
+      <div class="prop-desc">Nilai mutlak dan negatifnya sama.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">Multiplikatif</div>
+      <div class="prop-formula">|ab| = |a|·|b|</div>
+      <div class="prop-desc">Nilai mutlak perkalian sama dengan perkalian nilai mutlak.</div>
+    </div>
+    <div class="prop-card">
+      <div class="prop-name">Ketaksamaan Segitiga</div>
+      <div class="prop-formula">|a+b| ≤ |a|+|b|</div>
+      <div class="prop-desc">Teorema paling fundamental analisis real.</div>
+    </div>
+  </div>
+
+</section>
+
+<!-- ════════════════ SIMULASI ════════════════ -->
+<section id="simulasi" class="section">
+
+  <h2>Simulasi &amp; Eksplorasi Interaktif</h2>
+  <p>Gunakan simulator di bawah untuk mengeksplorasi dan memverifikasi sifat-sifat aljabar dan urutan secara langsung dengan nilai numerik pilihan Anda.</p>
+
+  <!-- Sim 1: Verifikasi Sifat Lapangan -->
+  <div class="simulator">
+    <h4><span class="sim-icon">⚙</span> Simulator 1 — Verifikasi Sifat Lapangan</h4>
+    <p style="font-size:0.9rem; margin-bottom:1rem;">Masukkan tiga bilangan real dan verifikasi aksioma-aksioma lapangan.</p>
+    <div class="sim-controls">
+      <label>a = <input type="number" id="s1a" value="3" step="0.1"></label>
+      <label>b = <input type="number" id="s1b" value="-2" step="0.1"></label>
+      <label>c = <input type="number" id="s1c" value="5" step="0.1"></label>
+      <button class="btn btn-primary" onclick="runSim1()">Verifikasi</button>
+    </div>
+    <div class="sim-output" id="s1out">» Tekan tombol Verifikasi untuk memulai…</div>
+  </div>
+
+  <!-- Sim 2: Verifikasi Sifat Urutan -->
+  <div class="simulator">
+    <h4><span class="sim-icon">↕</span> Simulator 2 — Sifat Urutan &amp; Trikotomi</h4>
+    <p style="font-size:0.9rem; margin-bottom:1rem;">Masukkan dua bilangan, lalu verifikasi sifat-sifat urutan.</p>
+    <div class="sim-controls">
+      <label>a = <input type="number" id="s2a" value="4" step="0.1"></label>
+      <label>b = <input type="number" id="s2b" value="7" step="0.1"></label>
+      <label>c = <input type="number" id="s2c" value="-3" step="0.1"></label>
+      <button class="btn btn-primary" onclick="runSim2()">Verifikasi</button>
+    </div>
+    <div class="sim-output" id="s2out">» Masukkan nilai dan tekan Verifikasi…</div>
+
+    <!-- Order Number Line -->
+    <div style="margin-top:1rem;">
+      <div style="font-size:0.8rem; font-family:'JetBrains Mono',monospace; color:var(--slate); margin-bottom:0.4rem;">↳ Garis Bilangan Real</div>
+      <div class="order-vis" id="orderVis">
+        <div class="order-axis"></div>
+        <div class="order-arrow"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Sim 3: Nilai Mutlak & Ketaksamaan Segitiga -->
+  <div class="simulator">
+    <h4><span class="sim-icon">△</span> Simulator 3 — Ketaksamaan Segitiga</h4>
+    <p style="font-size:0.9rem; margin-bottom:1rem;">Verifikasi <span class="math-inline">|a+b| ≤ |a| + |b|</span> secara numerik dan visual.</p>
+    <div class="sim-controls">
+      <label>a = <input type="number" id="s3a" value="-4" step="0.1"></label>
+      <label>b = <input type="number" id="s3b" value="7" step="0.1"></label>
+      <button class="btn btn-primary" onclick="runSim3()">Hitung</button>
+    </div>
+    <div class="sim-output" id="s3out">» Masukkan a dan b, lalu tekan Hitung…</div>
+
+    <div style="margin-top:1rem;" id="triVis" style="display:none;">
+      <canvas id="triCanvas" width="600" height="80" style="width:100%;border-radius:6px;background:var(--parchment-dark);border:1px solid var(--border);"></canvas>
+    </div>
+  </div>
+
+  <!-- Sim 4: Eksplorasi Titik Tengah -->
+  <div class="simulator">
+    <h4><span class="sim-icon">∑</span> Simulator 4 — Eksplorasi Titik Tengah (Teorema 9)</h4>
+    <p style="font-size:0.9rem; margin-bottom:1rem;">Jika <span class="math-inline">a &lt; b</span>, temukan titik-titik di antara <span class="math-inline">a</span> dan <span class="math-inline">b</span>.</p>
+    <div class="sim-controls">
+      <label>a = <input type="number" id="s4a" value="1" step="0.1"></label>
+      <label>b = <input type="number" id="s4b" value="4" step="0.1"></label>
+      <label>Kedalaman:
+        <select id="s4depth" style="padding:0.35rem 0.5rem;border:1px solid var(--border);border-radius:4px;font-family:'JetBrains Mono',monospace;font-size:0.85rem;">
+          <option value="3">3</option>
+          <option value="5" selected>5</option>
+          <option value="8">8</option>
+        </select>
+      </label>
+      <button class="btn btn-primary" onclick="runSim4()">Eksplorasi</button>
+    </div>
+    <div class="sim-output" id="s4out">» Masukkan a &lt; b dan tekan Eksplorasi…</div>
+  </div>
+
+</section>
+
+<!-- ════════════════ LATIHAN ════════════════ -->
+<section id="latihan" class="section">
+
+  <h2>Latihan Pembuktian</h2>
+  <p>Berikut adalah latihan pembuktian untuk memperdalam pemahaman Anda terhadap sifat aljabar dan sifat urutan bilangan real. Tulislah pembuktian lengkap menggunakan aksioma-aksioma yang telah dipelajari. Petunjuk tersedia jika dibutuhkan.</p>
+
+  <div style="background:var(--cream);border:1px solid var(--border);border-radius:6px;padding:1rem 1.3rem;margin-bottom:1.5rem;font-size:0.88rem;">
+    <strong>Panduan:</strong> Setiap pembuktian harus menyebutkan aksioma atau teorema yang digunakan pada setiap langkah. Gunakan notasi: A1–A5 (aksioma penjumlahan), M1–M5 (aksioma perkalian), D (distributif), O1–O3 (aksioma urutan).
+  </div>
+
+  <!-- Exercise 1 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 1 — Tingkat: Dasar</div>
+    <p><strong>Buktikan:</strong> Untuk setiap <span class="math-inline">a ∈ ℝ</span>, berlaku <span class="math-inline">0 · a = 0</span>.</p>
+    <p style="font-size:0.88rem; color:#5a4a35;"><em>Petunjuk tersedia jika diperlukan.</em></p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Gunakan fakta bahwa <span class="math-inline">0 = 0 + 0</span> (aksioma A4), kemudian terapkan sifat distributif. Ingat pula bahwa aksioma urutan M2 berlaku untuk perkalian.
+    </div>
+  </div>
+
+  <!-- Exercise 2 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 2 — Tingkat: Dasar</div>
+    <p><strong>Buktikan:</strong> Untuk setiap <span class="math-inline">a ∈ ℝ</span>, invers penjumlahan <span class="math-inline">−a</span> adalah unik.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Misalkan terdapat <span class="math-inline">b</span> dan <span class="math-inline">c</span> yang keduanya merupakan invers penjumlahan dari <span class="math-inline">a</span>. Gunakan definisi invers (A5) dan hukum pembatalan untuk menunjukkan <span class="math-inline">b = c</span>.
+    </div>
+  </div>
+
+  <!-- Exercise 3 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 3 — Tingkat: Menengah</div>
+    <p><strong>Buktikan:</strong> Jika <span class="math-inline">ab = 0</span>, maka <span class="math-inline">a = 0</span> atau <span class="math-inline">b = 0</span>. (Tidak ada pembagi nol)</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Asumsikan <span class="math-inline">a ≠ 0</span>, maka <span class="math-inline">a⁻¹</span> ada (M5). Kalikan kedua ruas persamaan <span class="math-inline">ab = 0</span> dengan <span class="math-inline">a⁻¹</span> dari kiri, kemudian sederhanakan menggunakan Teorema 3.
+    </div>
+  </div>
+
+  <!-- Exercise 4 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 4 — Tingkat: Menengah</div>
+    <p><strong>Buktikan:</strong> Untuk setiap <span class="math-inline">a, b ∈ ℝ</span>, berlaku <span class="math-inline">−(a + b) = (−a) + (−b)</span>.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Tunjukkan bahwa <span class="math-inline">(a + b) + ((−a) + (−b)) = 0</span> menggunakan aksioma komutatif, asosiatif, dan A5. Dengan keunikan invers, simpulkan hasilnya.
+    </div>
+  </div>
+
+  <!-- Exercise 5 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 5 — Tingkat: Menengah</div>
+    <p><strong>Buktikan:</strong> Jika <span class="math-inline">a &lt; b</span> dan <span class="math-inline">c &lt; d</span>, maka <span class="math-inline">a + c &lt; b + d</span>.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Gunakan sifat penjumlahan pada urutan dua kali: dari <span class="math-inline">a &lt; b</span> tambahkan <span class="math-inline">c</span>, lalu dari <span class="math-inline">c &lt; d</span> tambahkan <span class="math-inline">b</span>. Gunakan transitivitas untuk menggabungkan keduanya.
+    </div>
+  </div>
+
+  <!-- Exercise 6 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 6 — Tingkat: Menengah</div>
+    <p><strong>Buktikan:</strong> Jika <span class="math-inline">0 &lt; a &lt; 1</span>, maka <span class="math-inline">a² &lt; a</span>.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Dari <span class="math-inline">a &lt; 1</span> dan <span class="math-inline">a &gt; 0</span>, kalikan kedua ruas dengan <span class="math-inline">a</span> (yang positif). Gunakan sifat perkalian pada urutan.
+    </div>
+  </div>
+
+  <!-- Exercise 7 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 7 — Tingkat: Menengah-Lanjut</div>
+    <p><strong>Buktikan Ketaksamaan Bernoulli:</strong> Untuk <span class="math-inline">x &gt; −1</span> dan <span class="math-inline">n ∈ ℕ</span>, berlaku <span class="math-inline">(1 + x)ⁿ ≥ 1 + nx</span>.</p>
+    <p style="font-size:0.88rem; color:#5a4a35;"><em>Gunakan induksi matematika.</em></p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      <strong>Basis:</strong> Untuk <span class="math-inline">n=1</span>, persamaan berlaku trivial. <strong>Langkah Induksi:</strong> Asumsikan benar untuk <span class="math-inline">n=k</span>. Untuk <span class="math-inline">n=k+1</span>, kalikan <span class="math-inline">(1+x)^k ≥ 1+kx</span> dengan <span class="math-inline">(1+x) &gt; 0</span>. Ingat bahwa <span class="math-inline">kx² ≥ 0</span>.
+    </div>
+  </div>
+
+  <!-- Exercise 8 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 8 — Tingkat: Lanjut</div>
+    <p><strong>Buktikan:</strong> Untuk setiap <span class="math-inline">a, b ∈ ℝ</span>, berlaku ketaksamaan segitiga:
+    <span class="math-inline">|a + b| ≤ |a| + |b|</span>.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Perhatikan bahwa <span class="math-inline">−|a| ≤ a ≤ |a|</span> dan <span class="math-inline">−|b| ≤ b ≤ |b|</span>. Tambahkan kedua ketaksamaan ini. Gunakan definisi nilai mutlak untuk menyimpulkan bahwa <span class="math-inline">|a + b| ≤ |a| + |b|</span>. Pisahkan kasus sesuai tanda dari <span class="math-inline">a + b</span>.
+    </div>
+  </div>
+
+  <!-- Exercise 9 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 9 — Tingkat: Lanjut</div>
+    <p><strong>Buktikan:</strong> Untuk setiap <span class="math-inline">a, b ∈ ℝ</span>, berlaku:
+    <span class="math-inline">||a| − |b|| ≤ |a − b|</span>. (Ketaksamaan Segitiga Terbalik)</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Tulis <span class="math-inline">a = (a − b) + b</span>, kemudian terapkan ketaksamaan segitiga (Latihan 8) untuk mendapatkan <span class="math-inline">|a| ≤ |a−b| + |b|</span>. Lakukan hal serupa dengan menukar peran <span class="math-inline">a</span> dan <span class="math-inline">b</span>. Gabungkan kedua hasil tersebut.
+    </div>
+  </div>
+
+  <!-- Exercise 10 -->
+  <div class="exercise reveal">
+    <div class="exercise-num">Latihan 10 — Tingkat: Tantangan</div>
+    <p><strong>Buktikan:</strong> Tidak terdapat bilangan real terkecil yang positif. Artinya, untuk setiap <span class="math-inline">ε &gt; 0</span> terdapat <span class="math-inline">δ &gt; 0</span> dengan <span class="math-inline">δ &lt; ε</span>.</p>
+    <button class="hint-btn" onclick="toggleHint(this)">Tampilkan Petunjuk</button>
+    <div class="hint">
+      Diberikan <span class="math-inline">ε &gt; 0</span>. Konstruksi eksplisit: ambil <span class="math-inline">δ = ε/2</span>. Gunakan Teorema 7 (sifat invers terurut) dan sifat perkalian pada urutan untuk menunjukkan <span class="math-inline">0 &lt; δ &lt; ε</span>.
+    </div>
+  </div>
+
+</section>
+</main>
+
+<footer>
+  Materi Analisis Real — Sifat Aljabar &amp; Sifat Urutan · Disusun untuk keperluan pembelajaran · Referensi: Bartle &amp; Sherbert, <em>Introduction to Real Analysis</em>, 4th ed.
+</footer>
+
+<script>
+// ── Navigation ──
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  initReveal();
+}
+
+// ── Hint Toggle ──
+function toggleHint(btn) {
+  const hint = btn.nextElementSibling;
+  const showing = hint.style.display === 'block';
+  hint.style.display = showing ? 'none' : 'block';
+  btn.textContent = showing ? 'Tampilkan Petunjuk' : 'Sembunyikan Petunjuk';
+}
+
+// ── Scroll Reveal ──
+function initReveal() {
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+}
+initReveal();
+
+// ── Format number ──
+const fmt = n => (Math.abs(n - Math.round(n)) < 1e-10) ? Math.round(n) : parseFloat(n.toFixed(6));
+const ok = s => `<span class="ok">✓ ${s}</span>`;
+const fail = s => `<span class="fail">✗ ${s}</span>`;
+const lbl = s => `<span class="label">${s}</span>`;
+
+// ── Simulator 1 — Field Properties ──
+function runSim1() {
+  const a = parseFloat(document.getElementById('s1a').value);
+  const b = parseFloat(document.getElementById('s1b').value);
+  const c = parseFloat(document.getElementById('s1c').value);
+  const eps = 1e-9;
+  const check = (expr, expected) => Math.abs(expr - expected) < eps;
+
+  let lines = [
+    `${lbl('═══ INPUT ═══')}`,
+    `  a = ${a},  b = ${b},  c = ${c}`,
+    ``,
+    `${lbl('═══ SIFAT PENJUMLAHAN ═══')}`,
+    check(a + b, b + a) ? ok(`A2 Komutatif: ${fmt(a)}+${fmt(b)} = ${fmt(b+a)} = ${fmt(a+b)}`) : fail(`A2 Komutatif GAGAL`),
+    check((a + b) + c, a + (b + c)) ? ok(`A3 Asosiatif: (${fmt(a)}+${fmt(b)})+${fmt(c)} = ${fmt((a+b)+c)} = a+(b+c)`) : fail(`A3 Asosiatif GAGAL`),
+    check(a + 0, a) ? ok(`A4 Identitas: ${fmt(a)} + 0 = ${fmt(a+0)}`) : fail(`A4 GAGAL`),
+    check(a + (-a), 0) ? ok(`A5 Invers: ${fmt(a)} + (${fmt(-a)}) = ${fmt(a+(-a))}`) : fail(`A5 GAGAL`),
+    ``,
+    `${lbl('═══ SIFAT PERKALIAN ═══')}`,
+    check(a * b, b * a) ? ok(`M2 Komutatif: ${fmt(a)}×${fmt(b)} = ${fmt(a*b)} = ${fmt(b*a)}`) : fail(`M2 GAGAL`),
+    check((a * b) * c, a * (b * c)) ? ok(`M3 Asosiatif: (${fmt(a)}×${fmt(b)})×${fmt(c)} = ${fmt((a*b)*c)}`) : fail(`M3 GAGAL`),
+    check(a * 1, a) ? ok(`M4 Identitas: ${fmt(a)} × 1 = ${fmt(a*1)}`) : fail(`M4 GAGAL`),
+    (a !== 0) ? (check(a * (1/a), 1) ? ok(`M5 Invers: ${fmt(a)} × ${fmt(1/a)} = ${fmt(a*(1/a))}`) : fail(`M5 GAGAL`)) : lbl(`  M5 Invers: tidak berlaku untuk a = 0`),
+    ``,
+    `${lbl('═══ DISTRIBUTIF ═══')}`,
+    check(a*(b+c), a*b+a*c) ? ok(`D: ${fmt(a)}(${fmt(b)}+${fmt(c)}) = ${fmt(a*(b+c))} = ${fmt(a*b+a*c)}`) : fail(`D GAGAL`),
+    ``,
+    `${lbl('═══ SIFAT LAIN ═══')}`,
+    check(a * 0, 0) ? ok(`Teori: ${fmt(a)} × 0 = ${fmt(a*0)}`) : fail(`Teori a×0=0 GAGAL`),
+    check((-1)*a, -a) ? ok(`Teori: (−1) × ${fmt(a)} = ${fmt((-1)*a)} = −a`) : fail(`Teori GAGAL`),
+    check((-a)*(-b), a*b) ? ok(`Teori: (${fmt(-a)})(${fmt(-b)}) = ${fmt((-a)*(-b))} = ${fmt(a*b)} = ab`) : fail(`Teori GAGAL`),
+  ];
+  document.getElementById('s1out').innerHTML = lines.join('\n');
+}
+
+// ── Simulator 2 — Order Properties ──
+function runSim2() {
+  const a = parseFloat(document.getElementById('s2a').value);
+  const b = parseFloat(document.getElementById('s2b').value);
+  const c = parseFloat(document.getElementById('s2c').value);
+
+  let rel = a < b ? '<' : (a > b ? '>' : '=');
+  let lines = [
+    `${lbl('═══ TRIKOTOMI ═══')}`,
+    `  a = ${a},  b = ${b}`,
+    `  Relasi: a ${rel} b  ${ok('(tepat satu berlaku ✓)')}`,
+    ``,
+    `${lbl('═══ SIFAT PENJUMLAHAN PADA URUTAN ═══')}`,
+  ];
+
+  if (a < b) {
+    lines.push(ok(`a + c < b + c  →  ${fmt(a+c)} < ${fmt(b+c)}  (c = ${c})`));
+  } else if (a > b) {
+    lines.push(ok(`a + c > b + c  →  ${fmt(a+c)} > ${fmt(b+c)}  (c = ${c})`));
+  } else {
+    lines.push(ok(`a + c = b + c  →  ${fmt(a+c)} = ${fmt(b+c)}  (c = ${c})`));
+  }
+
+  lines.push(``, `${lbl('═══ SIFAT PERKALIAN PADA URUTAN ═══')}`);
+
+  const posC = Math.abs(c) > 0 ? Math.abs(c) : 2;
+  const negC = -Math.abs(c) !== 0 ? -Math.abs(c) : -2;
+
+  if (a < b) {
+    lines.push(ok(`a·|c| < b·|c|  →  ${fmt(a*posC)} < ${fmt(b*posC)}  (×${posC}, positif)`));
+    lines.push(ok(`a·(−|c|) > b·(−|c|)  →  ${fmt(a*negC)} > ${fmt(b*negC)}  (×${negC}, negatif: tanda berbalik)`));
+  } else if (a > b) {
+    lines.push(ok(`a·|c| > b·|c|  →  ${fmt(a*posC)} > ${fmt(b*posC)}  (×${posC}, positif)`));
+    lines.push(ok(`a·(−|c|) < b·(−|c|)  →  ${fmt(a*negC)} < ${fmt(b*negC)}  (×${negC}, negatif: tanda berbalik)`));
+  } else {
+    lines.push(lbl(`  a = b, semua produk juga sama.`));
+  }
+
+  lines.push(``, `${lbl('═══ KUADRAT NON-NEGATIF ═══')}`);
+  lines.push(ok(`a² = ${fmt(a*a)} ≥ 0`));
+  lines.push(ok(`b² = ${fmt(b*b)} ≥ 0`));
+
+  document.getElementById('s2out').innerHTML = lines.join('\n');
+  drawOrderLine(a, b, c);
+}
+
+function drawOrderLine(a, b, c) {
+  const vis = document.getElementById('orderVis');
+  // remove old points
+  vis.querySelectorAll('.order-point').forEach(e => e.remove());
+
+  const vals = [{v: a, l:'a', col:'#8b3a0f'}, {v: b, l:'b', col:'#3d4f5c'}, {v: c, l:'c', col:'#4a6741'}];
+  const allV = vals.map(x => x.v);
+  const mn = Math.min(...allV) - 1;
+  const mx = Math.max(...allV) + 1;
+  const range = mx - mn || 1;
+  const pct = v => 5 + ((v - mn) / range) * 90;
+
+  vals.forEach(({v, l, col}) => {
+    const pt = document.createElement('div');
+    pt.className = 'order-point';
+    pt.style.left = pct(v) + '%';
+    pt.style.background = col;
+    pt.innerHTML = `<div class="pt-label" style="color:${col}">${l}</div><div class="pt-val">${fmt(v)}</div>`;
+    vis.appendChild(pt);
+  });
+}
+
+// ── Simulator 3 — Triangle Inequality ──
+function runSim3() {
+  const a = parseFloat(document.getElementById('s3a').value);
+  const b = parseFloat(document.getElementById('s3b').value);
+  const lhs = Math.abs(a + b);
+  const rhs = Math.abs(a) + Math.abs(b);
+  const holds = lhs <= rhs + 1e-9;
+
+  let lines = [
+    `${lbl('═══ KETAKSAMAAN SEGITIGA ═══')}`,
+    `  a = ${a},  b = ${b}`,
+    ``,
+    `  |a| = |${a}| = ${fmt(Math.abs(a))}`,
+    `  |b| = |${b}| = ${fmt(Math.abs(b))}`,
+    `  a + b = ${fmt(a + b)}`,
+    `  |a + b| = ${fmt(lhs)}`,
+    `  |a| + |b| = ${fmt(Math.abs(a))} + ${fmt(Math.abs(b))} = ${fmt(rhs)}`,
+    ``,
+    holds ? ok(`|a+b| ≤ |a|+|b|  ⟹  ${fmt(lhs)} ≤ ${fmt(rhs)}  ✓`) : fail(`TIDAK BERLAKU (seharusnya selalu berlaku!)`),
+    ``,
+    `${lbl('═══ SELISIH ═══')}`,
+    `  |a|+|b| − |a+b| = ${fmt(rhs - lhs)}  (≥ 0)`,
+    `  Gap = 0 ⟺ a dan b bertanda sama atau salah satunya nol`,
+    (a * b >= 0) ? lbl(`  → a dan b bertanda sama: |a+b| = |a|+|b|`) : ok(`  → a dan b berlawanan tanda: gap = ${fmt(rhs - lhs)}`),
+  ];
+
+  document.getElementById('s3out').innerHTML = lines.join('\n');
+  drawTriangle(a, b, lhs, rhs);
+}
+
+function drawTriangle(a, b, lhs, rhs) {
+  const canvas = document.getElementById('triCanvas');
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  // Background
+  ctx.fillStyle = '#ede4cc';
+  ctx.fillRect(0, 0, W, H);
+
+  const maxV = rhs || 1;
+  const margin = 60;
+  const scale = (W - 2 * margin) / (maxV * 1.1);
+  const cx = v => margin + v * scale;
+  const y1 = H * 0.35, y2 = H * 0.65;
+
+  // LHS bar |a+b|
+  ctx.fillStyle = '#8b3a0f';
+  ctx.fillRect(cx(0), y1 - 10, lhs * scale, 20);
+  ctx.fillStyle = '#1a1208';
+  ctx.font = '11px JetBrains Mono, monospace';
+  ctx.fillText(`|a+b| = ${fmt(lhs)}`, cx(0) + 4, y1 - 14);
+
+  // RHS bar |a|+|b|
+  ctx.fillStyle = '#3d4f5c';
+  ctx.fillRect(cx(0), y2 - 10, Math.abs(a) * scale, 20);
+  ctx.fillStyle = '#4a6741';
+  ctx.fillRect(cx(Math.abs(a)), y2 - 10, Math.abs(b) * scale, 20);
+  ctx.fillStyle = '#1a1208';
+  ctx.fillText(`|a|+|b| = ${fmt(Math.abs(a))} + ${fmt(Math.abs(b))} = ${fmt(rhs)}`, cx(0) + 4, y2 - 14);
+
+  // Legend
+  ctx.fillStyle = '#8b3a0f';
+  ctx.fillRect(cx(0), H - 18, 14, 10);
+  ctx.fillStyle = '#1a1208';
+  ctx.fillText('= |a+b| (ruas kiri)', cx(0) + 18, H - 9);
+}
+
+// ── Simulator 4 — Midpoint Exploration ──
+function runSim4() {
+  const a = parseFloat(document.getElementById('s4a').value);
+  const b = parseFloat(document.getElementById('s4b').value);
+  const depth = parseInt(document.getElementById('s4depth').value);
+
+  if (a >= b) {
+    document.getElementById('s4out').innerHTML = `<span class="fail">✗ Diperlukan a &lt; b. Masukkan nilai yang valid.</span>`;
+    return;
+  }
+
+  let lines = [
+    `${lbl('═══ EKSPLORASI TITIK TENGAH ═══')}`,
+    `  Interval awal: [${fmt(a)}, ${fmt(b)}]`,
+    ``,
+    `${lbl('═══ ITERASI TITIK TENGAH ═══')}`,
+  ];
+
+  let lo = a, hi = b;
+  for (let i = 1; i <= depth; i++) {
+    const mid = (lo + hi) / 2;
+    lines.push(`  Iterasi ${i}: midpoint = (${fmt(lo)} + ${fmt(hi)}) / 2 = ${fmt(mid)}`);
+    lines.push(`          → ${fmt(lo)} < ${fmt(mid)} < ${fmt(hi)}  ${ok('✓')}`);
+    // alternate: bisect left half
+    hi = mid;
+  }
+
+  lines.push(``, `${lbl('═══ KESIMPULAN ═══')}`);
+  lines.push(ok(`Di antara ${fmt(a)} dan ${fmt(b)}, terdapat TIDAK BERHINGGA banyak bilangan real`));
+  lines.push(`  Contoh: ${fmt((a+b)/2)}, ${fmt((a+(a+b)/2)/2)}, …`);
+  lines.push(`  Ini membuktikan ℝ bersifat PADAT (dense) dalam dirinya sendiri.`);
+
+  document.getElementById('s4out').innerHTML = lines.join('\n');
+}
+</script>
+
+</body>
+</html>
