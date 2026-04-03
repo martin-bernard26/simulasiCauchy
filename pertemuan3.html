@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Analisis Real – Akar, Persamaan Kuadrat & Nilai Mutlak</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1209;
+    --parchment: #f5edd6;
+    --parchment-dark: #ede0bf;
+    --parchment-mid: #f0e6c8;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --gold-pale: #f0d080;
+    --rust: #8b2c0a;
+    --teal: #1a5c5a;
+    --teal-light: #2a7d7a;
+    --border: #c8a84b;
+    --shadow: rgba(26,18,9,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: #2a1f0e;
+    background-image:
+      radial-gradient(ellipse at 20% 20%, #3a2a10 0%, transparent 50%),
+      radial-gradient(ellipse at 80% 80%, #1a1205 0%, transparent 50%);
+    font-family: 'Source Serif 4', Georgia, serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 2rem 1rem 4rem;
+  }
+
+  /* ── Page wrapper ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    background: var(--parchment);
+    background-image:
+      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='400' height='400'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='400' height='400' filter='url(%23n)' opacity='0.06'/%3E%3C/svg%3E"),
+      linear-gradient(160deg, #faf3de 0%, #f0e6c4 50%, #ece0be 100%);
+    border: 2px solid var(--border);
+    border-radius: 4px;
+    box-shadow:
+      0 0 0 6px #2a1f0e,
+      0 0 0 8px var(--gold),
+      0 8px 60px rgba(0,0,0,0.6),
+      inset 0 0 80px rgba(184,134,11,0.06);
+    position: relative;
+    overflow: hidden;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity:0; transform:translateY(24px); }
+    to   { opacity:1; transform:translateY(0); }
+  }
+
+  /* corner ornaments */
+  .page::before, .page::after {
+    content: '✦';
+    position: absolute;
+    font-size: 1.4rem;
+    color: var(--gold);
+    opacity: 0.5;
+  }
+  .page::before { top: 14px; left: 18px; }
+  .page::after  { bottom: 14px; right: 18px; }
+
+  /* ── Header ── */
+  header {
+    background: linear-gradient(135deg, #1a1209 0%, #2e1f0a 60%, #1a1209 100%);
+    padding: 2.5rem 2.5rem 2rem;
+    text-align: center;
+    border-bottom: 3px solid var(--gold);
+    position: relative;
+  }
+
+  .header-ornament {
+    color: var(--gold);
+    font-size: 1rem;
+    letter-spacing: 0.5em;
+    opacity: 0.7;
+    margin-bottom: 0.6rem;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold-pale);
+    font-size: clamp(1.5rem, 4vw, 2.4rem);
+    font-weight: 900;
+    line-height: 1.2;
+    text-shadow: 0 2px 12px rgba(184,134,11,0.4);
+    letter-spacing: 0.02em;
+  }
+
+  header .subtitle {
+    margin-top: 0.5rem;
+    color: #c8a84b;
+    font-size: 0.9rem;
+    font-style: italic;
+    letter-spacing: 0.08em;
+  }
+
+  .header-meta {
+    margin-top: 1rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    font-size: 0.78rem;
+    color: #8a7240;
+  }
+
+  .header-meta span { display: flex; align-items: center; gap: 0.3rem; }
+
+  /* ── Nav pills ── */
+  .toc {
+    background: #1e1508;
+    padding: 1rem 2rem;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    border-bottom: 2px solid var(--gold);
+  }
+
+  .toc-btn {
+    background: transparent;
+    border: 1px solid #5a4020;
+    color: #c8a84b;
+    padding: 0.35rem 0.85rem;
+    border-radius: 20px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.78rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .toc-btn:hover, .toc-btn.active {
+    background: var(--gold);
+    border-color: var(--gold);
+    color: #1a1209;
+    font-weight: 600;
+  }
+
+  /* ── Content ── */
+  .content {
+    padding: 2rem 2.5rem 3rem;
+  }
+
+  /* ── Section ── */
+  .section {
+    display: none;
+    animation: sectionIn 0.4s ease both;
+  }
+  .section.active { display: block; }
+
+  @keyframes sectionIn {
+    from { opacity:0; transform:translateX(10px); }
+    to   { opacity:1; transform:translateX(0); }
+  }
+
+  /* ── Section heading ── */
+  .section-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--rust);
+    border-bottom: 2px solid var(--gold);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.4rem;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+  }
+  .section-heading .num {
+    background: var(--rust);
+    color: #faf3de;
+    width: 32px; height: 32px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.9rem; font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  /* ── Sub heading ── */
+  .sub-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--teal);
+    margin: 1.6rem 0 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .sub-heading::before {
+    content: '◆';
+    color: var(--gold);
+    font-size: 0.7rem;
+  }
+
+  /* ── Body text ── */
+  p {
+    line-height: 1.85;
+    font-size: 0.97rem;
+    color: #2a1f0e;
+    margin-bottom: 0.9rem;
+    text-align: justify;
+  }
+
+  /* ── Theorem box ── */
+  .theorem {
+    background: linear-gradient(135deg, #fffbf0 0%, #faf3dc 100%);
+    border-left: 4px solid var(--gold);
+    border: 1px solid var(--gold);
+    border-left-width: 5px;
+    border-radius: 3px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.4rem 0;
+    position: relative;
+    box-shadow: 2px 3px 12px var(--shadow);
+  }
+
+  .theorem-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .theorem-label::before { content: '⊢'; }
+
+  .theorem-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--rust);
+    margin-bottom: 0.5rem;
+    font-style: italic;
+  }
+
+  .theorem p { font-size: 0.93rem; margin-bottom: 0.4rem; }
+
+  /* ── Definition box ── */
+  .definition {
+    background: linear-gradient(135deg, #edf7f6 0%, #e0f0ef 100%);
+    border-left: 5px solid var(--teal);
+    border: 1px solid var(--teal-light);
+    border-left-width: 5px;
+    border-radius: 3px;
+    padding: 1.2rem 1.4rem;
+    margin: 1.4rem 0;
+    box-shadow: 2px 3px 12px rgba(26,92,90,0.12);
+  }
+
+  .definition-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--teal);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    margin-bottom: 0.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+  .definition-label::before { content: '≝'; }
+
+  .definition p { font-size: 0.93rem; margin-bottom: 0.4rem; }
+
+  /* ── Example box ── */
+  .example {
+    background: #f9f4e8;
+    border: 1px dashed var(--border);
+    border-radius: 4px;
+    padding: 1.1rem 1.4rem;
+    margin: 1.2rem 0;
+  }
+
+  .example-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.78rem;
+    font-weight: 700;
+    color: var(--rust);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 0.5rem;
+  }
+
+  /* ── Proof box ── */
+  .proof {
+    background: #fdfaf3;
+    border-left: 3px solid #999;
+    padding: 0.8rem 1.2rem;
+    margin: 0.6rem 0 1rem;
+    font-style: italic;
+    font-size: 0.9rem;
+    color: #3a2e1a;
+  }
+  .proof-end { text-align: right; font-style: normal; color: #666; }
+
+  /* ── Formula block ── */
+  .formula-block {
+    background: #1e1508;
+    border-radius: 6px;
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    text-align: center;
+    color: var(--gold-pale);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.95rem;
+    overflow-x: auto;
+    box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+  }
+
+  /* ── Interactive calculator ── */
+  .calculator {
+    background: linear-gradient(135deg, #1e1508 0%, #2a1f0e 100%);
+    border-radius: 8px;
+    padding: 1.5rem;
+    margin: 1.5rem 0;
+    border: 1px solid var(--gold);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+  }
+
+  .calc-title {
+    font-family: 'Playfair Display', serif;
+    color: var(--gold-pale);
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+  .calc-title::before { content: '⚙'; color: var(--gold); }
+
+  .calc-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.6rem;
+    margin-bottom: 0.8rem;
+    align-items: center;
+  }
+
+  .calc-label {
+    color: #c8a84b;
+    font-size: 0.82rem;
+    min-width: 120px;
+    font-style: italic;
+  }
+
+  .calc-input {
+    background: #0e0a04;
+    border: 1px solid #5a4020;
+    border-radius: 4px;
+    color: var(--gold-pale);
+    padding: 0.4rem 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.9rem;
+    width: 90px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  .calc-input:focus { border-color: var(--gold); }
+
+  .calc-btn {
+    background: var(--gold);
+    color: #1a1209;
+    border: none;
+    padding: 0.45rem 1.2rem;
+    border-radius: 4px;
+    font-family: 'Source Serif 4', serif;
+    font-weight: 600;
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .calc-btn:hover { background: var(--gold-light); transform: translateY(-1px); }
+
+  .calc-result {
+    background: #0e0a04;
+    border: 1px solid #3a2810;
+    border-radius: 4px;
+    padding: 0.8rem 1rem;
+    margin-top: 0.6rem;
+    color: #a8e6a0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.88rem;
+    min-height: 48px;
+    white-space: pre-wrap;
+  }
+
+  /* ── Divider ── */
+  .divider {
+    text-align: center;
+    color: var(--gold);
+    font-size: 1.2rem;
+    letter-spacing: 0.5em;
+    margin: 1.8rem 0;
+    opacity: 0.5;
+  }
+
+  /* ── Badge ── */
+  .badge {
+    display: inline-block;
+    background: var(--rust);
+    color: #faf3de;
+    padding: 0.15rem 0.5rem;
+    border-radius: 3px;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    vertical-align: middle;
+    margin-left: 0.3rem;
+  }
+
+  /* ── Table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1rem 0;
+    font-size: 0.88rem;
+  }
+  th {
+    background: #1e1508;
+    color: var(--gold-pale);
+    padding: 0.6rem 0.9rem;
+    text-align: left;
+    font-family: 'Playfair Display', serif;
+  }
+  td {
+    padding: 0.55rem 0.9rem;
+    border-bottom: 1px solid #ddd0b0;
+  }
+  tr:nth-child(even) td { background: #f0e8ce; }
+
+  /* ── Footer ── */
+  footer {
+    background: #1a1209;
+    color: #6a5530;
+    text-align: center;
+    padding: 1rem;
+    font-size: 0.75rem;
+    border-top: 2px solid var(--gold);
+    letter-spacing: 0.06em;
+  }
+
+  /* responsive */
+  @media (max-width: 600px) {
+    .content { padding: 1.4rem 1.2rem 2rem; }
+    header { padding: 1.8rem 1.2rem 1.4rem; }
+    .toc { padding: 0.8rem 1rem; }
+  }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── HEADER ── -->
+  <header>
+    <div class="header-ornament">— ✦ —</div>
+    <h1>Akar, Persamaan Kuadrat &amp; Nilai Mutlak</h1>
+    <div class="subtitle">Materi Analisis Real · Pendidikan Matematika · IKIP Siliwangi</div>
+    <div class="header-meta">
+      <span>📘 Martin Bernard, M.Pd.</span>
+      <span>📐 Analisis Real</span>
+      <span>🏛 IKIP Siliwangi</span>
+    </div>
+  </header>
+
+  <!-- ── NAVIGATION ── -->
+  <nav class="toc">
+    <button class="toc-btn active" onclick="showSection('s1',this)">① Bilangan Akar</button>
+    <button class="toc-btn" onclick="showSection('s2',this)">② Persamaan Kuadrat</button>
+    <button class="toc-btn" onclick="showSection('s3',this)">③ Nilai Mutlak</button>
+    <button class="toc-btn" onclick="showSection('s4',this)">④ Teorema &amp; Bukti</button>
+    <button class="toc-btn" onclick="showSection('s5',this)">⑤ Kalkulator</button>
+  </nav>
+
+  <!-- ── CONTENT ── -->
+  <div class="content">
+
+    <!-- ===== SECTION 1: BILANGAN AKAR ===== -->
+    <div class="section active" id="s1">
+      <h2 class="section-heading"><span class="num">1</span> Bilangan Akar dalam \(\mathbb{R}\)</h2>
+
+      <p>
+        Dalam Analisis Real, konsep akar berkaitan erat dengan sifat <em>kelengkapan</em> (completeness) bilangan real. Setiap bilangan real non-negatif memiliki akar kuadrat yang tunggal dan non-negatif, yang dikenal sebagai <strong>akar utama</strong>.
+      </p>
+
+      <div class="definition">
+        <div class="definition-label">Definisi 1.1 — Akar Kuadrat</div>
+        <p>
+          Untuk setiap \(a \in \mathbb{R},\ a \geq 0\), didefinisikan <strong>akar kuadrat utama</strong> dari \(a\), dinotasikan \(\sqrt{a}\), sebagai bilangan real \(b \geq 0\) sedemikian sehingga \(b^2 = a\).
+        </p>
+        <p>Secara formal: \(\sqrt{a} = b \iff b \geq 0 \text{ dan } b^2 = a.\)</p>
+      </div>
+
+      <div class="sub-heading">Akar ke-\(n\)</div>
+      <p>
+        Generalisasi akar kuadrat ke akar ke-\(n\) didefinisikan sebagai berikut:
+      </p>
+
+      <div class="definition">
+        <div class="definition-label">Definisi 1.2 — Akar ke-n</div>
+        <p>
+          Untuk \(n \in \mathbb{N},\ n \geq 1\), dan \(a \in \mathbb{R}\), akar ke-\(n\) dari \(a\) dinotasikan \(\sqrt[n]{a}\) adalah bilangan \(b\) yang memenuhi \(b^n = a\).
+        </p>
+        <ul style="padding-left:1.4rem; margin-top:0.4rem; font-size:0.93rem; line-height:1.9;">
+          <li>Jika \(n\) genap: diperlukan \(a \geq 0\) dan \(b \geq 0\) (akar utama).</li>
+          <li>Jika \(n\) ganjil: \(a\) boleh sembarang bilangan real.</li>
+        </ul>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 1.1</div>
+        <div class="theorem-title">Eksistensi dan Ketunggalan Akar Positif</div>
+        <p>
+          Untuk setiap \(a > 0\) dan \(n \in \mathbb{N},\ n \geq 1\), terdapat tepat satu bilangan real positif \(b\) sehingga \(b^n = a\).
+        </p>
+      </div>
+
+      <div class="proof">
+        <strong>Bukti (Sketsa):</strong><br>
+        Existensi: Definisikan \(S = \{x \in \mathbb{R} \mid x > 0,\ x^n < a\}\). Himpunan \(S\) tidak kosong (karena \(\varepsilon = \min(1, a/2) \in S\)) dan terbatas dari atas. Oleh <em>Sifat Kelengkapan</em> \(\mathbb{R}\), \(\sup S\) ada. Misalkan \(b = \sup S\). Dengan menggunakan ketaksamaan binomial dan argumen kontradiksi, dapat ditunjukkan bahwa \(b^n = a\).<br><br>
+        Ketunggalan: Jika \(b_1, b_2 > 0\) dan \(b_1^n = b_2^n = a\), maka \(b_1^n - b_2^n = 0\), sehingga \((b_1 - b_2)(b_1^{n-1} + \cdots + b_2^{n-1}) = 0\). Karena \(b_1, b_2 > 0\), faktor kedua positif, maka \(b_1 = b_2\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="sub-heading">Sifat-Sifat Akar</div>
+
+      <table>
+        <thead>
+          <tr><th>Sifat</th><th>Notasi</th><th>Syarat</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>Perkalian</td><td>\(\sqrt{a \cdot b} = \sqrt{a}\cdot\sqrt{b}\)</td><td>\(a,b \geq 0\)</td></tr>
+          <tr><td>Pembagian</td><td>\(\sqrt{\dfrac{a}{b}} = \dfrac{\sqrt{a}}{\sqrt{b}}\)</td><td>\(a \geq 0,\ b > 0\)</td></tr>
+          <tr><td>Perpangkatan</td><td>\((\sqrt{a})^2 = a\)</td><td>\(a \geq 0\)</td></tr>
+          <tr><td>Komposisi</td><td>\(\sqrt[m]{\sqrt[n]{a}} = \sqrt[mn]{a}\)</td><td>\(a \geq 0\)</td></tr>
+          <tr><td>Eksponen pecahan</td><td>\(\sqrt[n]{a^m} = a^{m/n}\)</td><td>\(a \geq 0\)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="example">
+        <div class="example-label">Contoh 1.1</div>
+        <p>Sederhanakan \(\sqrt{48} - 2\sqrt{12} + \sqrt{75}\).</p>
+        <p><strong>Penyelesaian:</strong></p>
+        <p>\(\sqrt{48} = 4\sqrt{3},\quad 2\sqrt{12} = 4\sqrt{3},\quad \sqrt{75} = 5\sqrt{3}\)</p>
+        <p>\(\Rightarrow 4\sqrt{3} - 4\sqrt{3} + 5\sqrt{3} = 5\sqrt{3}\)</p>
+      </div>
+
+      <div class="divider">· · · ✦ · · ·</div>
+
+      <div class="sub-heading">Irasionalitas \(\sqrt{2}\)</div>
+      <div class="theorem">
+        <div class="theorem-label">Teorema 1.2</div>
+        <div class="theorem-title">Irasionalitas Akar Dua</div>
+        <p>\(\sqrt{2} \notin \mathbb{Q}\). Artinya, \(\sqrt{2}\) adalah bilangan irasional.</p>
+      </div>
+      <div class="proof">
+        <strong>Bukti (kontradiksi):</strong><br>
+        Asumsikan \(\sqrt{2} = \dfrac{p}{q}\) dengan \(p, q \in \mathbb{Z}\), \(q \neq 0\), dan \(\gcd(p,q)=1\).<br>
+        Maka \(2q^2 = p^2\), sehingga \(p^2\) genap \(\Rightarrow p\) genap. Tulis \(p = 2k\).<br>
+        Substitusi: \(2q^2 = 4k^2 \Rightarrow q^2 = 2k^2\), sehingga \(q\) genap.<br>
+        Ini kontradiksi dengan \(\gcd(p,q)=1\). Jadi \(\sqrt{2} \notin \mathbb{Q}\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 2: PERSAMAAN KUADRAT ===== -->
+    <div class="section" id="s2">
+      <h2 class="section-heading"><span class="num">2</span> Persamaan Kuadrat</h2>
+
+      <p>
+        Persamaan kuadrat adalah persamaan polinomial berderajat dua dalam satu variabel. Dalam konteks Analisis Real, kajian persamaan kuadrat melibatkan eksistensi akar real, sifat diskriminan, serta hubungan dengan fungsi kuadrat di \(\mathbb{R}\).
+      </p>
+
+      <div class="definition">
+        <div class="definition-label">Definisi 2.1 — Persamaan Kuadrat</div>
+        <p>
+          <strong>Persamaan kuadrat</strong> dalam variabel \(x \in \mathbb{R}\) adalah persamaan berbentuk:
+          \[ax^2 + bx + c = 0\]
+          di mana \(a, b, c \in \mathbb{R}\) dan \(a \neq 0\).
+        </p>
+      </div>
+
+      <div class="sub-heading">Rumus Kuadratik (Rumus ABC)</div>
+
+      <div class="formula-block">
+        \[x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\]
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 2.1</div>
+        <div class="theorem-title">Rumus Kuadratik</div>
+        <p>
+          Persamaan \(ax^2 + bx + c = 0\) (\(a \neq 0\)) memiliki penyelesaian:
+          \[x = \frac{-b \pm \sqrt{b^2 - 4ac}}{2a}\]
+        </p>
+      </div>
+
+      <div class="proof">
+        <strong>Bukti (melengkapi kuadrat):</strong><br>
+        \(ax^2 + bx + c = 0\)<br>
+        \(\Rightarrow x^2 + \dfrac{b}{a}x = -\dfrac{c}{a}\)<br>
+        \(\Rightarrow x^2 + \dfrac{b}{a}x + \dfrac{b^2}{4a^2} = \dfrac{b^2}{4a^2} - \dfrac{c}{a}\)<br>
+        \(\Rightarrow \left(x + \dfrac{b}{2a}\right)^2 = \dfrac{b^2 - 4ac}{4a^2}\)<br>
+        \(\Rightarrow x + \dfrac{b}{2a} = \pm\dfrac{\sqrt{b^2-4ac}}{2a}\)<br>
+        \(\Rightarrow x = \dfrac{-b \pm \sqrt{b^2-4ac}}{2a} \qquad \blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="sub-heading">Diskriminan dan Jenis Akar</div>
+      <p>
+        <strong>Diskriminan</strong> \(D = b^2 - 4ac\) menentukan sifat akar persamaan kuadrat di \(\mathbb{R}\):
+      </p>
+
+      <table>
+        <thead>
+          <tr><th>Nilai \(D\)</th><th>Jenis Akar</th><th>Keterangan</th></tr>
+        </thead>
+        <tbody>
+          <tr><td>\(D > 0\)</td><td>Dua akar real berbeda</td><td>\(x_1 \neq x_2,\ x_1,x_2 \in \mathbb{R}\)</td></tr>
+          <tr><td>\(D = 0\)</td><td>Satu akar real (kembar)</td><td>\(x_1 = x_2 = -\frac{b}{2a}\)</td></tr>
+          <tr><td>\(D < 0\)</td><td>Tidak ada akar real</td><td>Akar kompleks \(\notin \mathbb{R}\)</td></tr>
+        </tbody>
+      </table>
+
+      <div class="sub-heading">Hubungan Akar dan Koefisien (Vieta)</div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 2.2 — Rumus Vieta</div>
+        <div class="theorem-title">Hubungan Akar dan Koefisien</div>
+        <p>
+          Jika \(x_1\) dan \(x_2\) adalah akar-akar dari \(ax^2 + bx + c = 0\), maka:
+          \[x_1 + x_2 = -\frac{b}{a} \qquad \text{dan} \qquad x_1 \cdot x_2 = \frac{c}{a}\]
+        </p>
+      </div>
+
+      <div class="proof">
+        <strong>Bukti:</strong><br>
+        Dari rumus kuadratik: \(x_1 = \dfrac{-b+\sqrt{D}}{2a}\), \(x_2 = \dfrac{-b-\sqrt{D}}{2a}\)<br><br>
+        Jumlah: \(x_1+x_2 = \dfrac{-b+\sqrt{D}-b-\sqrt{D}}{2a} = \dfrac{-2b}{2a} = -\dfrac{b}{a}\)<br><br>
+        Hasil kali: \(x_1 \cdot x_2 = \dfrac{(-b)^2 - (\sqrt{D})^2}{4a^2} = \dfrac{b^2-D}{4a^2} = \dfrac{4ac}{4a^2} = \dfrac{c}{a} \qquad \blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="sub-heading">Bentuk Faktor</div>
+      <p>
+        Persamaan \(ax^2+bx+c=0\) dapat difaktorkan menjadi:
+      </p>
+      <div class="formula-block">
+        \[a(x - x_1)(x - x_2) = 0\]
+      </div>
+
+      <div class="example">
+        <div class="example-label">Contoh 2.1</div>
+        <p>Selesaikan \(2x^2 - 5x + 3 = 0\).</p>
+        <p><strong>Penyelesaian:</strong> \(a=2,\ b=-5,\ c=3\)</p>
+        <p>\(D = (-5)^2 - 4(2)(3) = 25 - 24 = 1 > 0\)</p>
+        <p>\(x = \dfrac{5 \pm \sqrt{1}}{4} \Rightarrow x_1 = \dfrac{6}{4} = \dfrac{3}{2},\quad x_2 = \dfrac{4}{4} = 1\)</p>
+        <p>Verifikasi Vieta: \(x_1+x_2 = \dfrac{5}{2} = -\dfrac{(-5)}{2}\) ✓ dan \(x_1 x_2 = \dfrac{3}{2} = \dfrac{3}{2}\) ✓</p>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 3: NILAI MUTLAK ===== -->
+    <div class="section" id="s3">
+      <h2 class="section-heading"><span class="num">3</span> Nilai Mutlak</h2>
+
+      <p>
+        Nilai mutlak (modulus) adalah konsep fundamental dalam Analisis Real yang mengukur "jarak" suatu bilangan real dari nol pada garis bilangan. Konsep ini menjadi dasar dari definisi metrik standar pada \(\mathbb{R}\) dan konvergensi barisan bilangan real.
+      </p>
+
+      <div class="definition">
+        <div class="definition-label">Definisi 3.1 — Nilai Mutlak</div>
+        <p>
+          Untuk setiap \(x \in \mathbb{R}\), <strong>nilai mutlak</strong> dari \(x\) didefinisikan sebagai:
+          \[|x| = \begin{cases} x, & \text{jika } x \geq 0 \\ -x, & \text{jika } x < 0 \end{cases}\]
+        </p>
+        <p>Ekuivalensi: \(|x| = \sqrt{x^2}\) untuk semua \(x \in \mathbb{R}\).</p>
+      </div>
+
+      <div class="sub-heading">Interpretasi Geometris</div>
+      <p>
+        Nilai mutlak \(|x|\) menyatakan <em>jarak</em> titik \(x\) dari titik asal pada garis bilangan real. Lebih umum, \(|x - y|\) menyatakan jarak antara titik \(x\) dan \(y\) di \(\mathbb{R}\), menjadikan \(d(x,y) = |x-y|\) sebagai fungsi metrik standar pada \(\mathbb{R}\).
+      </p>
+
+      <div class="sub-heading">Sifat-Sifat Nilai Mutlak</div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 3.1</div>
+        <div class="theorem-title">Sifat-Sifat Dasar Nilai Mutlak</div>
+        <p>Untuk setiap \(x, y \in \mathbb{R}\), berlaku:</p>
+        <ul style="padding-left:1.4rem; line-height:2.1; margin-top:0.4rem; font-size:0.93rem;">
+          <li><strong>(P1)</strong> \(|x| \geq 0\) dan \(|x| = 0 \iff x = 0\) &nbsp;<span class="badge">Positivitas</span></li>
+          <li><strong>(P2)</strong> \(|-x| = |x|\) &nbsp;<span class="badge">Simetri</span></li>
+          <li><strong>(P3)</strong> \(|xy| = |x|\cdot|y|\) &nbsp;<span class="badge">Multiplikatif</span></li>
+          <li><strong>(P4)</strong> \(\left|\dfrac{x}{y}\right| = \dfrac{|x|}{|y|}\), untuk \(y \neq 0\) &nbsp;<span class="badge">Pembagian</span></li>
+          <li><strong>(P5)</strong> \(-|x| \leq x \leq |x|\)</li>
+          <li><strong>(P6)</strong> \(|x+y| \leq |x|+|y|\) &nbsp;<span class="badge">Ketaksamaan Segitiga</span></li>
+        </ul>
+      </div>
+
+      <div class="divider">· · · ✦ · · ·</div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 3.2 — Teorema Terpenting</div>
+        <div class="theorem-title">Ketaksamaan Segitiga (Triangle Inequality)</div>
+        <p>
+          Untuk semua \(x, y \in \mathbb{R}\):
+          \[|x + y| \leq |x| + |y|\]
+        </p>
+      </div>
+
+      <div class="proof">
+        <strong>Bukti:</strong><br>
+        Dari (P5): \(-|x| \leq x \leq |x|\) dan \(-|y| \leq y \leq |y|\).<br>
+        Menjumlahkan: \(-(|x|+|y|) \leq x+y \leq |x|+|y|\).<br>
+        Ini ekuivalen dengan \(|x+y| \leq |x|+|y|\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 3.3</div>
+        <div class="theorem-title">Ketaksamaan Segitiga Terbalik (Reverse Triangle Inequality)</div>
+        <p>
+          Untuk semua \(x, y \in \mathbb{R}\):
+          \[\big||x| - |y|\big| \leq |x - y|\]
+        </p>
+      </div>
+
+      <div class="proof">
+        <strong>Bukti:</strong><br>
+        Dari ketaksamaan segitiga: \(|x| = |(x-y)+y| \leq |x-y|+|y|\), sehingga \(|x|-|y| \leq |x-y|\).<br>
+        Begitu pula \(|y|-|x| \leq |y-x| = |x-y|\).<br>
+        Karena \(\big||x|-|y|\big| = \max(|x|-|y|, |y|-|x|)\), maka \(\big||x|-|y|\big| \leq |x-y|\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="sub-heading">Persamaan dan Ketaksamaan Nilai Mutlak</div>
+
+      <div class="definition">
+        <div class="definition-label">Definisi 3.2 — Penyelesaian Persamaan dan Ketaksamaan</div>
+        <p>Untuk \(a > 0\):</p>
+        <ul style="padding-left:1.4rem; line-height:2.0; font-size:0.93rem; margin-top:0.4rem;">
+          <li>\(|x| = a \iff x = a \text{ atau } x = -a\)</li>
+          <li>\(|x| < a \iff -a < x < a\)</li>
+          <li>\(|x| > a \iff x > a \text{ atau } x < -a\)</li>
+          <li>\(|x| \leq a \iff -a \leq x \leq a\)</li>
+          <li>\(|x| \geq a \iff x \geq a \text{ atau } x \leq -a\)</li>
+        </ul>
+      </div>
+
+      <div class="example">
+        <div class="example-label">Contoh 3.1</div>
+        <p>Selesaikan \(|2x - 3| < 5\).</p>
+        <p><strong>Penyelesaian:</strong></p>
+        <p>\(-5 < 2x - 3 < 5\)<br>
+        \(-2 < 2x < 8\)<br>
+        \(-1 < x < 4\)<br>
+        Himpunan penyelesaian: \((-1, 4)\)</p>
+      </div>
+
+      <div class="example">
+        <div class="example-label">Contoh 3.2</div>
+        <p>Selesaikan \(|x^2 - 4| = 0\).</p>
+        <p><strong>Penyelesaian:</strong> \(|x^2-4|=0 \Rightarrow x^2-4=0 \Rightarrow x = \pm 2\)</p>
+      </div>
+    </div>
+
+    <!-- ===== SECTION 4: TEOREMA ===== -->
+    <div class="section" id="s4">
+      <h2 class="section-heading"><span class="num">4</span> Kumpulan Teorema Penting</h2>
+
+      <p>Berikut adalah ringkasan teorema-teorema penting yang menghubungkan ketiga topik dalam konteks Analisis Real:</p>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.1</div>
+        <div class="theorem-title">Nilai Mutlak sebagai Akar Kuadrat</div>
+        <p>Untuk setiap \(x \in \mathbb{R}\): \(\quad|x| = \sqrt{x^2}\)</p>
+      </div>
+      <div class="proof">
+        <strong>Bukti:</strong> Jika \(x \geq 0\): \(\sqrt{x^2} = x = |x|\). Jika \(x < 0\): \(\sqrt{x^2} = \sqrt{(-x)^2} = -x = |x|\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.2</div>
+        <div class="theorem-title">Penyelesaian Persamaan Kuadrat dengan Nilai Mutlak</div>
+        <p>Persamaan \(ax^2+bx+c=0\) memiliki akar real genap-genap \(\iff D = b^2-4ac \geq 0\), dan:</p>
+        <p>\[|x_1 - x_2| = \frac{\sqrt{D}}{|a|}\]</p>
+      </div>
+      <div class="proof">
+        <strong>Bukti:</strong> \(x_1 - x_2 = \dfrac{\sqrt{D}}{a}\) (atau \(-\dfrac{\sqrt{D}}{a}\)), sehingga \(|x_1-x_2| = \dfrac{\sqrt{D}}{|a|}\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.3</div>
+        <div class="theorem-title">Cauchy–Schwarz untuk \(\mathbb{R}^2\)</div>
+        <p>Untuk \(a_1,a_2,b_1,b_2 \in \mathbb{R}\):</p>
+        <p>\[|a_1 b_1 + a_2 b_2| \leq \sqrt{a_1^2+a_2^2}\cdot\sqrt{b_1^2+b_2^2}\]</p>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.4</div>
+        <div class="theorem-title">AM–GM (Rata-Rata Aritmetik ≥ Rata-Rata Geometrik)</div>
+        <p>Untuk \(a, b \geq 0\):</p>
+        <p>\[\frac{a+b}{2} \geq \sqrt{ab}\]</p>
+        <p>dengan kesamaan terjadi jika dan hanya jika \(a = b\).</p>
+      </div>
+      <div class="proof">
+        <strong>Bukti:</strong> Perhatikan bahwa \((\sqrt{a}-\sqrt{b})^2 \geq 0\), sehingga \(a - 2\sqrt{ab} + b \geq 0\), yaitu \(a+b \geq 2\sqrt{ab}\). Kesamaan terjadi \(\iff \sqrt{a} = \sqrt{b} \iff a = b\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.5</div>
+        <div class="theorem-title">Lemma Ketaksamaan Berguna</div>
+        <p>Untuk semua \(x, y \in \mathbb{R}\) dan \(\varepsilon > 0\):</p>
+        <p>\[|xy| \leq \frac{\varepsilon}{2}x^2 + \frac{1}{2\varepsilon}y^2\]</p>
+        <p>(<em>Young's Inequality</em>, berguna dalam pembuktian konvergensi)</p>
+      </div>
+
+      <div class="theorem">
+        <div class="theorem-label">Teorema 4.6</div>
+        <div class="theorem-title">Sifat Archimedean dan Akar</div>
+        <p>
+          Untuk setiap \(\varepsilon > 0\), terdapat \(n \in \mathbb{N}\) sehingga \(\dfrac{1}{\sqrt{n}} < \varepsilon\).
+        </p>
+      </div>
+      <div class="proof">
+        <strong>Bukti:</strong> Dari Sifat Archimedean, untuk \(\varepsilon^2>0\) terdapat \(n\in\mathbb{N}\) dengan \(\dfrac{1}{n}<\varepsilon^2\), sehingga \(\dfrac{1}{\sqrt{n}}<\varepsilon\). \(\blacksquare\)
+        <div class="proof-end">■</div>
+      </div>
+
+      <div class="sub-heading">Rangkuman Kaitan Antar Topik</div>
+      <table>
+        <thead><tr><th>Topik</th><th>Peran dalam Analisis Real</th></tr></thead>
+        <tbody>
+          <tr><td>Akar \(\sqrt[n]{a}\)</td><td>Kelengkapan \(\mathbb{R}\), konstruksi akar irasional</td></tr>
+          <tr><td>Persamaan Kuadrat</td><td>Eksistensi akar real, diskriminan, Vieta</td></tr>
+          <tr><td>Nilai Mutlak \(|x|\)</td><td>Metrik pada \(\mathbb{R}\), konvergensi barisan, ketaksamaan</td></tr>
+          <tr><td>Ketaksamaan Segitiga</td><td>Fondasi analisis konvergensi dan kontinuitas</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- ===== SECTION 5: KALKULATOR ===== -->
+    <div class="section" id="s5">
+      <h2 class="section-heading"><span class="num">5</span> Kalkulator Interaktif</h2>
+
+      <p>Gunakan kalkulator di bawah ini untuk memverifikasi perhitungan secara langsung:</p>
+
+      <!-- Kalkulator 1: Persamaan Kuadrat -->
+      <div class="calculator">
+        <div class="calc-title">Persamaan Kuadrat &mdash; ax² + bx + c = 0</div>
+        <div class="calc-row">
+          <span class="calc-label">Koefisien a:</span>
+          <input type="number" class="calc-input" id="qa" value="1">
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Koefisien b:</span>
+          <input type="number" class="calc-input" id="qb" value="-5">
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Koefisien c:</span>
+          <input type="number" class="calc-input" id="qc" value="6">
+        </div>
+        <button class="calc-btn" onclick="solveQuadratic()">Selesaikan</button>
+        <div class="calc-result" id="qResult">Tekan tombol untuk menghitung...</div>
+      </div>
+
+      <!-- Kalkulator 2: Nilai Mutlak & Ketaksamaan -->
+      <div class="calculator">
+        <div class="calc-title">Nilai Mutlak &mdash; |ax + b| ○ c</div>
+        <div class="calc-row">
+          <span class="calc-label">a:</span>
+          <input type="number" class="calc-input" id="aa" value="2">
+          <span class="calc-label" style="min-width:30px">b:</span>
+          <input type="number" class="calc-input" id="ab" value="-3">
+        </div>
+        <div class="calc-row">
+          <span class="calc-label">Operator:</span>
+          <select id="aop" style="background:#0e0a04;border:1px solid #5a4020;color:var(--gold-pale);padding:0.4rem 0.6rem;border-radius:4px;font-family:monospace;">
+            <option value="eq"> = </option>
+            <option value="lt"> &lt; </option>
+            <option value="gt"> &gt; </option>
+            <option value="le"> ≤ </option>
+            <option value="ge"> ≥ </option>
+          </select>
+          <span class="calc-label" style="min-width:30px">c:</span>
+          <input type="number" class="calc-input" id="ac" value="5">
+        </div>
+        <button class="calc-btn" onclick="solveAbsValue()">Selesaikan</button>
+        <div class="calc-result" id="aResult">Tekan tombol untuk menghitung...</div>
+      </div>
+
+      <!-- Kalkulator 3: Akar ke-n -->
+      <div class="calculator">
+        <div class="calc-title">Kalkulator Akar ke-n</div>
+        <div class="calc-row">
+          <span class="calc-label">Bilangan a:</span>
+          <input type="number" class="calc-input" id="ra" value="64">
+          <span class="calc-label" style="min-width:30px">n:</span>
+          <input type="number" class="calc-input" id="rn" value="3" min="1">
+        </div>
+        <button class="calc-btn" onclick="calcRoot()">Hitung ⁿ√a</button>
+        <div class="calc-result" id="rResult">Tekan tombol untuk menghitung...</div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+
+  <footer>
+    &copy; 2025 Martin Bernard, M.Pd. &nbsp;·&nbsp; IKIP Siliwangi &nbsp;·&nbsp; Analisis Real &nbsp;·&nbsp; Pendidikan Matematika
+  </footer>
+</div><!-- /page -->
+
+<script>
+// ── Section switching ──
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.toc-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  // Re-render MathJax for newly visible section
+  if (window.MathJax) MathJax.typesetPromise();
+}
+
+// ── Quadratic solver ──
+function solveQuadratic() {
+  const a = parseFloat(document.getElementById('qa').value);
+  const b = parseFloat(document.getElementById('qb').value);
+  const c = parseFloat(document.getElementById('qc').value);
+  const el = document.getElementById('qResult');
+
+  if (isNaN(a) || isNaN(b) || isNaN(c) || a === 0) {
+    el.textContent = 'Input tidak valid. Pastikan a ≠ 0.';
+    return;
+  }
+
+  const D = b*b - 4*a*c;
+  let out = `Persamaan: ${a}x² + (${b})x + (${c}) = 0\n`;
+  out += `Diskriminan D = b²-4ac = ${b}²-4(${a})(${c}) = ${D}\n\n`;
+
+  if (D > 0) {
+    const x1 = (-b + Math.sqrt(D)) / (2*a);
+    const x2 = (-b - Math.sqrt(D)) / (2*a);
+    out += `D > 0 → Dua akar real berbeda:\n`;
+    out += `  x₁ = ${x1.toFixed(6)}\n`;
+    out += `  x₂ = ${x2.toFixed(6)}\n\n`;
+    out += `Verifikasi Vieta:\n`;
+    out += `  x₁+x₂ = ${(x1+x2).toFixed(6)} (seharusnya ${(-b/a).toFixed(6)})\n`;
+    out += `  x₁×x₂ = ${(x1*x2).toFixed(6)} (seharusnya ${(c/a).toFixed(6)})\n`;
+    out += `  |x₁-x₂| = ${Math.abs(x1-x2).toFixed(6)} = √D/|a| = ${(Math.sqrt(D)/Math.abs(a)).toFixed(6)}`;
+  } else if (D === 0) {
+    const x = -b / (2*a);
+    out += `D = 0 → Akar kembar:\n`;
+    out += `  x₁ = x₂ = ${x.toFixed(6)}`;
+  } else {
+    const re = -b / (2*a);
+    const im = Math.sqrt(-D) / (2*a);
+    out += `D < 0 → Tidak ada akar real (akar kompleks):\n`;
+    out += `  x₁ = ${re.toFixed(4)} + ${im.toFixed(4)}i\n`;
+    out += `  x₂ = ${re.toFixed(4)} - ${im.toFixed(4)}i`;
+  }
+
+  el.textContent = out;
+}
+
+// ── Absolute value solver ──
+function solveAbsValue() {
+  const a  = parseFloat(document.getElementById('aa').value);
+  const b  = parseFloat(document.getElementById('ab').value);
+  const c  = parseFloat(document.getElementById('ac').value);
+  const op = document.getElementById('aop').value;
+  const el = document.getElementById('aResult');
+
+  if (isNaN(a)||isNaN(b)||isNaN(c)||a===0) { el.textContent='Input tidak valid (a≠0).'; return; }
+
+  const opSym = {eq:'=',lt:'<',gt:'>',le:'≤',ge:'≥'}[op];
+  let out = `|${a}x + ${b}| ${opSym} ${c}\n\n`;
+
+  if (c < 0 && (op==='lt'||op==='le'||op==='eq')) {
+    out += 'Tidak ada penyelesaian (nilai mutlak selalu ≥ 0, tidak bisa < nilai negatif).';
+    el.textContent = out; return;
+  }
+
+  if (op === 'eq') {
+    if (c === 0) {
+      const x = -b/a;
+      out += `Penyelesaian: x = ${x}`;
+    } else {
+      const x1 = (c-b)/a, x2 = (-c-b)/a;
+      out += `Penyelesaian:\n  x₁ = (${c} - ${b}) / ${a} = ${x1}\n  x₂ = (-${c} - ${b}) / ${a} = ${x2}`;
+    }
+  } else if (op === 'lt' || op === 'le') {
+    const L = (-c-b)/a, R = (c-b)/a;
+    const [lo,hi] = a>0 ? [L,R] : [R,L];
+    const bL = op==='le'?'[':'(', bR = op==='le'?']':')';
+    out += `-${c} ${opSym} ${a}x + ${b} ${opSym} ${c}\n`;
+    out += `Penyelesaian: x ∈ ${bL}${lo}, ${hi}${bR}`;
+  } else { // gt, ge
+    const L = (-c-b)/a, R = (c-b)/a;
+    const [lo,hi] = a>0 ? [L,R] : [R,L];
+    const bL = op==='ge'?'[':'(', bR = op==='ge'?']':')';
+    out += `Penyelesaian:\n  x < ${lo} atau x > ${hi}\n  Yaitu: x ∈ (-∞, ${lo}${bR} ∪ ${bL}${hi}, +∞)`;
+  }
+
+  el.textContent = out;
+}
+
+// ── Root calculator ──
+function calcRoot() {
+  const a = parseFloat(document.getElementById('ra').value);
+  const n = parseFloat(document.getElementById('rn').value);
+  const el = document.getElementById('rResult');
+
+  if (isNaN(a)||isNaN(n)||n<1) { el.textContent='Input tidak valid.'; return; }
+  if (a < 0 && n % 2 === 0) { el.textContent=`Tidak terdefinisi di ℝ: akar ke-${n} dari bilangan negatif (n genap).`; return; }
+
+  const result = a < 0 ? -Math.pow(-a, 1/n) : Math.pow(a, 1/n);
+  let out = `${n}√${a} = ${result.toFixed(8)}\n\n`;
+  out += `Verifikasi: (${result.toFixed(6)})^${n} ≈ ${Math.pow(result, n).toFixed(6)}\n`;
+  out += `Representasi eksponen: ${a}^(1/${n}) = ${a}^${(1/n).toFixed(6)}`;
+  if (Number.isInteger(result)) out += `\n\nCatatan: Hasilnya merupakan bilangan bulat (${result}).`;
+
+  el.textContent = out;
+}
+
+// Initial MathJax render
+window.addEventListener('load', () => {
+  if (window.MathJax) MathJax.typesetPromise();
+});
+</script>
+</body>
+</html>
