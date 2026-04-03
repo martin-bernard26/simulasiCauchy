@@ -1,0 +1,989 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tes Diagnostik – Analisis Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=DM+Sans:wght@300;400;500;600&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --cream: #FAF8F3;
+    --ink: #1A1714;
+    --ink2: #3D3830;
+    --ink3: #7A7368;
+    --gold: #C9923A;
+    --gold-light: #F5E6CC;
+    --gold-pale: #FDF6EC;
+    --border: #E2DACE;
+    --border2: #C9C0B0;
+    --green: #2D6A4F;
+    --green-light: #D8F0E6;
+    --red: #A63228;
+    --red-light: #FCECEA;
+    --blue: #1D4E89;
+    --blue-light: #E6EFF8;
+    --radius: 12px;
+    --shadow: 0 2px 16px rgba(26,23,20,0.07);
+    --shadow-md: 0 4px 24px rgba(26,23,20,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+    line-height: 1.6;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .header::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 40px,
+      rgba(201,146,58,0.04) 40px,
+      rgba(201,146,58,0.04) 41px
+    );
+  }
+  .header-badge {
+    display: inline-block;
+    background: var(--gold);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    padding: 4px 14px;
+    border-radius: 20px;
+    margin-bottom: 1rem;
+  }
+  .header h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.8rem, 4vw, 2.8rem);
+    font-weight: 700;
+    line-height: 1.25;
+    margin-bottom: 0.5rem;
+    position: relative;
+  }
+  .header h1 em {
+    font-style: italic;
+    color: #C9923A;
+  }
+  .header .subtitle {
+    font-size: 15px;
+    color: rgba(250,248,243,0.65);
+    max-width: 500px;
+    margin: 0 auto;
+    position: relative;
+  }
+  .header-divider {
+    width: 40px;
+    height: 2px;
+    background: var(--gold);
+    margin: 1rem auto 0.75rem;
+    position: relative;
+  }
+
+  /* ── INFO STRIP ── */
+  .info-strip {
+    background: var(--gold-pale);
+    border-bottom: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    justify-content: center;
+    gap: 2.5rem;
+    flex-wrap: wrap;
+  }
+  .info-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--ink2);
+  }
+  .info-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    flex-shrink: 0;
+  }
+  .info-item strong { font-weight: 600; color: var(--ink); }
+
+  /* ── MAIN ── */
+  .main {
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* ── IDENTITY CARD ── */
+  .identity-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.75rem 2rem;
+    margin-bottom: 2.5rem;
+  }
+  .identity-card h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.05rem;
+    font-weight: 700;
+    margin-bottom: 1.25rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .identity-card h2::before {
+    content: '01';
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    background: var(--gold-light);
+    color: var(--gold);
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+  }
+  .form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .form-row.full { grid-template-columns: 1fr; }
+  .field label {
+    display: block;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    color: var(--ink3);
+    margin-bottom: 6px;
+  }
+  .field input, .field select {
+    width: 100%;
+    padding: 10px 14px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14px;
+    color: var(--ink);
+    background: var(--cream);
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .field input:focus, .field select:focus {
+    border-color: var(--gold);
+    box-shadow: 0 0 0 3px rgba(201,146,58,0.12);
+  }
+
+  /* ── PROGRESS ── */
+  .progress-bar-wrap {
+    margin-bottom: 2rem;
+  }
+  .progress-info {
+    display: flex;
+    justify-content: space-between;
+    font-size: 13px;
+    color: var(--ink3);
+    margin-bottom: 6px;
+  }
+  .progress-track {
+    background: var(--border);
+    border-radius: 10px;
+    height: 6px;
+    overflow: hidden;
+  }
+  .progress-fill {
+    height: 100%;
+    background: var(--gold);
+    border-radius: 10px;
+    transition: width 0.4s cubic-bezier(.4,0,.2,1);
+    width: 0%;
+  }
+
+  /* ── QUESTION CARD ── */
+  .question-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.75rem 2rem;
+    margin-bottom: 1.5rem;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  .question-card.answered {
+    border-color: #B8DCC8;
+    background: #FBFFFE;
+  }
+  .question-card.unanswered-highlight {
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(166,50,40,0.08);
+  }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 1rem;
+  }
+  .q-num {
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3px 9px;
+    border-radius: 5px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .q-num.done {
+    background: var(--green);
+  }
+  .q-topic {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 4px;
+  }
+  .q-text {
+    font-size: 15px;
+    color: var(--ink);
+    line-height: 1.65;
+  }
+  .q-text .math {
+    font-family: 'DM Mono', monospace;
+    font-size: 14px;
+    background: var(--gold-pale);
+    color: var(--ink2);
+    padding: 1px 6px;
+    border-radius: 4px;
+    display: inline-block;
+  }
+
+  /* ── OPTIONS ── */
+  .options {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 1rem;
+  }
+  .option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 16px;
+    border: 1.5px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.18s ease;
+    user-select: none;
+    position: relative;
+  }
+  .option:hover {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+  .option input[type="radio"] {
+    appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border2);
+    border-radius: 50%;
+    flex-shrink: 0;
+    cursor: pointer;
+    transition: all 0.18s;
+    position: relative;
+  }
+  .option input[type="radio"]::after {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%) scale(0);
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+    transition: transform 0.18s;
+  }
+  .option input[type="radio"]:checked {
+    border-color: var(--gold);
+  }
+  .option input[type="radio"]:checked::after {
+    transform: translate(-50%,-50%) scale(1);
+  }
+  .option.selected {
+    border-color: var(--gold);
+    background: var(--gold-pale);
+  }
+  .option .opt-label {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--ink3);
+    min-width: 20px;
+  }
+  .option .opt-text {
+    font-size: 14px;
+    color: var(--ink);
+    flex: 1;
+    line-height: 1.5;
+  }
+  .opt-text .math {
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    background: rgba(201,146,58,0.12);
+    color: var(--ink2);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+
+  /* ── SUBMIT SECTION ── */
+  .submit-section {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 1.75rem 2rem;
+    margin-top: 2rem;
+  }
+  .submit-section h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+  }
+  .submit-section p {
+    font-size: 13px;
+    color: var(--ink3);
+    margin-bottom: 1.25rem;
+  }
+  .note-box {
+    background: var(--blue-light);
+    border: 1px solid #BED3ED;
+    border-radius: 8px;
+    padding: 0.75rem 1rem;
+    font-size: 13px;
+    color: var(--blue);
+    margin-bottom: 1.25rem;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .note-box .icon { flex-shrink: 0; margin-top: 1px; }
+
+  .btn-submit {
+    width: 100%;
+    padding: 14px;
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    border-radius: 8px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s, transform 0.1s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+  }
+  .btn-submit:hover { background: #2e2924; }
+  .btn-submit:active { transform: scale(0.99); }
+  .btn-submit:disabled {
+    background: var(--border);
+    color: var(--ink3);
+    cursor: not-allowed;
+  }
+
+  /* ── SUCCESS STATE ── */
+  .success-screen {
+    display: none;
+    text-align: center;
+    padding: 4rem 2rem;
+  }
+  .success-screen.visible { display: block; }
+  .success-icon {
+    width: 64px; height: 64px;
+    border-radius: 50%;
+    background: var(--green-light);
+    display: flex; align-items: center; justify-content: center;
+    margin: 0 auto 1.5rem;
+  }
+  .success-icon svg { width: 28px; height: 28px; }
+  .success-screen h2 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    margin-bottom: 0.75rem;
+  }
+  .success-screen p {
+    color: var(--ink3);
+    font-size: 15px;
+    max-width: 420px;
+    margin: 0 auto 2rem;
+    line-height: 1.7;
+  }
+  .score-display {
+    display: inline-block;
+    background: var(--gold-light);
+    border: 1px solid var(--gold);
+    border-radius: var(--radius);
+    padding: 1.5rem 3rem;
+    margin-bottom: 1.5rem;
+  }
+  .score-display .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    color: var(--gold);
+    line-height: 1;
+  }
+  .score-display .score-label {
+    font-size: 13px;
+    color: var(--ink3);
+    margin-top: 4px;
+  }
+  .answer-key {
+    text-align: left;
+    margin-top: 2rem;
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .answer-key h3 {
+    padding: 1rem 1.5rem;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--cream);
+  }
+  .answer-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0.75rem 1.5rem;
+    border-bottom: 0.5px solid var(--border);
+    font-size: 14px;
+  }
+  .answer-row:last-child { border-bottom: none; }
+  .answer-row .num {
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    color: var(--ink3);
+    min-width: 24px;
+  }
+  .answer-row .answer-text { flex: 1; color: var(--ink2); }
+  .answer-badge {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 10px;
+    border-radius: 20px;
+  }
+  .badge-correct {
+    background: var(--green-light);
+    color: var(--green);
+  }
+  .badge-wrong {
+    background: var(--red-light);
+    color: var(--red);
+  }
+  .badge-correct-ans {
+    background: var(--gold-light);
+    color: #8B6524;
+    font-size: 11px;
+    padding: 2px 8px;
+    border-radius: 20px;
+    font-weight: 600;
+  }
+
+  /* ── FLOATING COUNTER ── */
+  .floating-counter {
+    position: fixed;
+    bottom: 2rem;
+    right: 2rem;
+    background: var(--ink);
+    color: var(--cream);
+    border-radius: 30px;
+    padding: 10px 18px;
+    font-size: 13px;
+    font-weight: 600;
+    box-shadow: var(--shadow-md);
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: all 0.3s;
+  }
+  .floating-counter .fc-dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: var(--gold);
+  }
+
+  @media (max-width: 580px) {
+    .form-row { grid-template-columns: 1fr; }
+    .question-card { padding: 1.25rem; }
+    .identity-card { padding: 1.25rem; }
+    .info-strip { gap: 1.25rem; }
+    .floating-counter { bottom: 1rem; right: 1rem; }
+  }
+
+  /* hidden iframe for form submission */
+  #hidden-iframe { display: none; }
+</style>
+</head>
+<body>
+
+<!-- HIDDEN IFRAME FOR FORM SUBMISSION -->
+<iframe name="hidden-iframe" id="hidden-iframe"></iframe>
+
+<header class="header">
+  <div class="header-badge">Tes Diagnostik · Analisis Real</div>
+  <h1>Akar, Persamaan Kuadrat &<br><em>Nilai Mutlak</em></h1>
+  <div class="header-divider"></div>
+  <p class="subtitle">Uji pemahaman awal sebelum memasuki topik lanjutan analisis real</p>
+</header>
+
+<div class="info-strip">
+  <div class="info-item"><span class="dot"></span><strong>10 Soal</strong> pilihan ganda</div>
+  <div class="info-item"><span class="dot"></span><strong>Waktu</strong> tidak dibatasi</div>
+  <div class="info-item"><span class="dot"></span><strong>Jawaban</strong> dikirim ke Google Form</div>
+</div>
+
+<main class="main" id="main-form">
+
+  <!-- IDENTITAS -->
+  <div class="identity-card">
+    <h2>Identitas Mahasiswa</h2>
+    <div class="form-row">
+      <div class="field">
+        <label>Nama Lengkap</label>
+        <input type="text" id="nama" placeholder="Nama sesuai KTM" required>
+      </div>
+      <div class="field">
+        <label>NIM</label>
+        <input type="text" id="nim" placeholder="Nomor Induk Mahasiswa">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="field">
+        <label>Program Studi</label>
+        <select id="prodi">
+          <option value="">Pilih prodi…</option>
+          <option>S1 Matematika</option>
+          <option>S1 Matematika Terapan</option>
+          <option>S1 Statistika</option>
+          <option>S1 Fisika</option>
+          <option>S1 Pendidikan Matematika</option>
+          <option>Lainnya</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Kelas</label>
+        <input type="text" id="kelas" placeholder="Contoh: A, B, atau C">
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-info">
+      <span id="prog-text">0 dari 10 soal dijawab</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="prog-fill"></div></div>
+  </div>
+
+  <!-- QUESTIONS -->
+  <div id="questions-container"></div>
+
+  <!-- SUBMIT -->
+  <div class="submit-section">
+    <h3>Kirim Jawaban</h3>
+    <p>Pastikan semua soal telah dijawab sebelum mengirim. Jawaban dikirim langsung ke sistem Google Form.</p>
+    <div class="note-box">
+      <span class="icon">
+        <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/>
+        </svg>
+      </span>
+      <span>Jawaban akan langsung tercatat di Google Spreadsheet dosen. Konfigurasikan URL Google Form Anda di bagian script sebelum menggunakan.</span>
+    </div>
+    <button class="btn-submit" id="submit-btn" onclick="submitQuiz()">
+      <svg width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+      </svg>
+      Kirim Jawaban ke Google Form
+    </button>
+  </div>
+
+</main>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="success-screen">
+  <div class="success-icon">
+    <svg viewBox="0 0 24 24" fill="none" stroke="#2D6A4F" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  </div>
+  <h2>Jawaban Terkirim!</h2>
+  <p>Terima kasih telah menyelesaikan tes diagnostik. Hasil Anda telah dikirim ke Google Form dosen.</p>
+  <div class="score-display">
+    <div class="score-num" id="score-num">-</div>
+    <div class="score-label">Estimasi skor (dari 10)</div>
+  </div>
+  <div class="answer-key" id="answer-key"></div>
+</div>
+
+<div class="floating-counter" id="floating-counter">
+  <span class="fc-dot"></span>
+  <span id="fc-text">0/10 dijawab</span>
+</div>
+
+<script>
+// ─────────────────────────────────────────────────────────────────
+// ⚙️  KONFIGURASI GOOGLE FORM
+// Ganti URL dan entry ID sesuai Google Form Anda.
+// Cara mendapatkan entry ID: Buka form > Inspect element > cari name="entry.XXXXXXX"
+// ─────────────────────────────────────────────────────────────────
+const GOOGLE_FORM_ACTION = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSckgRINy46iZu55bX7Dy6IFIFE9HKA6tXrkO5YUdX-GQA9nkg/formResponse";
+
+// Sesuaikan entry ID dengan field di Google Form Anda
+const ENTRY = {
+  nama:   "entry.1649574703",  // Nama Lengkap
+  nim:    "entry.409258208",  // NIM
+  prodi:  "entry.1514735277",  // Program Studi
+  kelas:  "entry.1623223321",  // Kelas
+  q1:     "entry.303069256",  // Jawaban Soal 1
+  q2:     "entry.50689071",
+  q3:     "entry.492578715",
+  q4:     "entry.4199194",
+  q5:     "entry.1442439260",
+  q6:     "entry.566471334",
+  q7:     "entry.1227270200",
+  q8:     "entry.1479929246",
+  q9:     "entry.1056690190",
+  q10:    "entry.917505209",
+  skor:   "entry.25913299",  // (opsional) Skor otomatis
+};
+// ─────────────────────────────────────────────────────────────────
+
+const QUESTIONS = [
+  {
+    id: 1,
+    topic: "Akar & Bilangan Real",
+    text: "Nilai dari <span class='math'>√(49) + ∛(−27)</span> adalah…",
+    options: ["A. 4", "B. 10", "C. 7 − 3 = 4", "D. 7 + (−3) = 4"],
+    letters: ["A","B","C","D"],
+    correct: "A",
+    display: ["4", "10", "−4", "14"],
+    fullOptions: [
+      { l:"A", t:"<span class='math'>4</span>" },
+      { l:"B", t:"<span class='math'>10</span>" },
+      { l:"C", t:"<span class='math'>−4</span>" },
+      { l:"D", t:"<span class='math'>14</span>" },
+    ]
+  },
+  {
+    id: 2,
+    topic: "Persamaan Kuadrat",
+    text: "Persamaan kuadrat <span class='math'>x² − 5x + 6 = 0</span> memiliki akar-akar…",
+    correct: "B",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>x = 1</span> dan <span class='math'>x = 6</span>" },
+      { l:"B", t:"<span class='math'>x = 2</span> dan <span class='math'>x = 3</span>" },
+      { l:"C", t:"<span class='math'>x = −2</span> dan <span class='math'>x = −3</span>" },
+      { l:"D", t:"<span class='math'>x = −1</span> dan <span class='math'>x = 6</span>" },
+    ]
+  },
+  {
+    id: 3,
+    topic: "Nilai Mutlak",
+    text: "Nilai dari <span class='math'>|−8| − |5 − 12|</span> adalah…",
+    correct: "C",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>1</span>" },
+      { l:"B", t:"<span class='math'>−1</span>" },
+      { l:"C", t:"<span class='math'>1</span>" },
+      { l:"D", t:"<span class='math'>15</span>" },
+    ]
+  },
+  {
+    id: 4,
+    topic: "Diskriminan Kuadrat",
+    text: "Persamaan <span class='math'>x² + 4x + 5 = 0</span> memiliki jenis akar…",
+    correct: "D",
+    fullOptions: [
+      { l:"A", t:"Dua akar real berbeda" },
+      { l:"B", t:"Dua akar real kembar" },
+      { l:"C", t:"Satu akar real" },
+      { l:"D", t:"Tidak memiliki akar real (akar imajiner)" },
+    ]
+  },
+  {
+    id: 5,
+    topic: "Pertidaksamaan Nilai Mutlak",
+    text: "Himpunan penyelesaian dari <span class='math'>|x − 3| ≤ 5</span> adalah…",
+    correct: "A",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>−2 ≤ x ≤ 8</span>" },
+      { l:"B", t:"<span class='math'>x ≤ −2</span> atau <span class='math'>x ≥ 8</span>" },
+      { l:"C", t:"<span class='math'>−8 ≤ x ≤ 2</span>" },
+      { l:"D", t:"<span class='math'>x ≤ −8</span> atau <span class='math'>x ≥ 2</span>" },
+    ]
+  },
+  {
+    id: 6,
+    topic: "Akar Persamaan Kuadrat",
+    text: "Jika <span class='math'>α</span> dan <span class='math'>β</span> adalah akar-akar dari <span class='math'>2x² − 3x + 1 = 0</span>, nilai <span class='math'>α + β</span> adalah…",
+    correct: "B",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>−3/2</span>" },
+      { l:"B", t:"<span class='math'>3/2</span>" },
+      { l:"C", t:"<span class='math'>1/2</span>" },
+      { l:"D", t:"<span class='math'>2</span>" },
+    ]
+  },
+  {
+    id: 7,
+    topic: "Persamaan Nilai Mutlak",
+    text: "Semua nilai <span class='math'>x</span> yang memenuhi <span class='math'>|2x + 1| = 7</span> adalah…",
+    correct: "C",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>x = 3</span> saja" },
+      { l:"B", t:"<span class='math'>x = −4</span> saja" },
+      { l:"C", t:"<span class='math'>x = 3</span> atau <span class='math'>x = −4</span>" },
+      { l:"D", t:"<span class='math'>x = 4</span> atau <span class='math'>x = −3</span>" },
+    ]
+  },
+  {
+    id: 8,
+    topic: "Bentuk Akar & Rasionalisasi",
+    text: "Bentuk sederhana dari <span class='math'>√(12) + √(75) − √(27)</span> adalah…",
+    correct: "A",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>4√3</span>" },
+      { l:"B", t:"<span class='math'>6√3</span>" },
+      { l:"C", t:"<span class='math'>2√3</span>" },
+      { l:"D", t:"<span class='math'>8√3</span>" },
+    ]
+  },
+  {
+    id: 9,
+    topic: "Sifat Nilai Mutlak",
+    text: "Manakah pernyataan yang <strong>BENAR</strong> tentang nilai mutlak dalam Analisis Real?",
+    correct: "D",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>|a + b| = |a| + |b|</span> selalu berlaku untuk semua <span class='math'>a, b ∈ ℝ</span>" },
+      { l:"B", t:"<span class='math'>|a · b| = |a| − |b|</span>" },
+      { l:"C", t:"<span class='math'>|a| = −a</span> untuk semua <span class='math'>a ∈ ℝ</span>" },
+      { l:"D", t:"<span class='math'>|a + b| ≤ |a| + |b|</span> (Ketidaksamaan Segitiga)" },
+    ]
+  },
+  {
+    id: 10,
+    topic: "Analisis Real — Aplikasi",
+    text: "Dalam Analisis Real, <span class='math'>|x − a| < ε</span> (dengan <span class='math'>ε > 0</span>) berarti…",
+    correct: "B",
+    fullOptions: [
+      { l:"A", t:"<span class='math'>x − a < ε</span>" },
+      { l:"B", t:"<span class='math'>x</span> berada dalam interval <span class='math'>(a − ε, a + ε)</span>" },
+      { l:"C", t:"<span class='math'>x > a + ε</span> atau <span class='math'>x < a − ε</span>" },
+      { l:"D", t:"<span class='math'>|x| < a + ε</span>" },
+    ]
+  },
+];
+
+// Fix question 3 display (both A and C look like 1 — let's clarify)
+QUESTIONS[2].fullOptions = [
+  { l:"A", t:"<span class='math'>3</span>" },   // distraktor
+  { l:"B", t:"<span class='math'>−3</span>" },
+  { l:"C", t:"<span class='math'>1</span>" },   // ✓ benar
+  { l:"D", t:"<span class='math'>15</span>" },
+];
+QUESTIONS[2].correct = "C"; // |−8| − |5−12| = 8 − 7 = 1 ✓
+
+const userAnswers = {};
+
+// ── RENDER QUESTIONS ──
+function renderQuestions() {
+  const container = document.getElementById('questions-container');
+  container.innerHTML = '';
+  QUESTIONS.forEach(q => {
+    const card = document.createElement('div');
+    card.className = 'question-card';
+    card.id = `qcard-${q.id}`;
+
+    const opts = q.fullOptions.map(o => `
+      <label class="option" id="opt-${q.id}-${o.l}" onclick="selectOption(${q.id}, '${o.l}', this)">
+        <input type="radio" name="q${q.id}" value="${o.l}">
+        <span class="opt-label">${o.l}</span>
+        <span class="opt-text">${o.t}</span>
+      </label>
+    `).join('');
+
+    card.innerHTML = `
+      <div class="q-header">
+        <span class="q-num" id="qnum-${q.id}">S${String(q.id).padStart(2,'0')}</span>
+        <div>
+          <div class="q-topic">${q.topic}</div>
+          <div class="q-text">${q.text}</div>
+        </div>
+      </div>
+      <div class="options">${opts}</div>
+    `;
+    container.appendChild(card);
+  });
+}
+
+function selectOption(qId, letter, labelEl) {
+  // Remove selected from siblings
+  document.querySelectorAll(`[id^="opt-${qId}-"]`).forEach(el => el.classList.remove('selected'));
+  labelEl.classList.add('selected');
+  userAnswers[qId] = letter;
+
+  // Mark card as answered
+  const card = document.getElementById(`qcard-${qId}`);
+  card.classList.add('answered');
+  card.classList.remove('unanswered-highlight');
+
+  // Update num badge
+  const num = document.getElementById(`qnum-${qId}`);
+  num.classList.add('done');
+  num.textContent = '✓' + String(qId).padStart(2,'0');
+
+  updateProgress();
+}
+
+function updateProgress() {
+  const total = QUESTIONS.length;
+  const done = Object.keys(userAnswers).length;
+  const pct = Math.round((done / total) * 100);
+
+  document.getElementById('prog-text').textContent = `${done} dari ${total} soal dijawab`;
+  document.getElementById('prog-pct').textContent = `${pct}%`;
+  document.getElementById('prog-fill').style.width = pct + '%';
+  document.getElementById('fc-text').textContent = `${done}/${total} dijawab`;
+}
+
+// ── SUBMIT ──
+async function submitQuiz() {
+  const nama = document.getElementById('nama').value.trim();
+  const nim = document.getElementById('nim').value.trim();
+  const prodi = document.getElementById('prodi').value;
+  const kelas = document.getElementById('kelas').value.trim();
+
+  if (!nama) { alert('Masukkan nama lengkap Anda.'); document.getElementById('nama').focus(); return; }
+  if (!nim)  { alert('Masukkan NIM Anda.'); document.getElementById('nim').focus(); return; }
+
+  const unanswered = QUESTIONS.filter(q => !userAnswers[q.id]);
+  if (unanswered.length > 0) {
+    unanswered.forEach(q => {
+      const card = document.getElementById(`qcard-${q.id}`);
+      card.classList.add('unanswered-highlight');
+      card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    });
+    alert(`Masih ada ${unanswered.length} soal yang belum dijawab. Soal yang belum dijawab ditandai dengan garis merah.`);
+    return;
+  }
+
+  // Calculate score
+  let correct = 0;
+  QUESTIONS.forEach(q => { if (userAnswers[q.id] === q.correct) correct++; });
+
+  // Menjadi (await + async):
+document.getElementById('submit-btn').disabled = true;
+document.getElementById('submit-btn').textContent = "Mengirim…";
+
+const ok = await submitToGoogleForm({ nama, nim, prodi, kelas, correct });
+showSuccess(correct, nama);
+
+}
+
+async function submitToGoogleForm({ nama, nim, prodi, kelas, correct }) {
+  const params = new URLSearchParams({
+    [ENTRY.nama]:  nama,
+    [ENTRY.nim]:   nim,
+    [ENTRY.prodi]: prodi,
+    [ENTRY.kelas]: kelas,
+    [ENTRY.skor]:  correct + "/10",
+    [ENTRY.q1]:    userAnswers[1]  || "",
+    [ENTRY.q2]:    userAnswers[2]  || "",
+    [ENTRY.q3]:    userAnswers[3]  || "",
+    [ENTRY.q4]:    userAnswers[4]  || "",
+    [ENTRY.q5]:    userAnswers[5]  || "",
+    [ENTRY.q6]:    userAnswers[6]  || "",
+    [ENTRY.q7]:    userAnswers[7]  || "",
+    [ENTRY.q8]:    userAnswers[8]  || "",
+    [ENTRY.q9]:    userAnswers[9]  || "",
+    [ENTRY.q10]:   userAnswers[10] || "",
+  });
+
+  try {
+    await fetch(GOOGLE_FORM_ACTION + "?" + params.toString(), {
+      method: "POST",
+      mode: "no-cors",   // kunci utama — bypass CORS
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: params.toString(),
+    });
+    // no-cors = tidak bisa baca respons, tapi data terkirim
+    return true;
+  } catch (err) {
+    console.error("Gagal kirim:", err);
+    return false;
+  }
+}
+
+function showSuccess(correct, nama) {
+  document.getElementById('main-form').style.display = 'none';
+  document.getElementById('floating-counter').style.display = 'none';
+
+  const successEl = document.getElementById('success-screen');
+  successEl.classList.add('visible');
+  document.getElementById('score-num').textContent = `${correct}/10`;
+
+  // Build answer key
+  const keyEl = document.getElementById('answer-key');
+  keyEl.innerHTML = `<h3>Kunci Jawaban & Hasil Anda</h3>` +
+    QUESTIONS.map(q => {
+      const user = userAnswers[q.id];
+      const isRight = user === q.correct;
+      const userOpt = q.fullOptions.find(o => o.l === user);
+      const corrOpt = q.fullOptions.find(o => o.l === q.correct);
+      return `
+        <div class="answer-row">
+          <span class="num">S${String(q.id).padStart(2,'0')}</span>
+          <span class="answer-text">${q.topic}</span>
+          <span class="badge-correct-ans">${corrOpt ? corrOpt.l : q.correct}</span>
+          <span class="answer-badge ${isRight ? 'badge-correct' : 'badge-wrong'}">${isRight ? '✓ Benar' : '✗ Salah'}</span>
+        </div>
+      `;
+    }).join('');
+
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ── INIT ──
+renderQuestions();
+updateProgress();
+</script>
+</body>
+</html>
