@@ -1,0 +1,760 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Sora:wght@300;400;600;700&display=swap');
+
+  :root {
+    --green: #1a9c5b;
+    --green-light: #e6f7ef;
+    --green-dark: #0d6b3e;
+    --accent: #f0b429;
+    --accent-light: #fff8e6;
+    --bg: #f7f9f8;
+    --card: #ffffff;
+    --text: #1a2b22;
+    --muted: #6b8070;
+    --border: #dce8e1;
+    --code-bg: #0f1f18;
+    --code-text: #a8f0c6;
+    --code-keyword: #5dd39e;
+    --code-comment: #4a6e5b;
+    --code-string: #f0d060;
+    --code-number: #80d0ff;
+    --tag-bg: #e6f7ef;
+    --tag-text: #0d6b3e;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Sora', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  .hero {
+    background: linear-gradient(135deg, #0f1f18 0%, #1a3d28 50%, #0d6b3e 100%);
+    padding: 3rem 2rem 2.5rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    top: -60px; right: -60px;
+    width: 220px; height: 220px;
+    border-radius: 50%;
+    background: rgba(93, 211, 158, 0.08);
+  }
+
+  .hero::after {
+    content: '';
+    position: absolute;
+    bottom: -40px; left: -40px;
+    width: 160px; height: 160px;
+    border-radius: 50%;
+    background: rgba(240, 180, 41, 0.06);
+  }
+
+  .hero-badge {
+    display: inline-block;
+    background: rgba(93, 211, 158, 0.15);
+    color: #5dd39e;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1px solid rgba(93, 211, 158, 0.25);
+    margin-bottom: 1.2rem;
+  }
+
+  .hero h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.15;
+    margin-bottom: 0.7rem;
+  }
+
+  .hero h1 span {
+    color: #5dd39e;
+  }
+
+  .hero p {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.95rem;
+    font-weight: 300;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding: 1.5rem 2rem;
+    background: #fff;
+    border-bottom: 1px solid var(--border);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    justify-content: center;
+  }
+
+  .nav-btn {
+    padding: 6px 14px;
+    border-radius: 20px;
+    border: 1.5px solid var(--border);
+    background: transparent;
+    color: var(--muted);
+    font-family: 'Sora', sans-serif;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    white-space: nowrap;
+  }
+
+  .nav-btn:hover, .nav-btn.active {
+    background: var(--green);
+    color: #fff;
+    border-color: var(--green);
+  }
+
+  .main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+  }
+
+  .section {
+    display: none;
+  }
+
+  .section.active {
+    display: block;
+    animation: fadeUp 0.3s ease;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .concept-card {
+    background: var(--card);
+    border-radius: 16px;
+    border: 1px solid var(--border);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 1.2rem 1.5rem;
+    border-bottom: 1px solid var(--border);
+    background: var(--green-light);
+  }
+
+  .card-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    background: var(--green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    flex-shrink: 0;
+  }
+
+  .card-meta h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 3px;
+  }
+
+  .card-meta p {
+    font-size: 12px;
+    color: var(--muted);
+    font-weight: 400;
+  }
+
+  .card-body {
+    padding: 1.4rem 1.5rem;
+  }
+
+  .desc {
+    font-size: 0.88rem;
+    color: var(--muted);
+    line-height: 1.75;
+    margin-bottom: 1.2rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.2rem;
+  }
+
+  .tag {
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+  }
+
+  .tag.amber {
+    background: var(--accent-light);
+    color: #7a5a00;
+  }
+
+  pre {
+    color:white;
+    background: var(--code-bg);
+    border-radius: 10px;
+    padding: 1.2rem;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    border: 1px solid rgba(93, 211, 158, 0.1);
+  }
+
+  .kw { color: #5dd39e; font-weight: 600; }
+  .cm { color: var(--code-comment); font-style: italic; }
+  .st { color: var(--code-string); }
+  .nm { color: var(--code-number); }
+  .fn { color: #80d0ff; }
+  .base { color: var(--code-text); }
+  .var { color: #f5c2e7; }
+
+  .tip-box {
+    display: flex;
+    gap: 10px;
+    background: var(--accent-light);
+    border-left: 3px solid var(--accent);
+    border-radius: 8px;
+    padding: 12px 14px;
+    margin-top: 1rem;
+    font-size: 12.5px;
+    color: #5a4000;
+    line-height: 1.6;
+  }
+
+  .tip-box span:first-child {
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+
+  .section-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .section-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  @media (max-width: 600px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    .hero h1 { font-size: 1.6rem; }
+  }
+
+  .mini-card {
+    background: #fff;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 1rem;
+  }
+
+  .mini-card h4 {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--green-dark);
+    margin-bottom: 8px;
+  }
+
+  .mini-card pre {
+    font-size: 11.5px;
+    padding: 10px;
+  }
+
+  .badge-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+
+  .level-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: 20px;
+    letter-spacing: 0.5px;
+  }
+
+  .level-badge.pemula { background: #e6f7ef; color: #0d6b3e; }
+  .level-badge.menengah { background: #fff8e6; color: #7a5a00; }
+  .level-badge.lanjut { background: #fdecea; color: #8b1a1a; }
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="hero-badge">Panduan Lengkap</div>
+  <h1>Konsep Dasar<br><span>VBA for Excel</span></h1>
+  <p>Dari variabel hingga otomasi — pelajari VBA dengan contoh kode yang siap digunakan.</p>
+</div>
+
+<nav class="nav">
+  <button class="nav-btn active" onclick="show('variables')">Variabel & Tipe Data</button>
+  <button class="nav-btn" onclick="show('kondisi')">Kondisi & Logika</button>
+  <button class="nav-btn" onclick="show('loop')">Perulangan</button>
+  <button class="nav-btn" onclick="show('prosedur')">Sub & Function</button>
+  <button class="nav-btn" onclick="show('range')">Range & Cells</button>
+  <button class="nav-btn" onclick="show('event')">Event & Worksheet</button>
+  <button class="nav-btn" onclick="show('array')">Array</button>
+  <button class="nav-btn" onclick="show('error')">Error Handling</button>
+</nav>
+
+<div class="main">
+
+  <!-- VARIABEL -->
+  <div class="section active" id="variables">
+    <div class="section-title">Variabel & Tipe Data</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">📦</div>
+        <div class="card-meta">
+          <h3>Deklarasi Variabel</h3>
+          <p>Cara menyimpan data sementara dalam program</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge pemula">Pemula</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Variabel adalah tempat penyimpanan data di memori. Gunakan <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">Dim</code> untuk mendeklarasikan variabel. Selalu tambahkan <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">Option Explicit</code> di atas modul agar semua variabel wajib dideklarasikan terlebih dahulu.</p>
+        <div class="tags">
+          <span class="tag">String</span><span class="tag">Integer</span><span class="tag">Long</span><span class="tag">Double</span><span class="tag">Boolean</span><span class="tag">Date</span><span class="tag">Variant</span>
+        </div>
+        <pre><span class="kw">Option Explicit</span>
+
+<span class="kw">Sub</span> <span class="fn">ContohVariabel</span>()
+    <span class="cm">' Deklarasi berbagai tipe data</span>
+    <span class="kw">Dim</span> <span class="var">namaSiswa</span>  <span class="kw">As String</span>
+    <span class="kw">Dim</span> <span class="var">nilaiUjian</span> <span class="kw">As Integer</span>   <span class="cm">' -32768 s/d 32767</span>
+    <span class="kw">Dim</span> <span class="var">totalData</span>  <span class="kw">As Long</span>      <span class="cm">' angka besar</span>
+    <span class="kw">Dim</span> <span class="var">rata2</span>      <span class="kw">As Double</span>    <span class="cm">' bilangan desimal</span>
+    <span class="kw">Dim</span> <span class="var">lulus</span>      <span class="kw">As Boolean</span>
+    <span class="kw">Dim</span> <span class="var">tglLahir</span>   <span class="kw">As Date</span>
+
+    <span class="cm">' Mengisi nilai</span>
+    <span class="var">namaSiswa</span>  = <span class="st">"Budi Santoso"</span>
+    <span class="var">nilaiUjian</span> = <span class="nm">85</span>
+    <span class="var">rata2</span>      = <span class="nm">87.5</span>
+    <span class="var">lulus</span>      = <span class="kw">True</span>
+    <span class="var">tglLahir</span>   = <span class="st">#01/15/2000#</span>
+
+    <span class="cm">' Tampilkan ke sel</span>
+    Range(<span class="st">"A1"</span>).Value = <span class="var">namaSiswa</span>
+    Range(<span class="st">"B1"</span>).Value = <span class="var">nilaiUjian</span>
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span>Gunakan <strong>Long</strong> bukan <strong>Integer</strong> untuk angka baris Excel, karena Excel bisa memiliki lebih dari 32.767 baris. <strong>Double</strong> cocok untuk perhitungan keuangan dengan desimal.</span></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="mini-card">
+        <h4>Konstanta</h4>
+        <pre><span class="kw">Const</span> <span class="var">PI</span> = <span class="nm">3.14159</span>
+<span class="kw">Const</span> <span class="var">MAX_BARIS</span> <span class="kw">As Long</span> = <span class="nm">1000</span>
+<span class="kw">Const</span> <span class="var">APP_NAME</span> <span class="kw">As String</span> _
+    = <span class="st">"LaporanKu"</span></pre>
+      </div>
+      <div class="mini-card">
+        <h4>Konversi Tipe</h4>
+        <pre><span class="var">x</span> = <span class="fn">CInt</span>(<span class="st">"42"</span>)
+<span class="var">s</span> = <span class="fn">CStr</span>(<span class="nm">3.14</span>)
+<span class="var">d</span> = <span class="fn">CDbl</span>(<span class="st">"9.99"</span>)
+<span class="var">b</span> = <span class="fn">CBool</span>(<span class="nm">1</span>)  <span class="cm">' True</span></pre>
+      </div>
+    </div>
+  </div>
+
+  <!-- KONDISI -->
+  <div class="section" id="kondisi">
+    <div class="section-title">Kondisi & Logika</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">🔀</div>
+        <div class="card-meta">
+          <h3>If - ElseIf - Else</h3>
+          <p>Membuat keputusan berdasarkan kondisi</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge pemula">Pemula</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Percabangan memungkinkan program mengeksekusi kode yang berbeda berdasarkan kondisi tertentu. VBA mendukung <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">If...Then...Else</code> dan <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">Select Case</code> untuk kondisi yang lebih kompleks.</p>
+        <pre><span class="kw">Sub</span> <span class="fn">CekNilai</span>()
+    <span class="kw">Dim</span> <span class="var">nilai</span> <span class="kw">As Integer</span>
+    <span class="kw">Dim</span> <span class="var">grade</span> <span class="kw">As String</span>
+    <span class="var">nilai</span> = Range(<span class="st">"A1"</span>).Value
+
+    <span class="cm">' Menggunakan If - ElseIf - Else</span>
+    <span class="kw">If</span> <span class="var">nilai</span> >= <span class="nm">90</span> <span class="kw">Then</span>
+        <span class="var">grade</span> = <span class="st">"A - Sangat Baik"</span>
+    <span class="kw">ElseIf</span> <span class="var">nilai</span> >= <span class="nm">80</span> <span class="kw">Then</span>
+        <span class="var">grade</span> = <span class="st">"B - Baik"</span>
+    <span class="kw">ElseIf</span> <span class="var">nilai</span> >= <span class="nm">70</span> <span class="kw">Then</span>
+        <span class="var">grade</span> = <span class="st">"C - Cukup"</span>
+    <span class="kw">Else</span>
+        <span class="var">grade</span> = <span class="st">"D - Tidak Lulus"</span>
+    <span class="kw">End If</span>
+
+    <span class="cm">' Menggunakan Select Case (lebih bersih)</span>
+    <span class="kw">Select Case</span> <span class="var">nilai</span>
+        <span class="kw">Case</span> <span class="nm">90</span> <span class="kw">To</span> <span class="nm">100</span> : <span class="var">grade</span> = <span class="st">"A"</span>
+        <span class="kw">Case</span> <span class="nm">80</span> <span class="kw">To</span> <span class="nm">89</span>  : <span class="var">grade</span> = <span class="st">"B"</span>
+        <span class="kw">Case Is</span> >= <span class="nm">70</span>   : <span class="var">grade</span> = <span class="st">"C"</span>
+        <span class="kw">Case Else</span>       : <span class="var">grade</span> = <span class="st">"D"</span>
+    <span class="kw">End Select</span>
+
+    Range(<span class="st">"B1"</span>).Value = <span class="var">grade</span>
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span><strong>Select Case</strong> lebih mudah dibaca daripada banyak ElseIf. Gunakan <strong>And</strong> / <strong>Or</strong> / <strong>Not</strong> untuk menggabungkan kondisi logis.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOOP -->
+  <div class="section" id="loop">
+    <div class="section-title">Perulangan (Looping)</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">🔄</div>
+        <div class="card-meta">
+          <h3>For, For Each, Do While, Do Until</h3>
+          <p>Mengulang eksekusi kode secara efisien</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge pemula">Pemula</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Perulangan (loop) digunakan untuk mengeksekusi blok kode berulang kali. VBA menyediakan beberapa jenis loop untuk berbagai kebutuhan.</p>
+        <pre><span class="kw">Sub</span> <span class="fn">ContohLoop</span>()
+    <span class="kw">Dim</span> <span class="var">i</span> <span class="kw">As Long</span>
+    <span class="kw">Dim</span> <span class="var">sel</span> <span class="kw">As Range</span>
+    <span class="kw">Dim</span> <span class="var">total</span> <span class="kw">As Double</span>
+
+    <span class="cm">' For Next — jumlah iterasi diketahui</span>
+    <span class="kw">For</span> <span class="var">i</span> = <span class="nm">1</span> <span class="kw">To</span> <span class="nm">10</span>
+        Cells(<span class="var">i</span>, <span class="nm">1</span>).Value = <span class="var">i</span> * <span class="var">i</span>  <span class="cm">' isi kuadrat</span>
+    <span class="kw">Next</span> <span class="var">i</span>
+
+    <span class="cm">' For Each — iterasi setiap objek dalam koleksi</span>
+    <span class="kw">For Each</span> <span class="var">sel</span> <span class="kw">In</span> Range(<span class="st">"A1:A10"</span>)
+        <span class="var">total</span> = <span class="var">total</span> + <span class="var">sel</span>.Value
+        <span class="kw">If</span> <span class="var">sel</span>.Value < <span class="nm">0</span> <span class="kw">Then</span> <span class="var">sel</span>.Interior.Color = vbRed
+    <span class="kw">Next</span> <span class="var">sel</span>
+
+    <span class="cm">' Do While — ulangi selama kondisi True</span>
+    <span class="var">i</span> = <span class="nm">1</span>
+    <span class="kw">Do While</span> Cells(<span class="var">i</span>, <span class="nm">1</span>).Value <> <span class="st">""</span>
+        Cells(<span class="var">i</span>, <span class="nm">2</span>).Value = Cells(<span class="var">i</span>, <span class="nm">1</span>).Value * <span class="nm">2</span>
+        <span class="var">i</span> = <span class="var">i</span> + <span class="nm">1</span>
+    <span class="kw">Loop</span>
+
+    <span class="cm">' Do Until — ulangi sampai kondisi True</span>
+    <span class="var">i</span> = <span class="nm">1</span>
+    <span class="kw">Do Until</span> IsEmpty(Cells(<span class="var">i</span>, <span class="nm">1</span>))
+        <span class="var">i</span> = <span class="var">i</span> + <span class="nm">1</span>
+    <span class="kw">Loop</span>
+    MsgBox <span class="st">"Baris terakhir: "</span> & (<span class="var">i</span> - <span class="nm">1</span>)
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span>Gunakan <strong>Exit For</strong> atau <strong>Exit Do</strong> untuk keluar lebih awal dari loop. Hindari loop tanpa batas (infinite loop) yang bisa membekukan Excel.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SUB & FUNCTION -->
+  <div class="section" id="prosedur">
+    <div class="section-title">Sub & Function</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">⚙️</div>
+        <div class="card-meta">
+          <h3>Prosedur Sub dan Function</h3>
+          <p>Memecah kode menjadi blok yang dapat digunakan ulang</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge menengah">Menengah</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc"><strong>Sub</strong> menjalankan serangkaian perintah tanpa mengembalikan nilai. <strong>Function</strong> seperti Sub, tetapi mengembalikan nilai — bisa digunakan langsung di sel Excel seperti rumus biasa.</p>
+        <pre><span class="cm">' === SUB: tidak mengembalikan nilai ===</span>
+<span class="kw">Sub</span> <span class="fn">FormatHeader</span>(<span class="var">barisHeader</span> <span class="kw">As Long</span>)
+    <span class="kw">With</span> Rows(<span class="var">barisHeader</span>)
+        .Font.Bold      = <span class="kw">True</span>
+        .Font.Size      = <span class="nm">12</span>
+        .Interior.Color = RGB(<span class="nm">0</span>, <span class="nm">112</span>, <span class="nm">54</span>)
+        .Font.Color     = vbWhite
+    <span class="kw">End With</span>
+<span class="kw">End Sub</span>
+
+<span class="cm">' === FUNCTION: mengembalikan nilai ===</span>
+<span class="kw">Function</span> <span class="fn">HitungDiskon</span>(<span class="var">harga</span> <span class="kw">As Double</span>, _
+                       <span class="var">persen</span> <span class="kw">As Double</span>) <span class="kw">As Double</span>
+    <span class="fn">HitungDiskon</span> = <span class="var">harga</span> * ((<span class="nm">100</span> - <span class="var">persen</span>) / <span class="nm">100</span>)
+<span class="kw">End Function</span>
+
+<span class="cm">' === Cara memanggilnya ===</span>
+<span class="kw">Sub</span> <span class="fn">Utama</span>()
+    <span class="fn">FormatHeader</span> <span class="nm">1</span>  <span class="cm">' panggil Sub</span>
+
+    <span class="kw">Dim</span> <span class="var">hargaFinal</span> <span class="kw">As Double</span>
+    <span class="var">hargaFinal</span> = <span class="fn">HitungDiskon</span>(<span class="nm">150000</span>, <span class="nm">20</span>)
+    MsgBox <span class="st">"Harga setelah diskon: Rp "</span> & <span class="var">hargaFinal</span>
+
+    <span class="cm">' Function juga bisa dipakai di sel Excel:</span>
+    <span class="cm">' =HitungDiskon(A2, 20)</span>
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span>Gunakan <strong>ByVal</strong> jika tidak ingin nilai asli berubah, dan <strong>ByRef</strong> (default) jika ingin fungsi bisa mengubah nilai variabel yang dikirim.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- RANGE & CELLS -->
+  <div class="section" id="range">
+    <div class="section-title">Manipulasi Range & Cells</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">📊</div>
+        <div class="card-meta">
+          <h3>Bekerja dengan Range, Cells, dan Worksheet</h3>
+          <p>Inti dari otomasi Excel</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge menengah">Menengah</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Objek <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">Range</code> dan <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">Cells</code> adalah kunci untuk membaca dan menulis data di spreadsheet. Selalu referensikan Worksheet secara eksplisit untuk kode yang lebih aman.</p>
+        <pre><span class="kw">Sub</span> <span class="fn">ManipulasiRange</span>()
+    <span class="kw">Dim</span> <span class="var">ws</span>     <span class="kw">As Worksheet</span>
+    <span class="kw">Dim</span> <span class="var">rng</span>    <span class="kw">As Range</span>
+    <span class="kw">Dim</span> <span class="var">lastRow</span> <span class="kw">As Long</span>
+
+    <span class="kw">Set</span> <span class="var">ws</span> = ThisWorkbook.Sheets(<span class="st">"Data"</span>)
+
+    <span class="cm">' Cari baris terakhir yang berisi data</span>
+    <span class="var">lastRow</span> = <span class="var">ws</span>.Cells(<span class="var">ws</span>.Rows.Count, <span class="st">"A"</span>).End(xlUp).Row
+
+    <span class="cm">' Tulis nilai ke sel</span>
+    <span class="var">ws</span>.Range(<span class="st">"A1"</span>).Value         = <span class="st">"Nama Produk"</span>
+    <span class="var">ws</span>.Cells(<span class="nm">1</span>, <span class="nm">2</span>).Value          = <span class="st">"Harga"</span>
+
+    <span class="cm">' Baca nilai dari sel</span>
+    <span class="kw">Dim</span> <span class="var">nilaiA1</span> <span class="kw">As String</span>
+    <span class="var">nilaiA1</span> = <span class="var">ws</span>.Range(<span class="st">"A1"</span>).Value
+
+    <span class="cm">' Format range sekaligus</span>
+    <span class="kw">With</span> <span class="var">ws</span>.Range(<span class="st">"A1:E1"</span>)
+        .Font.Bold         = <span class="kw">True</span>
+        .Interior.Color    = RGB(<span class="nm">0</span>, <span class="nm">112</span>, <span class="nm">54</span>)
+        .Font.Color        = vbWhite
+        .HorizontalAlignment = xlCenter
+    <span class="kw">End With</span>
+
+    <span class="cm">' Copy paste dengan cara efisien</span>
+    <span class="var">ws</span>.Range(<span class="st">"A2:A"</span> & <span class="var">lastRow</span>).Copy _
+        Destination:=<span class="var">ws</span>.Range(<span class="st">"F2"</span>)
+
+    <span class="cm">' Hapus isi tanpa hapus format</span>
+    <span class="var">ws</span>.Range(<span class="st">"G2:G"</span> & <span class="var">lastRow</span>).ClearContents
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span>Selalu gunakan <strong>ws.Cells(...)</strong> bukan <strong>Cells(...)</strong> saja agar kode selalu merujuk ke sheet yang tepat, bukan sheet yang sedang aktif.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- EVENT -->
+  <div class="section" id="event">
+    <div class="section-title">Event & Worksheet</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-meta">
+          <h3>Event Handler</h3>
+          <p>Kode yang berjalan otomatis saat ada aksi tertentu</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge menengah">Menengah</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Event handler adalah prosedur yang berjalan otomatis saat sesuatu terjadi di Excel — seperti saat sel berubah, sheet diaktifkan, atau workbook dibuka. Ditempatkan di modul objek (bukan modul biasa).</p>
+        <pre><span class="cm">' === Di modul Sheet (klik kanan sheet → View Code) ===</span>
+
+<span class="cm">' Berjalan saat nilai sel berubah</span>
+<span class="kw">Private Sub</span> <span class="fn">Worksheet_Change</span>(<span class="kw">ByVal</span> <span class="var">Target</span> <span class="kw">As Range</span>)
+    <span class="cm">' Cek apakah perubahan di kolom A</span>
+    <span class="kw">If</span> <span class="kw">Not</span> Intersect(<span class="var">Target</span>, Me.Columns(<span class="st">"A"</span>)) _
+        <span class="kw">Is Nothing Then</span>
+
+        Application.EnableEvents = <span class="kw">False</span>  <span class="cm">' hindari loop</span>
+        <span class="var">Target</span>.Value = UCase(<span class="var">Target</span>.Value)  <span class="cm">' huruf kapital</span>
+        Application.EnableEvents = <span class="kw">True</span>
+    <span class="kw">End If</span>
+<span class="kw">End Sub</span>
+
+<span class="cm">' Berjalan saat sheet diaktifkan</span>
+<span class="kw">Private Sub</span> <span class="fn">Worksheet_Activate</span>()
+    MsgBox <span class="st">"Selamat datang di sheet "</span> & Me.Name
+<span class="kw">End Sub</span>
+
+<span class="cm">' === Di modul ThisWorkbook ===</span>
+
+<span class="cm">' Berjalan saat file dibuka</span>
+<span class="kw">Private Sub</span> <span class="fn">Workbook_Open</span>()
+    Sheets(<span class="st">"Dashboard"</span>).Activate
+    MsgBox <span class="st">"File dibuka: "</span> & Now()
+<span class="kw">End Sub</span>
+
+<span class="cm">' Berjalan saat file akan disimpan</span>
+<span class="kw">Private Sub</span> <span class="fn">Workbook_BeforeSave</span>(<span class="kw">ByVal</span> _
+    <span class="var">SaveAsUI</span> <span class="kw">As Boolean</span>, <span class="var">Cancel</span> <span class="kw">As Boolean</span>)
+    Range(<span class="st">"A1"</span>).Value = <span class="st">"Terakhir disimpan: "</span> & Now()
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>⚠️</span><span>Selalu set <strong>Application.EnableEvents = False</strong> sebelum mengubah sel di dalam <code>Worksheet_Change</code>, lalu kembalikan ke <strong>True</strong>, agar tidak terjadi rekursi tak terbatas.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ARRAY -->
+  <div class="section" id="array">
+    <div class="section-title">Array</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">🗂️</div>
+        <div class="card-meta">
+          <h3>Array Statis & Dinamis</h3>
+          <p>Menyimpan dan memproses banyak data sekaligus</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge lanjut">Lanjut</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Array memungkinkan penyimpanan banyak nilai dalam satu variabel. Memuat data ke array lalu menulisnya sekaligus jauh lebih cepat daripada baca-tulis sel satu per satu.</p>
+        <pre><span class="kw">Sub</span> <span class="fn">ContohArray</span>()
+    <span class="cm">' Array statis — ukuran tetap</span>
+    <span class="kw">Dim</span> <span class="var">bulan</span>(1 <span class="kw">To</span> 12) <span class="kw">As String</span>
+    <span class="var">bulan</span>(<span class="nm">1</span>) = <span class="st">"Januari"</span>
+    <span class="var">bulan</span>(<span class="nm">2</span>) = <span class="st">"Februari"</span>
+    <span class="cm">' ... dst</span>
+
+    <span class="cm">' Array dinamis — ukuran fleksibel</span>
+    <span class="kw">Dim</span> <span class="var">dataNilai</span>() <span class="kw">As Double</span>
+    <span class="kw">Dim</span> <span class="var">n</span> <span class="kw">As Long</span>
+    <span class="var">n</span> = Cells(Rows.Count, <span class="st">"A"</span>).End(xlUp).Row
+    <span class="kw">ReDim</span> <span class="var">dataNilai</span>(<span class="nm">1</span> <span class="kw">To</span> <span class="var">n</span>)
+
+    <span class="cm">' TEKNIK CEPAT: baca semua sekaligus dari range</span>
+    <span class="kw">Dim</span> <span class="var">arrData</span> <span class="kw">As Variant</span>
+    <span class="var">arrData</span> = Range(<span class="st">"A1:C"</span> & <span class="var">n</span>).Value  <span class="cm">' 2D array</span>
+
+    <span class="cm">' Proses dalam memori (super cepat!)</span>
+    <span class="kw">Dim</span> <span class="var">i</span> <span class="kw">As Long</span>
+    <span class="kw">For</span> <span class="var">i</span> = <span class="nm">1</span> <span class="kw">To</span> UBound(<span class="var">arrData</span>, <span class="nm">1</span>)
+        <span class="var">arrData</span>(<span class="var">i</span>, <span class="nm">3</span>) = <span class="var">arrData</span>(<span class="var">i</span>, <span class="nm">1</span>) * <span class="var">arrData</span>(<span class="var">i</span>, <span class="nm">2</span>)
+    <span class="kw">Next</span> <span class="var">i</span>
+
+    <span class="cm">' Tulis hasil sekaligus ke sheet (1 operasi!)</span>
+    Range(<span class="st">"A1:C"</span> & <span class="var">n</span>).Value = <span class="var">arrData</span>
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>🚀</span><span>Teknik array-in / array-out bisa membuat kode <strong>10-100x lebih cepat</strong> dibanding loop baca-tulis sel satu per satu. Sangat direkomendasikan untuk data besar (&gt;1000 baris).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ERROR HANDLING -->
+  <div class="section" id="error">
+    <div class="section-title">Error Handling</div>
+    <div class="concept-card">
+      <div class="card-header">
+        <div class="card-icon">🛡️</div>
+        <div class="card-meta">
+          <h3>On Error & Resume</h3>
+          <p>Menangani kesalahan agar program tidak berhenti tiba-tiba</p>
+        </div>
+        <div style="margin-left:auto"><span class="level-badge lanjut">Lanjut</span></div>
+      </div>
+      <div class="card-body">
+        <p class="desc">Error handling mencegah program crash saat terjadi kesalahan. VBA menggunakan <code style="color:var(--green-dark);background:var(--green-light);padding:2px 6px;border-radius:4px;font-size:11px">On Error GoTo</code> untuk mengarahkan eksekusi ke blok penanganan error.</p>
+        <pre><span class="kw">Sub</span> <span class="fn">BukaFile</span>(<span class="var">namaFile</span> <span class="kw">As String</span>)
+    <span class="kw">On Error GoTo</span> TangkapError  <span class="cm">' aktifkan handler</span>
+
+    <span class="kw">Dim</span> <span class="var">wb</span> <span class="kw">As Workbook</span>
+    <span class="kw">Set</span> <span class="var">wb</span> = Workbooks.Open(<span class="var">namaFile</span>)
+
+    <span class="cm">' Lanjutkan proses normal...</span>
+    MsgBox <span class="st">"File berhasil dibuka!"</span>
+
+    <span class="kw">On Error GoTo</span> <span class="nm">0</span>  <span class="cm">' matikan handler, keluar normal</span>
+    <span class="kw">Exit Sub</span>         <span class="cm">' PENTING: lewati blok error</span>
+
+TangkapError:
+    <span class="cm">' Err.Number = kode error, Err.Description = pesannya</span>
+    <span class="kw">Select Case</span> Err.Number
+        <span class="kw">Case</span> <span class="nm">1004</span>  <span class="cm">' File tidak ditemukan</span>
+            MsgBox <span class="st">"File tidak ditemukan: "</span> & <span class="var">namaFile</span>
+        <span class="kw">Case</span> <span class="nm">9</span>     <span class="cm">' Subscript out of range</span>
+            MsgBox <span class="st">"Sheet tidak ditemukan!"</span>
+        <span class="kw">Case Else</span>
+            MsgBox <span class="st">"Error "</span> & Err.Number & <span class="st">": "</span> & Err.Description
+    <span class="kw">End Select</span>
+
+    <span class="cm">' On Error Resume Next — lanjutkan meski ada error</span>
+    <span class="cm">' (gunakan dengan hati-hati!)</span>
+<span class="kw">End Sub</span></pre>
+        <div class="tip-box"><span>💡</span><span>Selalu tambahkan <strong>Exit Sub</strong> sebelum label error agar kode normal tidak masuk ke blok penanganan error. Jangan gunakan <strong>On Error Resume Next</strong> terlalu luas karena bisa menyembunyikan bug.</span></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function show(id) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    event.target.classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
