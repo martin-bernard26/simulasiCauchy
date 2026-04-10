@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Soal Analisis Real</title>
+    
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$']]
+            }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #1a202c;
+            line-height: 1.7;
+            margin: 0;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 850px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 50px;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.2rem;
+            margin-bottom: 10px;
+        }
+
+        .line {
+            height: 4px;
+            width: 80px;
+            background-color: #3182ce;
+            margin: 0 auto;
+            border-radius: 2px;
+        }
+
+        .soal-card {
+            background: #ffffff;
+            padding: 30px;
+            margin-bottom: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+            border-left: 6px solid #3182ce;
+            transition: transform 0.2s;
+        }
+
+        .soal-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .nomor-soal {
+            font-weight: bold;
+            color: #3182ce;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 0.9rem;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .judul-soal {
+            font-size: 1.3rem;
+            margin: 0 0 15px 0;
+            color: #2d3748;
+        }
+
+        .deskripsi {
+            font-size: 1.05rem;
+        }
+
+        .highlight {
+            background-color: #ebf8ff;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 20px 10px; }
+            h1 { font-size: 1.8rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Latihan Analisis Real</h1>
+        <p>Paradoks Zeno & Teori Himpunan Terbatas</p>
+        <div class="line"></div>
+    </header>
+
+    <div class="soal-card">
+        <span class="nomor-soal">Soal 01</span>
+        <h2 class="judul-soal">Paradoks Dikotomi Zeno</h2>
+        <p class="deskripsi">
+            Gunakan konsep limit jumlah deret geometri untuk membuktikan bahwa pelari akan menempuh tepat satu satuan jarak jika ia melewati titik-titik $\frac{1}{2}, \frac{1}{4}, \frac{1}{8}, \dots$ 
+            Buktikan bahwa:
+            $$\sum_{n=1}^{\infty} \left( \frac{1}{2} \right)^n = 1$$
+            Berikan penjelasan singkat mengapa hasil limit ini menyelesaikan kontradiksi fisik dalam argumen Zeno.
+        </p>
+    </div>
+
+    <div class="soal-card">
+        <span class="nomor-soal">Soal 02</span>
+        <h2 class="judul-soal">Konvergensi Achilles dan Kura-kura</h2>
+        <p class="deskripsi">
+            Misalkan kecepatan Achilles adalah $v_A$ dan kura-kura $v_K$ dengan $v_A > v_K$. Jika jarak awal mereka adalah $d$. Buktikan melalui barisan posisi $x_n$ bahwa selisih jarak mereka konvergen ke $0$. 
+            Tunjukkan secara analitis bahwa waktu menyusul adalah $t = \frac{d}{v_A - v_K}$ menggunakan prinsip <b>Barisan Cauchy</b>.
+        </p>
+    </div>
+
+    <div class="soal-card">
+        <span class="nomor-soal">Soal 03</span>
+        <h2 class="judul-soal">Sifat Archimedes pada Himpunan $S$</h2>
+        <p class="deskripsi">
+            Diberikan himpunan $S = \{ \frac{1}{n} : n \in \mathbb{N} \}$. Buktikan bahwa $\inf(S) = 0$. 
+            Dalam pembuktian Anda, gunakan <b>Sifat Archimedes</b> untuk menunjukkan bahwa untuk setiap bilangan real $\epsilon > 0$, selalu terdapat $n \in \mathbb{N}$ sehingga $0 < \frac{1}{n} < \epsilon$.
+        </p>
+    </div>
+
+    <div class="soal-card">
+        <span class="nomor-soal">Soal 04</span>
+        <h2 class="judul-soal">Supremum Himpunan Jumlah</h2>
+        <p class="deskripsi">
+            Misalkan $A$ dan $B$ adalah himpunan bagian tak kosong dari $\mathbb{R}$ yang terbatas di atas. 
+            Definisikan $A + B = \{ a + b : a \in A, b \in B \}$. Buktikan dengan definisi <b>LUB</b> (<i>Least Upper Bound</i>) bahwa:
+            $$\sup(A + B) = \sup(A) + \sup(B)$$
+        </p>
+    </div>
+
+    <div class="soal-card">
+        <span class="nomor-soal">Soal 05</span>
+        <h2 class="judul-soal">Kepadatan Bilangan Rasional</h2>
+        <p class="deskripsi">
+            Buktikan bahwa jika $x, y \in \mathbb{R}$ dengan $x < y$, maka terdapat $r \in \mathbb{Q}$ sedemikian sehingga $x < r < y$. 
+            Jelaskan apa implikasi dari teorema kepadatan ini terhadap struktur himpunan bilangan real dibandingkan dengan himpunan bilangan bulat.
+        </p>
+    </div>
+
+</div>
+
+</body>
+</html>
