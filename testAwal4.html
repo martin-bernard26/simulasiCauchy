@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Pretest Analisis Real</title>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+        background: linear-gradient(135deg, #1e3c72, #2a5298);
+        color: white;
+        padding: 20px;
+    }
+    h1 {
+        text-align: center;
+    }
+    .container {
+        max-width: 800px;
+        margin: auto;
+        background: rgba(255,255,255,0.1);
+        padding: 20px;
+        border-radius: 15px;
+        backdrop-filter: blur(10px);
+    }
+    .question {
+        margin-bottom: 20px;
+    }
+    label {
+        display: block;
+        margin: 5px 0;
+    }
+    input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border-radius: 8px;
+        border: none;
+    }
+    button {
+        background: #00c6ff;
+        border: none;
+        padding: 12px;
+        width: 100%;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+    button:hover {
+        background: #0072ff;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Pretest Analisis Real</h1>
+    <form id="quizForm">
+
+        <!-- Identitas -->
+        <div class="question">
+            <label>Nama:</label>
+            <input type="text" id="nama">
+        </div>
+
+        <div class="question">
+            <label>NIM:</label>
+            <input type="text" id="nim">
+        </div>
+
+        <!-- Soal 1 -->
+        <div class="question">
+            <p>1. Manakah yang termasuk himpunan hingga?</p>
+            <label><input type="radio" name="q1" value="A"> A. {1,2,3,4}</label>
+            <label><input type="radio" name="q1" value="B"> B. Bilangan asli</label>
+            <label><input type="radio" name="q1" value="C"> C. Bilangan real</label>
+            <label><input type="radio" name="q1" value="D"> D. Bilangan rasional</label>
+        </div>
+
+        <!-- Soal 2 -->
+        <div class="question">
+            <p>2. Himpunan kosong dilambangkan dengan?</p>
+            <label><input type="radio" name="q2" value="A"> A. { }</label>
+            <label><input type="radio" name="q2" value="B"> B. ∅</label>
+            <label><input type="radio" name="q2" value="C"> C. Semua benar</label>
+            <label><input type="radio" name="q2" value="D"> D. Tidak ada</label>
+        </div>
+
+        <!-- Soal 3 -->
+        <div class="question">
+            <p>3. Bilangan real termasuk himpunan?</p>
+            <label><input type="radio" name="q3" value="A"> A. Hingga</label>
+            <label><input type="radio" name="q3" value="B"> B. Tak hingga</label>
+            <label><input type="radio" name="q3" value="C"> C. Kosong</label>
+            <label><input type="radio" name="q3" value="D"> D. Terbatas</label>
+        </div>
+
+        <!-- Soal 4 -->
+        <div class="question">
+            <p>4. 0.999... sama dengan?</p>
+            <label><input type="radio" name="q4" value="A"> A. 1</label>
+            <label><input type="radio" name="q4" value="B"> B. 0</label>
+            <label><input type="radio" name="q4" value="C"> C. Tidak tentu</label>
+            <label><input type="radio" name="q4" value="D"> D. Kurang dari 1</label>
+        </div>
+
+        <!-- Soal 5 -->
+        <div class="question">
+            <p>5. Deret 1/2 + 1/4 + 1/8 + ... adalah?</p>
+            <label><input type="radio" name="q5" value="A"> A. Divergen</label>
+            <label><input type="radio" name="q5" value="B"> B. Konvergen</label>
+            <label><input type="radio" name="q5" value="C"> C. Tidak terdefinisi</label>
+            <label><input type="radio" name="q5" value="D"> D. Tak hingga</label>
+        </div>
+
+        <!-- Soal 6 -->
+        <div class="question">
+            <p>6. Paradoks Zeno berkaitan dengan?</p>
+            <label><input type="radio" name="q6" value="A"> A. Limit</label>
+            <label><input type="radio" name="q6" value="B"> B. Matriks</label>
+            <label><input type="radio" name="q6" value="C"> C. Logika</label>
+            <label><input type="radio" name="q6" value="D"> D. Statistik</label>
+        </div>
+
+        <!-- Soal 7 -->
+        <div class="question">
+            <p>7. Himpunan {1,2,3} memiliki banyak anggota?</p>
+            <label><input type="radio" name="q7" value="A"> A. 1</label>
+            <label><input type="radio" name="q7" value="B"> B. 2</label>
+            <label><input type="radio" name="q7" value="C"> C. 3</label>
+            <label><input type="radio" name="q7" value="D"> D. Tak hingga</label>
+        </div>
+
+        <!-- Soal 8 -->
+        <div class="question">
+            <p>8. Bilangan 1/3 termasuk?</p>
+            <label><input type="radio" name="q8" value="A"> A. Rasional</label>
+            <label><input type="radio" name="q8" value="B"> B. Irasional</label>
+            <label><input type="radio" name="q8" value="C"> C. Kompleks</label>
+            <label><input type="radio" name="q8" value="D"> D. Tak hingga</label>
+        </div>
+
+        <!-- Soal 9 -->
+        <div class="question">
+            <p>9. Himpunan bilangan genap adalah?</p>
+            <label><input type="radio" name="q9" value="A"> A. Hingga</label>
+            <label><input type="radio" name="q9" value="B"> B. Tak hingga</label>
+            <label><input type="radio" name="q9" value="C"> C. Kosong</label>
+            <label><input type="radio" name="q9" value="D"> D. Terbatas</label>
+        </div>
+
+        <!-- Soal 10 -->
+        <div class="question">
+            <p>10. Limit digunakan untuk memahami?</p>
+            <label><input type="radio" name="q10" value="A"> A. Perubahan mendekati nilai tertentu</label>
+            <label><input type="radio" name="q10" value="B"> B. Operasi dasar</label>
+            <label><input type="radio" name="q10" value="C"> C. Matriks</label>
+            <label><input type="radio" name="q10" value="D"> D. Geometri</label>
+        </div>
+
+        <button type="button" onclick="kirimData()">Kirim Jawaban</button>
+    </form>
+</div>
+
+<script>
+function kirimData() {
+    let formURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLSduXbhd4P9yyucx98SNKRDtHQNW2FEogHVg34e29qk6Tl-_Ow/formResponse";
+
+    let data = new FormData();
+
+    // GANTI entry ID sesuai Google Form
+    data.append("entry.1574628162", document.getElementById("nama").value);
+    data.append("entry.478904670", document.getElementById("nim").value);
+    const soal = [124527767,1544188976,1453027681,50726484,100888515,2095351010,1215903680,1845719913,335360972,1297602373]
+    for (let i = 1; i <= 10; i++) {
+        let jawaban = document.querySelector('input[name="q'+i+'"]:checked');
+        data.append("entry."+ (soal[i-1]), jawaban ? jawaban.value : "");
+    }
+
+    fetch(formURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+    });
+
+    alert("Jawaban berhasil dikirim!");
+}
+</script>
+
+</body>
+</html>
