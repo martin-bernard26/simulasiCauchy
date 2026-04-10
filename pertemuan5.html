@@ -1,0 +1,1505 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paradoks Zeno & Himpunan Terbatas — Analisis Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,300;8..60,400;8..60,600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-chtml.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1209;
+    --parchment: #f5edda;
+    --parchment-dark: #ede0c4;
+    --gold: #c8922a;
+    --gold-light: #e8b84b;
+    --rust: #8b3a1e;
+    --teal: #1e5f5a;
+    --teal-light: #2d8f88;
+    --cream: #fdf8ef;
+    --shadow: rgba(26,18,9,0.18);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 17px;
+    line-height: 1.75;
+    background-image:
+      radial-gradient(ellipse at 10% 10%, rgba(200,146,42,0.08) 0%, transparent 60%),
+      radial-gradient(ellipse at 90% 90%, rgba(30,95,90,0.06) 0%, transparent 60%);
+    min-height: 100vh;
+  }
+
+  /* ── HEADER ── */
+  header {
+    background: linear-gradient(135deg, #1a1209 0%, #2e1f08 60%, #1e3a38 100%);
+    color: var(--parchment);
+    padding: 0;
+    position: relative;
+    overflow: hidden;
+  }
+
+  header::before {
+    content: '';
+    position: absolute; inset: 0;
+    background-image:
+      repeating-linear-gradient(0deg, transparent, transparent 40px, rgba(200,146,42,0.04) 40px, rgba(200,146,42,0.04) 41px),
+      repeating-linear-gradient(90deg, transparent, transparent 40px, rgba(200,146,42,0.04) 40px, rgba(200,146,42,0.04) 41px);
+  }
+
+  .header-inner {
+    position: relative; z-index: 1;
+    max-width: 900px; margin: 0 auto;
+    padding: 56px 40px 48px;
+    text-align: center;
+  }
+
+  .header-badge {
+    display: inline-block;
+    border: 1.5px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    padding: 5px 18px;
+    margin-bottom: 24px;
+    border-radius: 2px;
+  }
+
+  header h1 {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 700;
+    color: var(--parchment);
+    line-height: 1.2;
+    margin-bottom: 12px;
+  }
+
+  header h1 span { color: var(--gold-light); font-style: italic; }
+
+  .header-sub {
+    color: rgba(245,237,218,0.65);
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  .header-divider {
+    width: 80px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--gold), transparent);
+    margin: 20px auto 0;
+  }
+
+  /* ── NAV TABS ── */
+  .tab-nav {
+    background: #2a1c0a;
+    display: flex; justify-content: center;
+    gap: 0;
+    border-bottom: 2px solid var(--gold);
+    position: sticky; top: 0; z-index: 100;
+  }
+
+  .tab-btn {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    color: rgba(245,237,218,0.55);
+    background: none; border: none;
+    padding: 14px 28px;
+    cursor: pointer;
+    position: relative;
+    transition: color 0.3s;
+    letter-spacing: 0.5px;
+  }
+
+  .tab-btn::after {
+    content: '';
+    position: absolute; bottom: -2px; left: 0; right: 0;
+    height: 2px; background: var(--gold);
+    transform: scaleX(0); transition: transform 0.3s;
+  }
+
+  .tab-btn.active { color: var(--gold-light); }
+  .tab-btn.active::after { transform: scaleX(1); }
+  .tab-btn:hover { color: var(--parchment); }
+
+  /* ── CONTENT ── */
+  .content-wrap {
+    max-width: 900px; margin: 0 auto;
+    padding: 48px 40px;
+  }
+
+  .tab-panel { display: none; animation: fadeIn 0.4s ease; }
+  .tab-panel.active { display: block; }
+
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+
+  /* ── SECTION TITLE ── */
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 30px; font-weight: 700;
+    color: var(--rust);
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .section-title::before {
+    content: '';
+    display: inline-block;
+    width: 6px; height: 30px;
+    background: var(--gold);
+    border-radius: 3px;
+    flex-shrink: 0;
+  }
+
+  .section-sub {
+    font-size: 14px; color: var(--teal);
+    font-style: italic; margin-bottom: 32px;
+    padding-left: 20px;
+    letter-spacing: 0.3px;
+  }
+
+  /* ── PROSE ── */
+  .prose { color: #2a1c0a; margin-bottom: 28px; }
+  .prose p { margin-bottom: 16px; }
+
+  /* ── QUOTE BOX ── */
+  .quote-box {
+    border-left: 4px solid var(--gold);
+    background: linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    padding: 20px 28px;
+    margin: 28px 0;
+    border-radius: 0 8px 8px 0;
+    box-shadow: 3px 3px 12px var(--shadow);
+    font-style: italic;
+    color: #3a2510;
+    position: relative;
+  }
+
+  .quote-box::before {
+    content: '"';
+    font-family: 'Playfair Display', serif;
+    font-size: 72px;
+    color: rgba(200,146,42,0.2);
+    position: absolute; top: -10px; left: 12px;
+    line-height: 1;
+  }
+
+  .quote-author {
+    margin-top: 10px;
+    font-style: normal;
+    font-size: 13px;
+    color: var(--teal);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 1px;
+  }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    background: linear-gradient(135deg, #f0f9f8 0%, #e4f4f3 100%);
+    border: 1.5px solid var(--teal-light);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin: 24px 0;
+    box-shadow: 0 3px 14px rgba(30,95,90,0.1);
+  }
+
+  .def-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; letter-spacing: 2.5px;
+    text-transform: uppercase;
+    color: var(--teal);
+    margin-bottom: 10px;
+    font-weight: 600;
+  }
+
+  .def-box .mjx-math { font-size: 1.05em !important; }
+
+  /* ── THEOREM BOX ── */
+  .theorem-box {
+    background: linear-gradient(135deg, #fef9ee 0%, #fdf0d5 100%);
+    border: 1.5px solid var(--gold);
+    border-radius: 10px;
+    padding: 22px 28px;
+    margin: 24px 0;
+    box-shadow: 0 3px 14px rgba(200,146,42,0.12);
+  }
+
+  .theorem-label {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; font-weight: 700;
+    color: var(--rust);
+    margin-bottom: 10px;
+  }
+
+  /* ── STEPS ── */
+  .steps { list-style: none; margin: 20px 0; }
+  .steps li {
+    display: flex; gap: 16px;
+    margin-bottom: 18px;
+    align-items: flex-start;
+  }
+
+  .step-num {
+    width: 30px; height: 30px;
+    background: var(--teal);
+    color: white;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px; font-weight: 600;
+    flex-shrink: 0; margin-top: 2px;
+  }
+
+  /* ── INTERACTIVE ZENO ── */
+  .zeno-demo {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    box-shadow: 0 6px 30px rgba(26,18,9,0.25);
+  }
+
+  .zeno-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--gold-light);
+    margin-bottom: 18px; text-align: center;
+    font-style: italic;
+  }
+
+  .track-container {
+    background: #0f0a03;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .track {
+    height: 6px;
+    background: #2a2010;
+    border-radius: 3px;
+    position: relative;
+    margin: 30px 0 16px;
+  }
+
+  .track-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal-light), var(--gold));
+    border-radius: 3px;
+    width: 0%;
+    transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .track-markers {
+    display: flex;
+    justify-content: space-between;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: rgba(245,237,218,0.4);
+    margin-top: 6px;
+  }
+
+  .runner {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px;
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .runner-svg { width: 20px; height: 20px; }
+
+  .tortoise {
+    position: absolute;
+    top: 50%; transform: translateY(-50%);
+    font-size: 20px; line-height: 1;
+    transition: left 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+
+  .label-start, .label-end {
+    position: absolute; top: -22px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px; color: rgba(245,237,218,0.5);
+  }
+  .label-start { left: 0; }
+  .label-end { right: 0; }
+
+  .zeno-info {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 16px; margin-bottom: 18px;
+  }
+
+  .info-card {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(200,146,42,0.2);
+    border-radius: 8px;
+    padding: 14px 18px;
+  }
+
+  .info-card-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 2px;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .info-card-value {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 20px; font-weight: 600;
+    color: var(--parchment);
+  }
+
+  .info-card-sub {
+    font-size: 11px; color: rgba(245,237,218,0.4);
+    margin-top: 3px;
+  }
+
+  .series-display {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(30,95,90,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    margin-bottom: 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--teal-light);
+    min-height: 46px;
+    word-break: break-all;
+  }
+
+  .zeno-controls {
+    display: flex; gap: 12px; justify-content: center;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    padding: 10px 24px;
+    border-radius: 6px;
+    cursor: pointer;
+    border: none;
+    transition: all 0.2s;
+    letter-spacing: 0.3px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, var(--teal) 0%, var(--teal-light) 100%);
+    color: white;
+  }
+  .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(30,95,90,0.4); }
+
+  .btn-gold {
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-light) 100%);
+    color: var(--ink);
+    font-weight: 600;
+  }
+  .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(200,146,42,0.4); }
+
+  .btn-outline {
+    background: transparent;
+    color: rgba(245,237,218,0.7);
+    border: 1px solid rgba(245,237,218,0.25);
+  }
+  .btn-outline:hover { border-color: var(--gold); color: var(--gold-light); }
+
+  /* ── BOUNDED SET VISUALIZER ── */
+  .vis-demo {
+    background: var(--ink);
+    border-radius: 12px;
+    padding: 28px;
+    margin: 28px 0;
+    box-shadow: 0 6px 30px rgba(26,18,9,0.25);
+  }
+
+  .vis-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 18px; color: var(--gold-light);
+    margin-bottom: 20px; text-align: center;
+    font-style: italic;
+  }
+
+  .number-line-wrap {
+    background: #0f0a03;
+    border-radius: 8px;
+    padding: 24px 20px 16px;
+    margin-bottom: 18px;
+  }
+
+  #numberLineCanvas {
+    width: 100%; height: 120px;
+    display: block;
+  }
+
+  .set-controls {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+
+  .set-select {
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(200,146,42,0.3);
+    color: var(--parchment);
+    padding: 10px 14px;
+    border-radius: 6px;
+    font-family: 'Source Serif 4', serif;
+    font-size: 14px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+  }
+
+  .set-info-grid {
+    display: grid; grid-template-columns: repeat(4, 1fr);
+    gap: 10px; margin-bottom: 16px;
+  }
+
+  .set-prop {
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 8px;
+    padding: 12px 14px;
+    text-align: center;
+  }
+
+  .set-prop-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px; letter-spacing: 1.5px;
+    color: rgba(245,237,218,0.4);
+    text-transform: uppercase; margin-bottom: 6px;
+  }
+
+  .set-prop-val {
+    font-size: 14px; font-weight: 600;
+  }
+
+  .yes { color: #4caf7d; }
+  .no  { color: #e05252; }
+  .na  { color: rgba(245,237,218,0.35); font-style: italic; font-size: 12px; }
+
+  .set-notation {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(30,95,90,0.3);
+    border-radius: 8px;
+    padding: 14px 18px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 14px; color: var(--teal-light);
+    text-align: center;
+  }
+
+  /* ── QUIZ ── */
+  .quiz-card {
+    background: var(--parchment);
+    border: 1.5px solid var(--parchment-dark);
+    border-radius: 12px;
+    padding: 28px;
+    margin-bottom: 22px;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  .quiz-q {
+    font-family: 'Playfair Display', serif;
+    font-size: 17px;
+    color: var(--ink);
+    margin-bottom: 18px;
+    line-height: 1.6;
+  }
+
+  .quiz-q span { color: var(--rust); }
+
+  .quiz-options { display: flex; flex-direction: column; gap: 10px; }
+
+  .quiz-opt {
+    background: white;
+    border: 1.5px solid #d9cdb5;
+    border-radius: 8px;
+    padding: 12px 18px;
+    cursor: pointer;
+    font-size: 15px;
+    transition: all 0.2s;
+    display: flex; align-items: center; gap: 12px;
+    text-align: left;
+  }
+
+  .quiz-opt:hover:not(.answered) { border-color: var(--teal); background: #f0f9f8; }
+
+  .quiz-opt.correct { border-color: #4caf7d; background: #f0fff5; color: #1a5c35; }
+  .quiz-opt.wrong   { border-color: #e05252; background: #fff5f5; color: #8b1c1c; }
+  .quiz-opt.answered { cursor: default; }
+
+  .opt-icon { font-size: 18px; flex-shrink: 0; }
+
+  .quiz-feedback {
+    margin-top: 14px;
+    padding: 12px 18px;
+    border-radius: 8px;
+    font-size: 14px;
+    display: none;
+    line-height: 1.6;
+  }
+
+  .quiz-feedback.correct { background: #f0fff5; border: 1px solid #4caf7d; color: #1a5c35; }
+  .quiz-feedback.wrong   { background: #fff5f5; border: 1px solid #e05252; color: #8b1c1c; }
+
+  .quiz-score {
+    text-align: center;
+    padding: 24px;
+    background: linear-gradient(135deg, var(--parchment) 0%, var(--parchment-dark) 100%);
+    border-radius: 12px;
+    border: 1.5px solid var(--gold);
+    margin-top: 24px;
+    display: none;
+  }
+
+  .score-num {
+    font-family: 'Playfair Display', serif;
+    font-size: 52px; font-weight: 700;
+    color: var(--rust);
+    line-height: 1;
+  }
+
+  .score-label { color: var(--teal); font-size: 16px; margin-top: 6px; }
+
+  /* ── FORMULA PANEL ── */
+  .formula-grid {
+    display: grid; grid-template-columns: 1fr 1fr;
+    gap: 18px; margin: 28px 0;
+  }
+
+  .formula-card {
+    background: var(--parchment);
+    border: 1.5px solid var(--parchment-dark);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 2px 10px var(--shadow);
+  }
+
+  .formula-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 16px; color: var(--rust);
+    margin-bottom: 12px;
+    border-bottom: 1px solid var(--parchment-dark);
+    padding-bottom: 8px;
+  }
+
+  .formula-card p { font-size: 14px; color: #3a2510; line-height: 1.7; }
+
+  /* ── TABLE ── */
+  .data-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 24px 0;
+    font-size: 14px;
+    background: var(--parchment);
+    border-radius: 10px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow);
+  }
+
+  .data-table th {
+    background: var(--teal);
+    color: white;
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .data-table td {
+    padding: 11px 16px;
+    border-bottom: 1px solid var(--parchment-dark);
+    color: #2a1c0a;
+  }
+
+  .data-table tr:last-child td { border-bottom: none; }
+  .data-table tr:nth-child(even) td { background: rgba(200,146,42,0.05); }
+
+  /* ── FOOTER ── */
+  footer {
+    text-align: center;
+    padding: 28px 20px;
+    background: var(--ink);
+    color: rgba(245,237,218,0.45);
+    font-size: 13px;
+    margin-top: 48px;
+    letter-spacing: 0.5px;
+  }
+
+  footer strong { color: var(--gold); }
+
+  /* ── RESPONSIVE ── */
+  @media (max-width: 600px) {
+    .content-wrap { padding: 32px 20px; }
+    .formula-grid { grid-template-columns: 1fr; }
+    .zeno-info { grid-template-columns: 1fr; }
+    .set-controls { grid-template-columns: 1fr; }
+    .set-info-grid { grid-template-columns: 1fr 1fr; }
+    .tab-btn { padding: 12px 14px; font-size: 12px; }
+  }
+
+  .highlight { color: var(--rust); font-weight: 600; }
+  .em-teal { color: var(--teal); font-weight: 600; }
+  .em-gold { color: var(--gold); font-weight: 600; }
+
+  .progress-bar-wrap {
+    background: rgba(255,255,255,0.07);
+    border-radius: 4px; height: 4px;
+    margin-bottom: 20px;
+  }
+  .progress-bar-fill {
+    height: 100%; border-radius: 4px;
+    background: linear-gradient(90deg, var(--teal-light), var(--gold));
+    transition: width 0.5s;
+  }
+
+  .inf-series-row {
+    display: flex; align-items: center;
+    gap: 8px; flex-wrap: wrap;
+    margin: 12px 0;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--teal-light);
+  }
+
+  .partial-sum-chip {
+    background: rgba(200,146,42,0.15);
+    border: 1px solid rgba(200,146,42,0.3);
+    border-radius: 4px;
+    padding: 2px 10px;
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+  }
+
+  .concept-link {
+    display: inline-flex; align-items: center; gap: 6px;
+    color: var(--teal); font-size: 14px;
+    cursor: pointer; border-bottom: 1px dashed var(--teal);
+    padding-bottom: 1px; transition: color 0.2s;
+  }
+  .concept-link:hover { color: var(--teal-light); }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="header-badge">Analisis Real · IKIP Siliwangi</div>
+    <h1>Paradoks Zeno &amp; <span>Himpunan Terbatas</span></h1>
+    <p class="header-sub">Bahan Ajar Interaktif — Martin Bernard, M.Pd.</p>
+    <div class="header-divider"></div>
+  </div>
+</header>
+
+<nav class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('paradoks')">⚡ Paradoks Zeno</button>
+  <button class="tab-btn" onclick="switchTab('simulasi')">🎮 Simulasi</button>
+  <button class="tab-btn" onclick="switchTab('himpunan')">📐 Himpunan Terbatas</button>
+  <button class="tab-btn" onclick="switchTab('kuis')">📝 Kuis</button>
+</nav>
+
+<!-- ══════════════ TAB 1: PARADOKS ZENO ══════════════ -->
+<div id="tab-paradoks" class="tab-panel active">
+<div class="content-wrap">
+
+  <div class="section-title">Paradoks Zeno dari Elea</div>
+  <p class="section-sub">Zeno dari Elea (~490–430 SM) · Filsuf Pra-Sokrates Yunani</p>
+
+  <div class="quote-box">
+    Jika suatu benda bergerak dari A ke B, ia harus terlebih dahulu mencapai titik tengah. Sebelum itu, ia harus mencapai titik tengah dari separuh pertama. Dan seterusnya… selamanya. Bagaimana gerak bisa terjadi?
+    <div class="quote-author">— Zeno dari Elea (diparafrasekan)</div>
+  </div>
+
+  <div class="prose">
+    <p>Paradoks Zeno adalah serangkaian argumen filosofis yang menantang konsep gerak, ruang, dan waktu. Dalam perspektif <strong>Analisis Real</strong>, paradoks ini justru menjadi pintu masuk yang indah untuk memahami <span class="highlight">deret tak hingga (infinite series)</span> dan <span class="em-teal">himpunan terbatas</span>.</p>
+  </div>
+
+  <div class="theorem-box">
+    <div class="theorem-label">📌 Paradoks Achilles dan Kura-Kura</div>
+    <p>Achilles (pelari cepat) memberi kura-kura keunggulan awal sejauh \(d\) meter. Setiap kali Achilles mencapai posisi kura-kura sebelumnya, kura-kura telah bergerak maju sedikit. Benarkah Achilles tidak pernah menyusul?</p>
+  </div>
+
+  <div class="prose">
+    <p>Misalkan jarak awal = 1 satuan. Achilles harus menempuh:</p>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Deret Geometri Tak Hingga</div>
+    <p>
+      \[S = 1 + \frac{1}{2} + \frac{1}{4} + \frac{1}{8} + \cdots = \sum_{n=0}^{\infty} \left(\frac{1}{2}\right)^n\]
+    </p>
+    <p style="margin-top:12px;">Dengan rumus deret geometri \(|r| < 1\):</p>
+    <p style="margin-top:8px;">
+      \[S = \frac{a}{1-r} = \frac{1}{1-\frac{1}{2}} = \frac{1}{{\frac{1}{2}}} = 2\]
+    </p>
+    <p style="margin-top:12px; font-size:14px; color: var(--teal);">✦ Jumlah tak hingga langkah menghasilkan jarak <strong>terhingga</strong> — inilah kunci penyelesaian paradoks!</p>
+  </div>
+
+  <div class="section-title" style="margin-top:40px;">Tiga Paradoks Utama</div>
+
+  <table class="data-table">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nama Paradoks</th>
+        <th>Inti Masalah</th>
+        <th>Penyelesaian Matematis</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>1</strong></td>
+        <td>Dikotomi</td>
+        <td>Harus menempuh ½ sebelum sampai</td>
+        <td>\(\sum_{n=1}^{\infty}\frac{1}{2^n} = 1\)</td>
+      </tr>
+      <tr>
+        <td><strong>2</strong></td>
+        <td>Achilles & Kura-Kura</td>
+        <td>Selalu ada jarak sisa</td>
+        <td>Deret konvergen ke nilai terhingga</td>
+      </tr>
+      <tr>
+        <td><strong>3</strong></td>
+        <td>Anak Panah</td>
+        <td>Tiap instan panah diam</td>
+        <td>Kecepatan = limit rasio jarak/waktu</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="def-box" style="margin-top:32px;">
+    <div class="def-label">Koneksi ke Analisis Real</div>
+    <p>Penyelesaian paradoks Zeno membutuhkan konsep-konsep Analisis Real:</p>
+    <ul style="margin-top:12px; padding-left:20px; line-height:2.2; font-size:15px; color:#1e3a38;">
+      <li><strong>Barisan (Sequence)</strong>: \(a_n = \left(\frac{1}{2}\right)^n \to 0\) saat \(n \to \infty\)</li>
+      <li><strong>Deret (Series)</strong>: \(\sum_{n=0}^{\infty} r^n = \frac{1}{1-r}\) untuk \(|r| < 1\)</li>
+      <li><strong>Batas (Limit)</strong>: Jumlah parsial \(S_N \to S\) saat \(N \to \infty\)</li>
+      <li><strong>Kelengkapan ℝ</strong>: Deret Cauchy konvergen di ℝ</li>
+    </ul>
+  </div>
+
+  <div class="formula-grid" style="margin-top:32px;">
+    <div class="formula-card">
+      <h4>🔢 Jumlah Parsial</h4>
+      <p>Jumlah parsial ke-\(N\):</p>
+      <p style="margin-top:8px;">\[S_N = \sum_{n=0}^{N} \left(\frac{1}{2}\right)^n = \frac{1 - (½)^{N+1}}{1 - ½} = 2\left(1 - \frac{1}{2^{N+1}}\right)\]</p>
+    </div>
+    <div class="formula-card">
+      <h4>📈 Konvergensi</h4>
+      <p>Ketika \(N \to \infty\):</p>
+      <p style="margin-top:8px;">\[\lim_{N \to \infty} S_N = \lim_{N \to \infty} 2\left(1 - \frac{1}{2^{N+1}}\right) = 2\]</p>
+      <p style="margin-top:8px;">Karena \(\frac{1}{2^{N+1}} \to 0\).</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ TAB 2: SIMULASI ══════════════ -->
+<div id="tab-simulasi" class="tab-panel">
+<div class="content-wrap">
+
+  <div class="section-title">Simulasi Interaktif</div>
+  <p class="section-sub">Visualisasikan paradoks Zeno dan konvergensi deret geometri</p>
+
+  <div class="zeno-demo">
+    <div class="zeno-title">🏃 Achilles vs 🐢 Kura-Kura — Simulasi Dikotomi</div>
+
+    <div class="track-container">
+      <div class="track" id="mainTrack">
+        <div class="label-start">Start (0)</div>
+        <div class="label-end">Finish (1)</div>
+        <div class="track-fill" id="trackFill"></div>
+        <div class="runner" id="achilles" style="left:0%">
+          <svg class="runner-svg" viewBox="0 0 20 20">
+            <circle cx="10" cy="4" r="3.5" fill="#4caf7d"/>
+            <rect x="8" y="8" width="4" height="6" fill="#4caf7d" rx="1"/>
+            <rect x="6" y="14" width="3" height="3" fill="#4caf7d" rx="1"/>
+            <rect x="11" y="14" width="3" height="3" fill="#4caf7d" rx="1"/>
+          </svg>
+        </div>
+        <div class="tortoise" id="tortoise" style="left:50%">🐢</div>
+      </div>
+      <div class="track-markers">
+        <span>0</span><span>¼</span><span>½</span><span>¾</span><span>1</span>
+      </div>
+    </div>
+
+    <div class="zeno-info">
+      <div class="info-card">
+        <div class="info-card-label">Langkah ke-</div>
+        <div class="info-card-value" id="stepNum">0</div>
+        <div class="info-card-sub">dari ∞ langkah</div>
+      </div>
+      <div class="info-card">
+        <div class="info-card-label">Posisi Achilles</div>
+        <div class="info-card-value" id="achillesPos">0.0000</div>
+        <div class="info-card-sub">mendekati 1.0000</div>
+      </div>
+    </div>
+
+    <div style="margin-bottom:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:rgba(245,237,218,0.4); text-transform:uppercase; letter-spacing:2px;">Deret Parsial:</div>
+    <div class="series-display" id="seriesDisplay">Tekan "Mulai" untuk memulai simulasi...</div>
+
+    <div style="margin-bottom:16px;">
+      <div style="display:flex; justify-content:space-between; font-family:'JetBrains Mono',monospace; font-size:12px; color:rgba(245,237,218,0.5); margin-bottom:4px;">
+        <span>Jumlah Parsial S_N</span>
+        <span id="partialSumVal">0</span>
+      </div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="partialBar" style="width:0%"></div>
+      </div>
+    </div>
+
+    <div class="zeno-controls">
+      <button class="btn btn-gold" onclick="startZeno()">▶ Langkah Berikutnya</button>
+      <button class="btn btn-primary" onclick="autoZeno()">⚡ Auto-Play</button>
+      <button class="btn btn-outline" onclick="resetZeno()">↺ Reset</button>
+    </div>
+  </div>
+
+  <div class="def-box" style="margin-top:8px;">
+    <div class="def-label">💡 Interpretasi</div>
+    <p>Setiap langkah, Achilles menempuh <strong>setengah</strong> dari sisa jarak. Meski ada tak hingga langkah, <em>total waktu tetap terhingga</em> karena setiap langkah juga memakan waktu yang lebih singkat secara proporsional. Inilah esensi dari <strong>deret geometri yang konvergen</strong>.</p>
+  </div>
+
+  <!-- Hitung Deret Kustom -->
+  <div class="vis-demo" style="margin-top:32px;">
+    <div class="vis-title">🔢 Kalkulator Deret Geometri</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:16px;">
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Rasio (r)</div>
+        <input type="range" id="ratioSlider" min="-0.99" max="0.99" step="0.01" value="0.5"
+          style="width:100%; accent-color:var(--teal-light);"
+          oninput="updateSeries()">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--parchment); text-align:center; margin-top:6px;" id="ratioDisplay">r = 0.50</div>
+      </div>
+      <div>
+        <div style="font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--gold); letter-spacing:2px; margin-bottom:8px; text-transform:uppercase;">Suku Pertama (a)</div>
+        <input type="range" id="aSlider" min="0.1" max="5" step="0.1" value="1"
+          style="width:100%; accent-color:var(--gold);"
+          oninput="updateSeries()">
+        <div style="font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--parchment); text-align:center; margin-top:6px;" id="aDisplay">a = 1.0</div>
+      </div>
+    </div>
+    <div id="seriesResult" style="background:rgba(255,255,255,0.04); border:1px solid rgba(200,146,42,0.25); border-radius:8px; padding:16px; font-family:'JetBrains Mono',monospace; font-size:14px; color:var(--teal-light); text-align:center; line-height:2.2;"></div>
+    <canvas id="seriesCanvas" width="800" height="150" style="width:100%; height:auto; margin-top:16px; border-radius:6px; background:#0a0704;"></canvas>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ TAB 3: HIMPUNAN TERBATAS ══════════════ -->
+<div id="tab-himpunan" class="tab-panel">
+<div class="content-wrap">
+
+  <div class="section-title">Himpunan Terbatas (Bounded Sets)</div>
+  <p class="section-sub">Definisi, Teorema, dan Sifat-Sifat Dasar dalam Analisis Real</p>
+
+  <div class="def-box">
+    <div class="def-label">Definisi 1 — Batas Atas (Upper Bound)</div>
+    <p>Misalkan \(S \subseteq \mathbb{R}\) dan \(S \neq \emptyset\). Bilangan \(M \in \mathbb{R}\) disebut <strong>batas atas</strong> dari \(S\) jika:</p>
+    <p style="margin-top:12px; text-align:center;">\[x \leq M \quad \forall x \in S\]</p>
+    <p style="margin-top:10px; font-size:14px; color:var(--teal);">Jika batas atas tersebut ada, \(S\) disebut <em>bounded above</em> (terbatas atas).</p>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Definisi 2 — Batas Bawah (Lower Bound)</div>
+    <p>Bilangan \(m \in \mathbb{R}\) disebut <strong>batas bawah</strong> dari \(S\) jika:</p>
+    <p style="margin-top:12px; text-align:center;">\[x \geq m \quad \forall x \in S\]</p>
+    <p style="margin-top:10px; font-size:14px; color:var(--teal);">Jika batas bawah tersebut ada, \(S\) disebut <em>bounded below</em> (terbatas bawah).</p>
+  </div>
+
+  <div class="def-box">
+    <div class="def-label">Definisi 3 — Himpunan Terbatas (Bounded Set)</div>
+    <p>\(S\) disebut <strong>terbatas (bounded)</strong> jika terbatas atas <em>dan</em> terbatas bawah, yaitu:</p>
+    <p style="margin-top:12px; text-align:center;">\[\exists M > 0 \text{ sehingga } |x| \leq M \quad \forall x \in S\]</p>
+  </div>
+
+  <div class="theorem-box" style="margin-top:32px;">
+    <div class="theorem-label">🔑 Definisi Supremum (Least Upper Bound)</div>
+    <p>Bilangan \(\alpha = \sup S\) (supremum dari \(S\)) jika:</p>
+    <ol style="margin-top:12px; padding-left:20px; line-height:2.2; font-size:15px; color:#3a2510;">
+      <li>\(\alpha\) adalah batas atas dari \(S\) &nbsp;(\(x \leq \alpha, \; \forall x \in S\))</li>
+      <li>Jika \(\beta\) batas atas \(S\), maka \(\alpha \leq \beta\) &nbsp;(batas atas terkecil)</li>
+    </ol>
+  </div>
+
+  <div class="theorem-box">
+    <div class="theorem-label">🔑 Definisi Infimum (Greatest Lower Bound)</div>
+    <p>Bilangan \(\gamma = \inf S\) (infimum dari \(S\)) jika:</p>
+    <ol style="margin-top:12px; padding-left:20px; line-height:2.2; font-size:15px; color:#3a2510;">
+      <li>\(\gamma\) adalah batas bawah dari \(S\)</li>
+      <li>Jika \(\delta\) batas bawah \(S\), maka \(\delta \leq \gamma\) &nbsp;(batas bawah terbesar)</li>
+    </ol>
+  </div>
+
+  <div class="theorem-box" style="background:linear-gradient(135deg,#f5fffe 0%,#e8f7f5 100%); border-color:var(--teal);">
+    <div class="theorem-label" style="color:var(--teal);">📐 Aksioma Kelengkapan (Completeness Axiom)</div>
+    <p>Setiap himpunan bagian tak kosong dari \(\mathbb{R}\) yang terbatas atas memiliki supremum di \(\mathbb{R}\).</p>
+    <p style="margin-top:10px; font-size:14px; color:var(--teal);">Aksioma ini membedakan \(\mathbb{R}\) dari \(\mathbb{Q}\) dan merupakan fondasi Analisis Real!</p>
+  </div>
+
+  <!-- Visualizer -->
+  <div class="vis-demo" style="margin-top:32px;">
+    <div class="vis-title">🎯 Visualisasi Himpunan pada Garis Bilangan Real</div>
+
+    <div class="set-controls">
+      <select class="set-select" id="setChoice" onchange="updateSetVis()">
+        <option value="closed">S = [1, 4] (tertutup)</option>
+        <option value="open">S = (1, 4) (terbuka)</option>
+        <option value="halfopen">S = [1, 4) (setengah terbuka)</option>
+        <option value="geom">S = {1/2ⁿ | n∈ℕ}</option>
+        <option value="naturals">S = {1, 2, ..., 5} (terbatas)</option>
+        <option value="unbounded">S = [1, +∞) (tak terbatas)</option>
+        <option value="sine">S = {sin(n) | n∈ℕ, n≤20}</option>
+      </select>
+      <div style="display:flex;align-items:center;justify-content:center;color:rgba(245,237,218,0.5);font-size:13px;">← Pilih Himpunan</div>
+      <div></div>
+    </div>
+
+    <div class="number-line-wrap">
+      <canvas id="numberLineCanvas"></canvas>
+    </div>
+
+    <div class="set-info-grid">
+      <div class="set-prop">
+        <div class="set-prop-name">Terbatas Atas</div>
+        <div class="set-prop-val" id="propBoundedAbove">—</div>
+      </div>
+      <div class="set-prop">
+        <div class="set-prop-name">Terbatas Bawah</div>
+        <div class="set-prop-val" id="propBoundedBelow">—</div>
+      </div>
+      <div class="set-prop">
+        <div class="set-prop-name">Supremum</div>
+        <div class="set-prop-val" id="propSup" style="font-size:16px;">—</div>
+      </div>
+      <div class="set-prop">
+        <div class="set-prop-name">Infimum</div>
+        <div class="set-prop-val" id="propInf" style="font-size:16px;">—</div>
+      </div>
+    </div>
+
+    <div class="set-notation" id="setNotation">
+      Pilih himpunan untuk melihat notasi...
+    </div>
+  </div>
+
+  <!-- Kaitan dengan Paradoks Zeno -->
+  <div class="theorem-box" style="margin-top:32px;">
+    <div class="theorem-label">🔗 Kaitan: Paradoks Zeno dan Himpunan Terbatas</div>
+    <p>Himpunan jumlah parsial Zeno:</p>
+    <p style="margin-top:10px;">\[S = \left\{S_N = \sum_{n=0}^{N} \frac{1}{2^n} \;\Bigg|\; N \in \mathbb{N}\right\} = \left\{1,\, \frac{3}{2},\, \frac{7}{4},\, \frac{15}{8},\, \ldots\right\}\]</p>
+    <ul style="margin-top:14px; padding-left:20px; line-height:2.2; font-size:15px; color:#3a2510;">
+      <li><strong>Terbatas bawah</strong>: \(\inf S = 1\)</li>
+      <li><strong>Terbatas atas</strong>: \(\sup S = 2\) (tidak dicapai oleh anggota S)</li>
+      <li>Karena S terbatas atas dan monoton naik → S <strong>konvergen</strong> ke \(\sup S = 2\)</li>
+    </ul>
+    <p style="margin-top:12px; font-size:14px; color:var(--teal);">✦ Inilah jawaban matematis paradoks Zeno: tak hingga langkah menghasilkan jarak terhingga karena himpunan jumlah parsialnya <em>terbatas dan konvergen</em>.</p>
+  </div>
+
+  <div class="formula-grid" style="margin-top:28px;">
+    <div class="formula-card">
+      <h4>📊 Teorema Monoton</h4>
+      <p>Barisan yang monoton naik dan terbatas atas <strong>pasti konvergen</strong>. Limitnya adalah supremum himpunan nilai barisan tersebut.</p>
+      <p style="margin-top:10px;">\[\text{Jika } a_n \nearrow \text{ dan } a_n \leq M,\; \text{maka } a_n \to \sup\{a_n\}\]</p>
+    </div>
+    <div class="formula-card">
+      <h4>🔬 Kriteria Cauchy</h4>
+      <p>Barisan \((a_n)\) konvergen di \(\mathbb{R}\) jika dan hanya jika untuk setiap \(\varepsilon > 0\), ada \(N\) sehingga:</p>
+      <p style="margin-top:10px;">\[|a_m - a_n| < \varepsilon \quad \forall\, m, n > N\]</p>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ TAB 4: KUIS ══════════════ -->
+<div id="tab-kuis" class="tab-panel">
+<div class="content-wrap">
+
+  <div class="section-title">Kuis Pemahaman</div>
+  <p class="section-sub">Uji pemahaman Anda tentang Paradoks Zeno dan Himpunan Terbatas</p>
+
+  <div id="quizContainer"></div>
+
+  <div class="quiz-score" id="quizScore">
+    <div class="score-num" id="scoreNum">0/5</div>
+    <div class="score-label">Skor Anda</div>
+    <div id="scoreMsg" style="margin-top:12px; color:var(--teal); font-size:15px;"></div>
+    <button class="btn btn-gold" style="margin-top:20px;" onclick="resetQuiz()">↺ Ulangi Kuis</button>
+  </div>
+
+</div>
+</div>
+
+<footer>
+  <strong>Martin Bernard, M.Pd.</strong> · Dosen Pendidikan Matematika &amp; PGSD<br>
+  IKIP Siliwangi, Cimahi · Bahan Ajar Analisis Real
+</footer>
+
+<script>
+// ─── TAB LOGIC ───────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if (name === 'himpunan') { setTimeout(updateSetVis, 100); }
+  if (name === 'simulasi') { setTimeout(updateSeries, 100); }
+  MathJax.typesetPromise && MathJax.typesetPromise();
+}
+
+// ─── ZENO SIMULATION ─────────────────────────────────────
+let zenoStep = 0;
+let zenoAutoInterval = null;
+const MAX_STEPS = 12;
+
+function getZenoData(step) {
+  let pos = 0;
+  let terms = [];
+  for (let i = 0; i < step; i++) {
+    let t = 1 / Math.pow(2, i);
+    pos += t;
+    terms.push(t);
+  }
+  return { pos: Math.min(pos, 1.9999), terms };
+}
+
+function startZeno() {
+  if (zenoStep >= MAX_STEPS) { zenoStep = MAX_STEPS; }
+  zenoStep++;
+  renderZenoStep();
+}
+
+function renderZenoStep() {
+  const data = getZenoData(zenoStep);
+  const pct = (data.pos / 2) * 100;
+
+  document.getElementById('trackFill').style.width = pct + '%';
+  document.getElementById('achilles').style.left = (pct * 0.98) + '%';
+  const tortoisePct = Math.min(50 + zenoStep * 3, 75);
+  document.getElementById('tortoise').style.left = tortoisePct + '%';
+
+  document.getElementById('stepNum').textContent = zenoStep;
+  document.getElementById('achillesPos').textContent = data.pos.toFixed(6);
+
+  const termStrs = data.terms.map((t, i) => {
+    if (i === 0) return '1';
+    return `1/${Math.pow(2,i)}`;
+  });
+  const partial = data.pos.toFixed(6);
+  let series = termStrs.join(' + ');
+  if (zenoStep > 0) series += ` = ${partial}`;
+  document.getElementById('seriesDisplay').textContent = series || '(kosong)';
+
+  const fillPct = (data.pos / 2) * 100;
+  document.getElementById('partialBar').style.width = Math.min(fillPct, 100) + '%';
+  document.getElementById('partialSumVal').textContent = data.pos.toFixed(6) + ' → 2';
+}
+
+function autoZeno() {
+  if (zenoAutoInterval) { clearInterval(zenoAutoInterval); zenoAutoInterval = null; return; }
+  resetZeno();
+  zenoAutoInterval = setInterval(() => {
+    if (zenoStep >= MAX_STEPS) { clearInterval(zenoAutoInterval); zenoAutoInterval = null; return; }
+    zenoStep++;
+    renderZenoStep();
+  }, 700);
+}
+
+function resetZeno() {
+  if (zenoAutoInterval) { clearInterval(zenoAutoInterval); zenoAutoInterval = null; }
+  zenoStep = 0;
+  document.getElementById('trackFill').style.width = '0%';
+  document.getElementById('achilles').style.left = '0%';
+  document.getElementById('tortoise').style.left = '50%';
+  document.getElementById('stepNum').textContent = '0';
+  document.getElementById('achillesPos').textContent = '0.0000';
+  document.getElementById('seriesDisplay').textContent = 'Tekan "Langkah Berikutnya" untuk memulai...';
+  document.getElementById('partialBar').style.width = '0%';
+  document.getElementById('partialSumVal').textContent = '0';
+}
+
+// ─── SERIES CALCULATOR ───────────────────────────────────
+function updateSeries() {
+  const r = parseFloat(document.getElementById('ratioSlider').value);
+  const a = parseFloat(document.getElementById('aSlider').value);
+  document.getElementById('ratioDisplay').textContent = `r = ${r.toFixed(2)}`;
+  document.getElementById('aDisplay').textContent = `a = ${a.toFixed(1)}`;
+
+  const res = document.getElementById('seriesResult');
+  const canvas = document.getElementById('seriesCanvas');
+  const ctx = canvas.getContext('2d');
+
+  const N = 15;
+  const partials = [];
+  let sum = 0;
+  for (let n = 0; n <= N; n++) {
+    sum += a * Math.pow(r, n);
+    partials.push(sum);
+  }
+
+  let convergeTo, converges;
+  if (Math.abs(r) < 1) {
+    convergeTo = a / (1 - r);
+    converges = true;
+  } else {
+    converges = false;
+  }
+
+  if (converges) {
+    res.innerHTML = `
+      <div style="color:var(--gold); font-size:12px; letter-spacing:2px; margin-bottom:6px;">KONVERGEN</div>
+      ∑ ${a.toFixed(1)} · rⁿ = ${a.toFixed(1)} / (1 − ${r.toFixed(2)}) = <span style="color:var(--gold-light); font-size:18px;">${convergeTo.toFixed(4)}</span>
+      <div style="font-size:11px; color:rgba(245,237,218,0.45); margin-top:6px;">S₁₅ = ${partials[N].toFixed(6)}</div>
+    `;
+  } else {
+    res.innerHTML = `
+      <div style="color:#e05252; font-size:12px; letter-spacing:2px; margin-bottom:6px;">DIVERGEN</div>
+      |r| = ${Math.abs(r).toFixed(2)} ≥ 1 → Deret tidak konvergen
+      <div style="font-size:11px; color:rgba(245,237,218,0.45); margin-top:6px;">S₁₅ = ${partials[N].toFixed(4)}</div>
+    `;
+  }
+
+  // Draw chart
+  canvas.width = 800; canvas.height = 150;
+  ctx.clearRect(0, 0, 800, 150);
+  const pad = 30, W = 800 - pad*2, H = 150 - pad*2;
+
+  const allVals = partials.filter(v => isFinite(v));
+  const minV = Math.min(...allVals, converges ? convergeTo : 0) - 0.5;
+  const maxV = Math.max(...allVals, converges ? convergeTo : 0) + 0.5;
+
+  const toX = n => pad + (n / N) * W;
+  const toY = v => pad + H - ((v - minV) / (maxV - minV)) * H;
+
+  if (converges) {
+    ctx.strokeStyle = 'rgba(200,146,42,0.25)';
+    ctx.setLineDash([4, 4]);
+    ctx.beginPath();
+    ctx.moveTo(pad, toY(convergeTo));
+    ctx.lineTo(pad + W, toY(convergeTo));
+    ctx.stroke();
+    ctx.setLineDash([]);
+    ctx.fillStyle = 'rgba(200,146,42,0.6)';
+    ctx.font = '11px JetBrains Mono';
+    ctx.fillText(`S∞ = ${convergeTo.toFixed(3)}`, pad + W - 100, toY(convergeTo) - 6);
+  }
+
+  ctx.strokeStyle = '#2d8f88';
+  ctx.lineWidth = 2;
+  ctx.beginPath();
+  partials.forEach((v, i) => {
+    if (!isFinite(v)) return;
+    const x = toX(i), y = toY(v);
+    i === 0 ? ctx.moveTo(x, y) : ctx.lineTo(x, y);
+  });
+  ctx.stroke();
+
+  ctx.fillStyle = '#4caf7d';
+  partials.forEach((v, i) => {
+    if (!isFinite(v)) return;
+    ctx.beginPath();
+    ctx.arc(toX(i), toY(v), 4, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  ctx.fillStyle = 'rgba(245,237,218,0.3)';
+  ctx.font = '10px JetBrains Mono';
+  for (let i = 0; i <= N; i += 3) {
+    ctx.fillText(i, toX(i) - 3, pad + H + 16);
+  }
+}
+
+// ─── SET VISUALIZER ──────────────────────────────────────
+const sets = {
+  closed: {
+    label: 'S = [1, 4]',
+    notation: 'S = [1, 4] = { x ∈ ℝ | 1 ≤ x ≤ 4 }',
+    boundedAbove: true, boundedBelow: true,
+    sup: '4', inf: '1',
+    draw: (ctx, toX, W, H, pad) => {
+      ctx.strokeStyle = '#4caf7d'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(toX(1), H/2); ctx.lineTo(toX(4), H/2); ctx.stroke();
+      [1, 4].forEach(x => { ctx.fillStyle='#4caf7d'; ctx.beginPath(); ctx.arc(toX(x),H/2,7,0,Math.PI*2); ctx.fill(); });
+    }
+  },
+  open: {
+    label: 'S = (1, 4)',
+    notation: 'S = (1, 4) = { x ∈ ℝ | 1 < x < 4 }',
+    boundedAbove: true, boundedBelow: true,
+    sup: '4 (tidak dicapai)', inf: '1 (tidak dicapai)',
+    draw: (ctx, toX, W, H, pad) => {
+      ctx.strokeStyle = '#e8b84b'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(toX(1), H/2); ctx.lineTo(toX(4), H/2); ctx.stroke();
+      [1, 4].forEach(x => {
+        ctx.strokeStyle='#e8b84b'; ctx.lineWidth=3; ctx.fillStyle='#0a0704';
+        ctx.beginPath(); ctx.arc(toX(x),H/2,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
+      });
+    }
+  },
+  halfopen: {
+    label: 'S = [1, 4)',
+    notation: 'S = [1, 4) = { x ∈ ℝ | 1 ≤ x < 4 }',
+    boundedAbove: true, boundedBelow: true,
+    sup: '4 (tidak dicapai)', inf: '1',
+    draw: (ctx, toX, W, H, pad) => {
+      ctx.strokeStyle = '#2d8f88'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(toX(1), H/2); ctx.lineTo(toX(4), H/2); ctx.stroke();
+      ctx.fillStyle='#2d8f88'; ctx.beginPath(); ctx.arc(toX(1),H/2,7,0,Math.PI*2); ctx.fill();
+      ctx.strokeStyle='#2d8f88'; ctx.lineWidth=3; ctx.fillStyle='#0a0704';
+      ctx.beginPath(); ctx.arc(toX(4),H/2,7,0,Math.PI*2); ctx.fill(); ctx.stroke();
+    }
+  },
+  geom: {
+    label: 'S = {(1/2)ⁿ | n ∈ ℕ}',
+    notation: 'S = { 1, 1/2, 1/4, 1/8, ... } ⊂ (0, 1]',
+    boundedAbove: true, boundedBelow: true,
+    sup: '1', inf: '0 (infimum, tidak dicapai)',
+    draw: (ctx, toX, W, H, pad) => {
+      const pts = Array.from({length:10}, (_,i) => Math.pow(0.5, i));
+      pts.forEach((v, i) => {
+        const alpha = Math.max(0.3, 1 - i*0.07);
+        ctx.fillStyle = `rgba(232, 184, 75, ${alpha})`;
+        ctx.beginPath(); ctx.arc(toX(v), H/2, 5, 0, Math.PI*2); ctx.fill();
+      });
+    }
+  },
+  naturals: {
+    label: 'S = {1, 2, 3, 4, 5}',
+    notation: 'S = {1, 2, 3, 4, 5} ⊂ ℕ ⊂ ℝ',
+    boundedAbove: true, boundedBelow: true,
+    sup: '5 (max)', inf: '1 (min)',
+    draw: (ctx, toX, W, H, pad) => {
+      [1,2,3,4,5].forEach(v => {
+        ctx.fillStyle='#c8922a';
+        ctx.beginPath(); ctx.arc(toX(v), H/2, 6, 0, Math.PI*2); ctx.fill();
+        ctx.fillStyle='rgba(245,237,218,0.5)'; ctx.font='12px JetBrains Mono';
+        ctx.textAlign='center'; ctx.fillText(v, toX(v), H/2 - 15);
+      });
+    }
+  },
+  unbounded: {
+    label: 'S = [1, +∞)',
+    notation: 'S = [1, +∞) = { x ∈ ℝ | x ≥ 1 }',
+    boundedAbove: false, boundedBelow: true,
+    sup: '+∞ (tidak ada)', inf: '1',
+    draw: (ctx, toX, W, H, pad) => {
+      ctx.strokeStyle = '#e05252'; ctx.lineWidth = 4;
+      ctx.beginPath(); ctx.moveTo(toX(1), H/2); ctx.lineTo(W - pad, H/2); ctx.stroke();
+      ctx.fillStyle='#e05252'; ctx.beginPath(); ctx.arc(toX(1),H/2,7,0,Math.PI*2); ctx.fill();
+      ctx.fillStyle='rgba(245,237,218,0.5)'; ctx.font='14px JetBrains Mono';
+      ctx.textAlign='left'; ctx.fillText('→ ∞', W - pad + 4, H/2 + 5);
+    }
+  },
+  sine: {
+    label: 'S = {sin(n) | n = 1..20}',
+    notation: 'S = { sin(1), sin(2), ..., sin(20) } ⊂ [−1, 1]',
+    boundedAbove: true, boundedBelow: true,
+    sup: '≤ 1', inf: '≥ −1',
+    draw: (ctx, toX, W, H, pad) => {
+      const pts = Array.from({length:20}, (_,i) => Math.sin(i+1));
+      pts.forEach((v, i) => {
+        const hue = (i * 18) % 360;
+        ctx.fillStyle = `hsl(${hue}, 70%, 60%)`;
+        ctx.beginPath(); ctx.arc(toX(v), H/2, 5, 0, Math.PI*2); ctx.fill();
+      });
+    }
+  }
+};
+
+function updateSetVis() {
+  const key = document.getElementById('setChoice').value;
+  const s = sets[key];
+  if (!s) return;
+
+  document.getElementById('propBoundedAbove').innerHTML = s.boundedAbove
+    ? '<span class="yes">✓ Ya</span>' : '<span class="no">✗ Tidak</span>';
+  document.getElementById('propBoundedBelow').innerHTML = s.boundedBelow
+    ? '<span class="yes">✓ Ya</span>' : '<span class="no">✗ Tidak</span>';
+  document.getElementById('propSup').innerHTML = `<span style="color:var(--gold-light); font-size:14px;">${s.sup}</span>`;
+  document.getElementById('propInf').innerHTML = `<span style="color:var(--teal-light); font-size:14px;">${s.inf}</span>`;
+  document.getElementById('setNotation').textContent = s.notation;
+
+  const canvas = document.getElementById('numberLineCanvas');
+  const rect = canvas.parentElement.getBoundingClientRect();
+  canvas.width = Math.round(rect.width) || 800;
+  canvas.height = 120;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  const pad = 40;
+
+  ctx.clearRect(0, 0, W, H);
+
+  // Axis
+  ctx.strokeStyle = 'rgba(245,237,218,0.15)'; ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad, H/2); ctx.lineTo(W - pad, H/2); ctx.stroke();
+
+  // Determine range
+  let lo = -2, hi = 6;
+  if (key === 'geom' || key === 'sine') { lo = -1.5; hi = 1.5; }
+  if (key === 'unbounded') { lo = 0; hi = 8; }
+
+  const toX = v => pad + ((v - lo) / (hi - lo)) * (W - 2*pad);
+
+  // Tick marks
+  ctx.fillStyle = 'rgba(245,237,218,0.3)';
+  ctx.font = '11px JetBrains Mono';
+  ctx.textAlign = 'center';
+  for (let v = Math.ceil(lo); v <= Math.floor(hi); v++) {
+    const x = toX(v);
+    ctx.strokeStyle = 'rgba(245,237,218,0.15)';
+    ctx.beginPath(); ctx.moveTo(x, H/2 - 5); ctx.lineTo(x, H/2 + 5); ctx.stroke();
+    ctx.fillText(v, x, H/2 + 20);
+  }
+
+  s.draw(ctx, toX, W, H, pad);
+}
+
+// ─── QUIZ ────────────────────────────────────────────────
+const quizData = [
+  {
+    q: 'Paradoks Zeno "Dikotomi" berargumen bahwa gerak mustahil karena harus menempuh tak hingga langkah. Penyelesaian matematisnya adalah...',
+    opts: [
+      'Gerak memang tidak mungkin, Zeno benar',
+      'Jumlah tak hingga bilangan positif selalu tak terhingga',
+      'Deret geometri dengan |r| < 1 konvergen ke nilai terhingga',
+      'Kita hanya perlu menghitung langkah terakhir'
+    ],
+    correct: 2,
+    feedback: 'Benar! Deret geometri ∑(1/2)ⁿ = 2 meskipun memiliki tak hingga suku. Ini karena |r| = 1/2 < 1, sehingga deret konvergen.'
+  },
+  {
+    q: 'Misalkan S = (0, 5]. Manakah pernyataan yang BENAR?',
+    opts: [
+      'S tidak terbatas karena mengandung bilangan tak hingga',
+      'sup S = 5 dan inf S = 0, tetapi 0 ∉ S',
+      'sup S tidak ada karena batasnya terbuka',
+      'inf S = 0 dan 0 ∈ S'
+    ],
+    correct: 1,
+    feedback: 'Benar! sup S = 5 (tercapai karena 5 ∈ S), dan inf S = 0 (tidak tercapai karena 0 ∉ S meskipun merupakan batas bawah terbesar).'
+  },
+  {
+    q: 'Himpunan jumlah parsial Zeno S = {S_N | N ∈ ℕ} dengan S_N = ∑_{n=0}^{N} (1/2)ⁿ. Nilai sup S adalah...',
+    opts: ['1', '1.5', '2', '+∞'],
+    correct: 2,
+    feedback: 'Benar! sup S = 2, karena lim S_N = 2 saat N→∞. Nilai 2 tidak dicapai oleh anggota S mana pun, namun merupakan supremum (batas atas terkecil).'
+  },
+  {
+    q: 'Menurut Aksioma Kelengkapan (Completeness Axiom), setiap himpunan bagian tak kosong S ⊆ ℝ yang terbatas atas...',
+    opts: [
+      'Pasti memiliki elemen maksimum',
+      'Pasti memiliki supremum di ℝ',
+      'Konvergen ke nilai rata-ratanya',
+      'Terbatas bawah juga'
+    ],
+    correct: 1,
+    feedback: 'Tepat! Aksioma Kelengkapan menyatakan bahwa setiap himpunan tak kosong yang terbatas atas di ℝ memiliki supremum di ℝ. Ini berbeda dengan ℚ di mana properti ini tidak selalu berlaku.'
+  },
+  {
+    q: 'Deret geometri ∑_{n=0}^{∞} r^n konvergen jika dan hanya jika...',
+    opts: [
+      '0 < r < 1',
+      '-1 ≤ r ≤ 1',
+      '|r| < 1',
+      'r > 0'
+    ],
+    correct: 2,
+    feedback: 'Benar! Syarat konvergensi deret geometri adalah |r| < 1, yang mencakup r negatif seperti r = -1/2. Jika |r| ≥ 1, deret divergen.'
+  }
+];
+
+let quizAnswered = [];
+let quizScore = 0;
+
+function buildQuiz() {
+  quizAnswered = new Array(quizData.length).fill(false);
+  quizScore = 0;
+  const container = document.getElementById('quizContainer');
+  document.getElementById('quizScore').style.display = 'none';
+
+  container.innerHTML = quizData.map((q, qi) => `
+    <div class="quiz-card" id="qcard-${qi}">
+      <div class="quiz-q"><span>Soal ${qi+1}.</span> ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((opt, oi) => `
+          <button class="quiz-opt" id="opt-${qi}-${oi}" onclick="answerQuiz(${qi}, ${oi})">
+            <span class="opt-icon">${['🅐','🅑','🅒','🅓'][oi]}</span>
+            ${opt}
+          </button>
+        `).join('')}
+      </div>
+      <div class="quiz-feedback" id="fb-${qi}"></div>
+    </div>
+  `).join('');
+}
+
+function answerQuiz(qi, oi) {
+  if (quizAnswered[qi]) return;
+  quizAnswered[qi] = true;
+  const q = quizData[qi];
+  const correct = oi === q.correct;
+  if (correct) quizScore++;
+
+  for (let o = 0; o < q.opts.length; o++) {
+    const btn = document.getElementById(`opt-${qi}-${o}`);
+    btn.classList.add('answered');
+    if (o === q.correct) btn.classList.add('correct');
+    else if (o === oi && !correct) btn.classList.add('wrong');
+  }
+
+  const fb = document.getElementById(`fb-${qi}`);
+  fb.className = 'quiz-feedback ' + (correct ? 'correct' : 'wrong');
+  fb.style.display = 'block';
+  fb.innerHTML = (correct ? '✅ ' : '❌ ') + q.feedback;
+
+  if (quizAnswered.every(Boolean)) {
+    setTimeout(showScore, 600);
+  }
+}
+
+function showScore() {
+  const scoreDiv = document.getElementById('quizScore');
+  scoreDiv.style.display = 'block';
+  document.getElementById('scoreNum').textContent = `${quizScore}/${quizData.length}`;
+  const pct = quizScore / quizData.length;
+  let msg = '';
+  if (pct === 1) msg = '🏆 Sempurna! Pemahaman Anda sangat baik.';
+  else if (pct >= 0.8) msg = '🎯 Sangat baik! Terus pertahankan.';
+  else if (pct >= 0.6) msg = '📚 Cukup baik. Pelajari kembali materi yang belum dikuasai.';
+  else msg = '🔄 Silakan pelajari ulang materi dan coba kembali.';
+  document.getElementById('scoreMsg').textContent = msg;
+  scoreDiv.scrollIntoView({ behavior: 'smooth' });
+}
+
+function resetQuiz() {
+  buildQuiz();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', () => {
+  buildQuiz();
+  updateSeries();
+  setTimeout(updateSetVis, 200);
+  window.addEventListener('resize', () => {
+    updateSetVis();
+    updateSeries();
+  });
+});
+</script>
+</body>
+</html>
