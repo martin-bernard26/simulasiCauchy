@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tes Diagnosa Analisis Real</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #1e3c72, #2a5298);
+    color: #333;
+}
+
+.container {
+    max-width: 950px;
+    margin: 40px auto;
+    background: rgba(255,255,255,0.95);
+    padding: 25px;
+    border-radius: 15px;
+}
+
+h1, h2 {
+    text-align: center;
+}
+
+input {
+    width: 48%;
+    padding: 10px;
+    margin: 5px;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+}
+
+.card {
+    background: #f8fafc;
+    margin: 15px 0;
+    padding: 15px;
+    border-left: 6px solid #2563eb;
+    border-radius: 10px;
+}
+
+textarea {
+    width: 100%;
+    height: 80px;
+    border-radius: 10px;
+    padding: 10px;
+    margin-top: 10px;
+}
+
+button {
+    display: block;
+    margin: 25px auto;
+    padding: 12px 25px;
+    border-radius: 20px;
+    border: none;
+    background: #2563eb;
+    color: white;
+    cursor: pointer;
+    font-size: 16px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Tes Awal (Diagnosa)</h1>
+<h2>Sifat Kelengkapan & Supremum-Infimum</h2>
+
+<input type="text" id="nama" placeholder="Nama">
+<input type="text" id="nim" placeholder="NIM">
+
+<h3>Bagian A: Pilihan Ganda</h3>
+
+<div class="card">
+1. Sifat kelengkapan pada ℝ menyatakan bahwa...
+<br>
+<input type="radio" name="q1" value="1"> Setiap himpunan terbatas atas memiliki supremum<br>
+<input type="radio" name="q1" value="0"> Semua himpunan punya maksimum<br>
+<input type="radio" name="q1" value="0"> Semua bilangan rasional lengkap<br>
+</div>
+
+<div class="card">
+2. Supremum adalah...
+<br>
+<input type="radio" name="q2" value="1"> Batas atas terkecil<br>
+<input type="radio" name="q2" value="0"> Batas bawah terbesar<br>
+<input type="radio" name="q2" value="0"> Nilai tengah<br>
+</div>
+
+<div class="card">
+3. Infimum adalah...
+<br>
+<input type="radio" name="q3" value="1"> Batas bawah terbesar<br>
+<input type="radio" name="q3" value="0"> Batas atas terbesar<br>
+</div>
+
+<div class="card">
+4. Himpunan bilangan rasional ℚ...
+<br>
+<input type="radio" name="q4" value="1"> Tidak memiliki sifat kelengkapan<br>
+<input type="radio" name="q4" value="0"> Memiliki sifat kelengkapan<br>
+</div>
+
+<div class="card">
+5. Jika supremum suatu himpunan termasuk dalam himpunan tersebut, maka disebut...
+<br>
+<input type="radio" name="q5" value="1"> Maksimum<br>
+<input type="radio" name="q5" value="0"> Minimum<br>
+</div>
+
+<h3>Bagian B: Analisis & Pembuktian</h3>
+
+<div class="card">
+6. Jelaskan dengan contoh mengapa ℚ tidak lengkap.
+<textarea id="j6"></textarea>
+</div>
+
+<div class="card">
+7. Buktikan bahwa supremum suatu himpunan adalah unik.
+<textarea id="j7"></textarea>
+</div>
+
+<div class="card">
+8. Tentukan supremum dan infimum dari himpunan (0,1).
+<textarea id="j8"></textarea>
+</div>
+
+<div class="card">
+9. Buktikan bahwa setiap himpunan terbatas bawah memiliki infimum.
+<textarea id="j9"></textarea>
+</div>
+
+<div class="card">
+10. Jelaskan perbedaan maksimum dan supremum dengan contoh.
+<textarea id="j10"></textarea>
+</div>
+
+<button onclick="kirimData()">Kumpulkan Jawaban</button>
+
+</div>
+
+<!-- Firebase -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getDatabase, ref, push } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDGpG2vAoWqwn46upNtU9M-Cx1gkKwBE-c",
+  authDomain: "chatting-matematika.firebaseapp.com",
+  databaseURL: "https://chatting-matematika-default-rtdb.firebaseio.com",
+  projectId: "chatting-matematika",
+  storageBucket: "chatting-matematika.appspot.com",
+  messagingSenderId: "811492413631",
+  appId: "1:811492413631:web:a29a4bba38a6541f90360a"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
+
+window.kirimData = function(){
+
+    let nama = document.getElementById("nama").value;
+    let nim = document.getElementById("nim").value;
+
+    // skor pilihan ganda
+    let skor = 0;
+    for(let i=1;i<=5;i++){
+        let pilih = document.querySelector('input[name="q'+i+'"]:checked');
+        if(pilih){
+            skor += parseInt(pilih.value);
+        }
+    }
+
+    // esai
+    let esai = [];
+    for(let i=6;i<=10;i++){
+        esai.push(document.getElementById("j"+i).value);
+    }
+
+    push(ref(db, "diagnosa_analisis_real"), {
+        nama: nama,
+        nim: nim,
+        skor_pg: skor,
+        jawaban_esai: esai,
+        waktu: new Date().toLocaleString()
+    });
+
+    alert("Jawaban berhasil dikirim! Skor PG: " + skor);
+}
+</script>
+
+</body>
+</html>
