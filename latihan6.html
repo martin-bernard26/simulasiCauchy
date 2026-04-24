@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Latihan Pembuktian Analisis Real</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+
+<style>
+body {
+    margin: 0;
+    font-family: 'Poppins', sans-serif;
+    background: linear-gradient(135deg, #2b5876, #4e4376);
+}
+
+.container {
+    max-width: 1000px;
+    margin: 40px auto;
+    padding: 25px;
+    background: rgba(255,255,255,0.95);
+    border-radius: 15px;
+}
+
+h1 {
+    text-align: center;
+    color: #1e293b;
+}
+
+.card {
+    background: #f1f5f9;
+    margin: 15px 0;
+    padding: 15px;
+    border-left: 6px solid #6366f1;
+    border-radius: 10px;
+}
+
+button {
+    margin-top: 10px;
+    padding: 8px 15px;
+    border: none;
+    border-radius: 10px;
+    background: #6366f1;
+    color: white;
+    cursor: pointer;
+}
+
+.jawaban {
+    display: none;
+    margin-top: 10px;
+    background: #e0f2fe;
+    padding: 10px;
+    border-radius: 10px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+<h1>20 Latihan Pembuktian Analisis Real</h1>
+<div id="soal"></div>
+</div>
+
+<script>
+const data = [
+
+{
+soal: "Buktikan bahwa supremum suatu himpunan adalah unik.",
+jawaban: "Misalkan ada dua supremum s dan t. Maka s ≤ t dan t ≤ s sehingga s = t."
+},
+{
+soal: "Buktikan bahwa infimum suatu himpunan adalah unik.",
+jawaban: "Dengan cara serupa supremum, diperoleh bahwa dua infimum harus sama."
+},
+{
+soal: "Buktikan bahwa jika A terbatas atas maka supremum A ada di ℝ.",
+jawaban: "Ini mengikuti sifat kelengkapan ℝ."
+},
+{
+soal: "Buktikan bahwa jika supremum termasuk dalam A maka ia adalah maksimum.",
+jawaban: "Karena supremum adalah batas atas terkecil dan ada dalam A."
+},
+{
+soal: "Buktikan bahwa setiap himpunan dengan maksimum memiliki supremum.",
+jawaban: "Maksimum adalah batas atas dan paling kecil, jadi supremum."
+},
+{
+soal: "Buktikan bahwa setiap himpunan terbatas bawah memiliki infimum.",
+jawaban: "Menggunakan sifat kelengkapan ℝ."
+},
+{
+soal: "Buktikan bahwa jika infimum termasuk dalam A maka ia adalah minimum.",
+jawaban: "Karena infimum adalah batas bawah terbesar."
+},
+{
+soal: "Buktikan bahwa (0,1) memiliki supremum 1.",
+jawaban: "1 adalah batas atas terkecil meskipun tidak termasuk."
+},
+{
+soal: "Buktikan bahwa (0,1) tidak memiliki maksimum.",
+jawaban: "Karena 1 tidak termasuk dalam himpunan."
+},
+{
+soal: "Buktikan bahwa ℚ tidak lengkap.",
+jawaban: "Ada himpunan terbatas atas di ℚ yang tidak memiliki supremum di ℚ, misalnya akar 2."
+},
+{
+soal: "Buktikan bahwa setiap himpunan berhingga memiliki maksimum.",
+jawaban: "Dengan memilih elemen terbesar secara langsung."
+},
+{
+soal: "Buktikan bahwa supremum ≥ setiap elemen himpunan.",
+jawaban: "Karena supremum adalah batas atas."
+},
+{
+soal: "Buktikan bahwa untuk setiap ε>0 ada elemen A mendekati supremum.",
+jawaban: "Definisi supremum menjamin s-ε < a ≤ s."
+},
+{
+soal: "Buktikan bahwa jika A ⊆ B maka sup A ≤ sup B.",
+jawaban: "Karena batas atas B juga batas atas A."
+},
+{
+soal: "Buktikan bahwa jika A ⊆ B maka inf A ≥ inf B.",
+jawaban: "Karena batas bawah B juga batas bawah A."
+},
+{
+soal: "Buktikan bahwa himpunan kosong tidak memiliki supremum.",
+jawaban: "Karena tidak ada elemen untuk dibatasi."
+},
+{
+soal: "Buktikan bahwa setiap interval tertutup [a,b] memiliki maksimum dan minimum.",
+jawaban: "Karena a dan b termasuk dalam himpunan."
+},
+{
+soal: "Buktikan bahwa setiap interval terbuka tidak memiliki maksimum/minimum.",
+jawaban: "Karena ujung tidak termasuk."
+},
+{
+soal: "Buktikan bahwa supremum dari himpunan singleton adalah elemennya.",
+jawaban: "Karena hanya satu elemen."
+},
+{
+soal: "Buktikan bahwa infimum dari himpunan singleton adalah elemennya.",
+jawaban: "Karena hanya satu elemen."
+}
+
+];
+
+let html = "";
+
+data.forEach((item, i) => {
+html += `
+<div class="card">
+<b>${i+1}. ${item.soal}</b>
+<br>
+<button onclick="toggle(${i})">Lihat Jawaban</button>
+<div class="jawaban" id="j${i}">
+${item.jawaban}
+</div>
+</div>
+`;
+});
+
+document.getElementById("soal").innerHTML = html;
+
+function toggle(i){
+let el = document.getElementById("j"+i);
+el.style.display = (el.style.display === "block") ? "none" : "block";
+}
+</script>
+
+</body>
+</html>
