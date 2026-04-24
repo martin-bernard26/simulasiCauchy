@@ -1,0 +1,1603 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sifat Kelengkapan & Manipulasi Supremum–Infimum | Analisis Real</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #0e0f14;
+  --surface:   #14151d;
+  --card:      #1a1c28;
+  --border:    #2a2d42;
+  --gold:      #c9a84c;
+  --gold-lt:   #e4c87a;
+  --teal:      #3ec9c9;
+  --teal-dk:   #29a0a0;
+  --rose:      #e05c7a;
+  --violet:    #9b7be8;
+  --text:      #e8e6df;
+  --muted:     #888aaa;
+  --code-bg:   #0a0c14;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Source Serif 4', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.75;
+  min-height: 100vh;
+}
+
+/* ── NOISE OVERLAY ── */
+body::before {
+  content: '';
+  position: fixed; inset: 0;
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+  pointer-events: none; z-index: 0;
+}
+
+/* ── SIDEBAR NAV ── */
+.sidebar {
+  position: fixed; top: 0; left: 0;
+  width: 230px; height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  padding: 28px 0;
+  z-index: 100;
+  overflow-y: auto;
+}
+
+.sidebar-logo {
+  padding: 0 22px 24px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 16px;
+}
+.sidebar-logo .course-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+}
+.sidebar-logo .course-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px; color: var(--gold); line-height: 1.3;
+  margin-top: 4px;
+}
+
+.nav-section-label {
+  font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); padding: 14px 22px 6px;
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.nav-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 9px 22px;
+  cursor: pointer;
+  font-size: 13px; color: var(--muted);
+  border-left: 2px solid transparent;
+  transition: all .2s;
+  font-family: 'Source Serif 4', serif;
+}
+.nav-item:hover { color: var(--text); background: rgba(201,168,76,.06); }
+.nav-item.active {
+  color: var(--gold-lt);
+  border-left-color: var(--gold);
+  background: rgba(201,168,76,.08);
+}
+.nav-item .num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold); opacity: .7;
+  min-width: 20px;
+}
+
+/* ── MAIN ── */
+.main {
+  margin-left: 230px;
+  min-height: 100vh;
+}
+
+/* ── HERO ── */
+.hero {
+  position: relative;
+  padding: 80px 64px 64px;
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; top: -60px; right: -80px;
+  width: 480px; height: 480px;
+  background: radial-gradient(ellipse, rgba(201,168,76,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+.hero-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 3px; text-transform: uppercase;
+  color: var(--teal); margin-bottom: 18px;
+  display: flex; align-items: center; gap: 10px;
+}
+.hero-eyebrow::before {
+  content: '';
+  display: inline-block; width: 32px; height: 1px;
+  background: var(--teal);
+}
+.hero h1 {
+  font-family: 'Playfair Display', serif;
+  font-size: clamp(32px, 4vw, 52px);
+  font-weight: 900; line-height: 1.1;
+  color: var(--text);
+}
+.hero h1 span { color: var(--gold); }
+.hero-sub {
+  font-size: 15.5px; color: var(--muted);
+  max-width: 540px; margin-top: 18px; line-height: 1.7;
+}
+.hero-meta {
+  display: flex; gap: 28px; margin-top: 32px; flex-wrap: wrap;
+}
+.hero-meta-item {
+  display: flex; flex-direction: column; gap: 2px;
+}
+.hero-meta-item .label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+}
+.hero-meta-item .val {
+  font-size: 13.5px; color: var(--gold-lt);
+  font-family: 'Playfair Display', serif;
+}
+
+/* ── CONTENT AREA ── */
+.content {
+  padding: 0 64px 80px;
+  max-width: 860px;
+}
+
+/* ── SECTION ── */
+.section {
+  padding-top: 64px;
+}
+.section-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 28px;
+}
+.section-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; color: var(--gold); opacity: .6;
+}
+.section h2 {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px; color: var(--text);
+}
+.section-divider {
+  width: 48px; height: 2px;
+  background: linear-gradient(90deg, var(--gold), transparent);
+  margin-bottom: 28px;
+}
+
+/* ── CARD ── */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 28px 32px;
+  margin-bottom: 20px;
+  position: relative;
+  overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+}
+.card.gold::before  { background: linear-gradient(90deg, var(--gold), transparent); }
+.card.teal::before  { background: linear-gradient(90deg, var(--teal), transparent); }
+.card.rose::before  { background: linear-gradient(90deg, var(--rose), transparent); }
+.card.violet::before{ background: linear-gradient(90deg, var(--violet), transparent); }
+
+.card-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2.5px; text-transform: uppercase;
+  margin-bottom: 12px;
+}
+.card.gold   .card-label { color: var(--gold); }
+.card.teal   .card-label { color: var(--teal); }
+.card.rose   .card-label { color: var(--rose); }
+.card.violet .card-label { color: var(--violet); }
+
+.card h3 {
+  font-family: 'Playfair Display', serif;
+  font-size: 18px; margin-bottom: 12px;
+}
+.card p, .card li { font-size: 15.5px; color: #c8c5be; line-height: 1.8; }
+.card ul { padding-left: 20px; }
+.card li { margin-bottom: 6px; }
+
+/* ── MATH BLOCK ── */
+.math-block {
+  background: var(--code-bg);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--gold);
+  border-radius: 8px;
+  padding: 20px 24px;
+  margin: 18px 0;
+  overflow-x: auto;
+  font-size: 15px;
+}
+.math-block.teal-border { border-left-color: var(--teal); }
+.math-block.rose-border { border-left-color: var(--rose); }
+
+/* ── HIGHLIGHT BOX ── */
+.highlight {
+  border-radius: 10px;
+  padding: 18px 22px;
+  margin: 18px 0;
+  font-size: 15px;
+}
+.highlight.warning {
+  background: rgba(224,92,122,.08);
+  border: 1px solid rgba(224,92,122,.25);
+  color: #f0aabb;
+}
+.highlight.info {
+  background: rgba(62,201,201,.08);
+  border: 1px solid rgba(62,201,201,.25);
+  color: #9aeaea;
+}
+.highlight.success {
+  background: rgba(201,168,76,.08);
+  border: 1px solid rgba(201,168,76,.25);
+  color: var(--gold-lt);
+}
+
+/* ── STEPS ── */
+.steps { counter-reset: step; }
+.step {
+  display: flex; gap: 18px;
+  margin-bottom: 20px;
+  counter-increment: step;
+}
+.step-num {
+  flex-shrink: 0;
+  width: 32px; height: 32px;
+  background: rgba(201,168,76,.15);
+  border: 1px solid rgba(201,168,76,.3);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; color: var(--gold);
+  margin-top: 2px;
+}
+.step-content { flex: 1; }
+.step-content strong {
+  display: block; font-size: 15px;
+  color: var(--text); margin-bottom: 4px;
+}
+.step-content p { font-size: 14.5px; color: #a8a5a0; }
+
+/* ── THEOREM PROOF ACCORDION ── */
+.theorem-block {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  margin-bottom: 20px;
+  overflow: hidden;
+}
+.theorem-header {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 20px 28px;
+  cursor: pointer;
+  transition: background .2s;
+}
+.theorem-header:hover { background: rgba(255,255,255,.03); }
+.theorem-header-left { display: flex; align-items: center; gap: 14px; }
+.theorem-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 9.5px; letter-spacing: 2px; text-transform: uppercase;
+  padding: 4px 10px; border-radius: 4px;
+  background: rgba(155,123,232,.15); color: var(--violet);
+  border: 1px solid rgba(155,123,232,.3);
+}
+.theorem-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; color: var(--text);
+}
+.theorem-toggle {
+  width: 28px; height: 28px;
+  border-radius: 50%;
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted); font-size: 16px;
+  transition: all .3s;
+  flex-shrink: 0;
+}
+.theorem-block.open .theorem-toggle {
+  transform: rotate(45deg);
+  background: rgba(201,168,76,.15); color: var(--gold);
+  border-color: rgba(201,168,76,.3);
+}
+.theorem-body {
+  max-height: 0; overflow: hidden;
+  transition: max-height .4s cubic-bezier(.4,0,.2,1);
+  border-top: 0px solid var(--border);
+}
+.theorem-block.open .theorem-body {
+  max-height: 1200px;
+  border-top: 1px solid var(--border);
+}
+.theorem-body-inner {
+  padding: 24px 28px 28px;
+  font-size: 15px; color: #c0bdb6; line-height: 1.85;
+}
+.proof-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--violet); margin-bottom: 12px;
+}
+.qed {
+  text-align: right;
+  font-family: 'Playfair Display', serif;
+  font-size: 22px; color: var(--gold); opacity: .6;
+  margin-top: 16px;
+}
+
+/* ── INTERACTIVE SIMULATOR ── */
+.simulator {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  margin-top: 28px;
+}
+.simulator-title {
+  font-family: 'Playfair Display', serif;
+  font-size: 19px; margin-bottom: 6px;
+  display: flex; align-items: center; gap: 10px;
+}
+.simulator-title .icon {
+  width: 32px; height: 32px;
+  background: rgba(62,201,201,.15); border-radius: 8px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px;
+}
+.sim-subtitle { font-size: 13.5px; color: var(--muted); margin-bottom: 24px; }
+
+.sim-controls {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  margin-bottom: 24px;
+}
+.sim-group label {
+  display: block; font-size: 12px; letter-spacing: 1.5px; text-transform: uppercase;
+  color: var(--muted); font-family: 'JetBrains Mono', monospace;
+  margin-bottom: 8px;
+}
+.sim-group input[type=range] {
+  width: 100%; accent-color: var(--teal);
+  cursor: pointer;
+}
+.sim-group .val-display {
+  text-align: right; font-family: 'JetBrains Mono', monospace;
+  font-size: 13px; color: var(--teal); margin-top: 4px;
+}
+
+.numberline-wrap {
+  background: var(--code-bg);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+#numberline { width: 100%; height: 90px; }
+
+.sim-results {
+  display: grid; grid-template-columns: repeat(3,1fr); gap: 12px;
+}
+.sim-result-card {
+  background: rgba(0,0,0,.3);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px 18px;
+}
+.sim-result-card .r-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.sim-result-card .r-val {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 20px; font-weight: 600;
+}
+.sim-result-card.sup .r-label { color: var(--gold); }
+.sim-result-card.sup .r-val   { color: var(--gold-lt); }
+.sim-result-card.inf .r-label { color: var(--teal); }
+.sim-result-card.inf .r-val   { color: var(--teal); }
+.sim-result-card.bound .r-label { color: var(--violet); }
+.sim-result-card.bound .r-val   { color: var(--violet); }
+
+/* ── INEQUALITY VISUALIZER ── */
+.ineq-vis {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  margin-top: 28px;
+}
+.ineq-props { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 20px 0; }
+.ineq-prop {
+  padding: 16px 20px;
+  background: rgba(0,0,0,.25);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  cursor: pointer; transition: all .2s;
+  position: relative; overflow: hidden;
+}
+.ineq-prop::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px; background: var(--teal);
+  transform: scaleX(0); transition: transform .3s;
+  transform-origin: left;
+}
+.ineq-prop:hover::before, .ineq-prop.selected::before { transform: scaleX(1); }
+.ineq-prop:hover, .ineq-prop.selected {
+  background: rgba(62,201,201,.07);
+  border-color: rgba(62,201,201,.3);
+}
+.ineq-prop .p-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 14px; color: var(--text); margin-bottom: 6px;
+}
+.ineq-prop .p-math { font-size: 13px; color: var(--muted); }
+
+.ineq-detail {
+  background: rgba(62,201,201,.05);
+  border: 1px solid rgba(62,201,201,.2);
+  border-radius: 10px;
+  padding: 22px 26px;
+  font-size: 14.5px; color: #aee8e8;
+  line-height: 1.85;
+  min-height: 80px;
+  transition: all .3s;
+}
+
+/* ── QUIZ ── */
+.quiz-wrap {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 32px;
+  margin-top: 28px;
+}
+.quiz-q { margin-bottom: 24px; }
+.quiz-q .q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 2px; color: var(--rose);
+  text-transform: uppercase; margin-bottom: 8px;
+}
+.quiz-q .q-text {
+  font-family: 'Playfair Display', serif;
+  font-size: 16px; color: var(--text); margin-bottom: 16px;
+  line-height: 1.5;
+}
+.quiz-options { display: flex; flex-direction: column; gap: 10px; }
+.quiz-option {
+  display: flex; align-items: flex-start; gap: 12px;
+  padding: 13px 18px;
+  border: 1px solid var(--border);
+  border-radius: 9px;
+  cursor: pointer; transition: all .2s;
+  font-size: 14.5px; color: var(--muted);
+  background: rgba(0,0,0,.2);
+}
+.quiz-option:hover {
+  border-color: rgba(155,123,232,.4);
+  color: var(--text);
+  background: rgba(155,123,232,.05);
+}
+.quiz-option.selected {
+  border-color: var(--violet);
+  color: var(--text);
+  background: rgba(155,123,232,.1);
+}
+.quiz-option.correct {
+  border-color: var(--teal);
+  color: var(--teal);
+  background: rgba(62,201,201,.08);
+}
+.quiz-option.incorrect {
+  border-color: var(--rose);
+  color: var(--rose);
+  background: rgba(224,92,122,.08);
+}
+.quiz-option .opt-letter {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 12px; flex-shrink: 0;
+  width: 22px; height: 22px;
+  border-radius: 50%; border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  margin-top: 1px;
+}
+.quiz-feedback {
+  margin-top: 14px; padding: 14px 18px;
+  border-radius: 9px; font-size: 14px;
+  display: none;
+}
+.quiz-feedback.show { display: block; }
+.quiz-feedback.ok { background: rgba(62,201,201,.08); color: #9aeaea; border: 1px solid rgba(62,201,201,.2); }
+.quiz-feedback.no { background: rgba(224,92,122,.08); color: #f0aabb; border: 1px solid rgba(224,92,122,.2); }
+
+.quiz-submit {
+  padding: 12px 28px;
+  background: linear-gradient(135deg, rgba(155,123,232,.25), rgba(62,201,201,.2));
+  border: 1px solid rgba(155,123,232,.4);
+  border-radius: 8px;
+  color: var(--text); font-size: 14px;
+  font-family: 'JetBrains Mono', monospace;
+  letter-spacing: 1px; cursor: pointer;
+  transition: all .2s; margin-top: 8px;
+}
+.quiz-submit:hover {
+  background: linear-gradient(135deg, rgba(155,123,232,.4), rgba(62,201,201,.3));
+}
+
+/* ── TABLE ── */
+.tbl-wrap { overflow-x: auto; margin: 20px 0; }
+table {
+  width: 100%; border-collapse: collapse;
+  font-size: 14px;
+}
+th {
+  background: rgba(201,168,76,.1);
+  color: var(--gold-lt);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;
+  padding: 12px 16px; text-align: left;
+  border-bottom: 1px solid rgba(201,168,76,.2);
+}
+td {
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border);
+  color: #c0bdb6;
+  vertical-align: top;
+}
+tr:hover td { background: rgba(255,255,255,.02); }
+
+/* ── FOOTER ── */
+.footer {
+  margin-left: 230px;
+  padding: 24px 64px;
+  border-top: 1px solid var(--border);
+  display: flex; justify-content: space-between; align-items: center;
+  font-size: 12px; color: var(--muted);
+  font-family: 'JetBrains Mono', monospace;
+}
+
+/* ── PROGRESS BAR ── */
+.progress-bar {
+  position: fixed; top: 0; left: 230px; right: 0;
+  height: 2px; background: rgba(255,255,255,.05); z-index: 200;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--gold), var(--teal));
+  width: 0%; transition: width .1s;
+}
+
+/* ── SCROLL ANIMATIONS ── */
+.fade-up {
+  opacity: 0; transform: translateY(24px);
+  transition: opacity .5s, transform .5s;
+}
+.fade-up.visible { opacity: 1; transform: translateY(0); }
+
+@media (max-width: 900px) {
+  .sidebar { display: none; }
+  .main, .footer { margin-left: 0; }
+  .progress-bar { left: 0; }
+  .hero, .content { padding-left: 24px; padding-right: 24px; }
+  .sim-controls, .sim-results, .ineq-props { grid-template-columns: 1fr; }
+}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<nav class="sidebar">
+  <div class="sidebar-logo">
+    <div class="course-label">Analisis Real</div>
+    <div class="course-title">Sifat Kelengkapan &<br>Supremum–Infimum</div>
+  </div>
+  <div class="nav-section-label">Topik</div>
+  <div class="nav-item active" onclick="scrollTo('s1', this)"><span class="num">01</span> Pendahuluan</div>
+  <div class="nav-item" onclick="scrollTo('s2', this)"><span class="num">02</span> Himpunan Terbatas</div>
+  <div class="nav-item" onclick="scrollTo('s3', this)"><span class="num">03</span> Supremum & Infimum</div>
+  <div class="nav-item" onclick="scrollTo('s4', this)"><span class="num">04</span> Sifat Kelengkapan</div>
+  <div class="nav-item" onclick="scrollTo('s5', this)"><span class="num">05</span> Manipulasi Sup & Inf</div>
+  <div class="nav-item" onclick="scrollTo('s6', this)"><span class="num">06</span> Lemma Epsilon</div>
+  <div class="nav-item" onclick="scrollTo('s7', this)"><span class="num">07</span> Simulator Interaktif</div>
+  <div class="nav-item" onclick="scrollTo('s8', this)"><span class="num">08</span> Latihan & Kuis</div>
+</nav>
+
+<!-- PROGRESS -->
+<div class="progress-bar"><div class="progress-fill" id="pbar"></div></div>
+
+<div class="main">
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-eyebrow">Pendidikan Matematika — IKIP Siliwangi</div>
+  <h1>Sifat Kelengkapan &<br><span>Supremum–Infimum</span></h1>
+  <p class="hero-sub">
+    Memahami aksioma yang membedakan ℝ dari ℚ, serta teknik manipulasi
+    supremum dan infimum dalam pembuktian Analisis Real.
+  </p>
+  <div class="hero-meta">
+    <div class="hero-meta-item"><span class="label">Mata Kuliah</span><span class="val">Analisis Real</span></div>
+    <div class="hero-meta-item"><span class="label">Dosen</span><span class="val">Martin Bernard, M.Pd.</span></div>
+    <div class="hero-meta-item"><span class="label">Program Studi</span><span class="val">Pendidikan Matematika</span></div>
+    <div class="hero-meta-item"><span class="label">Institusi</span><span class="val">IKIP Siliwangi</span></div>
+  </div>
+</div>
+
+<div class="content">
+
+<!-- S1: PENDAHULUAN -->
+<div class="section fade-up" id="s1">
+  <div class="section-header">
+    <span class="section-num">§ 01</span>
+    <h2>Pendahuluan</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="card gold">
+    <div class="card-label">Motivasi</div>
+    <h3>Mengapa Sifat Kelengkapan Penting?</h3>
+    <p>
+      Bilangan rasional ℚ memiliki "lubang" — ada barisan bilangan rasional yang konvergen
+      ke nilai yang bukan bilangan rasional (mis. √2). Sifat Kelengkapan (Completeness Property)
+      adalah aksioma yang memastikan ℝ <em>tidak memiliki lubang</em>. Aksioma inilah yang
+      menjadi pondasi seluruh Analisis Real.
+    </p>
+    <div class="math-block">
+      $$\mathbb{Q} \subset \mathbb{R} \quad \text{tetapi} \quad \sqrt{2} \in \mathbb{R} \setminus \mathbb{Q}$$
+    </div>
+    <p>
+      Konsep supremum dan infimum adalah alat utama untuk menyatakan dan memanfaatkan
+      sifat kelengkapan ini secara formal.
+    </p>
+  </div>
+
+  <div class="highlight info">
+    <strong>Tujuan Pembelajaran:</strong> Setelah mempelajari materi ini, mahasiswa dapat (1) mendefinisikan
+    supremum dan infimum suatu himpunan, (2) menyatakan Aksioma Kelengkapan, (3) membuktikan
+    sifat-sifat manipulasi supremum dan infimum, serta (4) menerapkannya dalam pembuktian.
+  </div>
+</div>
+
+<!-- S2: HIMPUNAN TERBATAS -->
+<div class="section fade-up" id="s2">
+  <div class="section-header">
+    <span class="section-num">§ 02</span>
+    <h2>Himpunan Terbatas</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="card teal">
+    <div class="card-label">Definisi 2.1</div>
+    <h3>Batas Atas (<em>Upper Bound</em>)</h3>
+    <p>
+      Misalkan \(A \subseteq \mathbb{R}\), \(A \neq \emptyset\). Suatu bilangan \(u \in \mathbb{R}\)
+      disebut <strong>batas atas</strong> dari \(A\) jika:
+    </p>
+    <div class="math-block teal-border">
+      $$a \leq u \quad \text{untuk semua } a \in A$$
+    </div>
+    <p>
+      Himpunan \(A\) dikatakan <strong>terbatas di atas</strong> (<em>bounded above</em>)
+      jika ada batas atasnya.
+    </p>
+  </div>
+
+  <div class="card teal">
+    <div class="card-label">Definisi 2.2</div>
+    <h3>Batas Bawah (<em>Lower Bound</em>)</h3>
+    <p>
+      Suatu bilangan \(l \in \mathbb{R}\) disebut <strong>batas bawah</strong> dari \(A\) jika:
+    </p>
+    <div class="math-block teal-border">
+      $$l \leq a \quad \text{untuk semua } a \in A$$
+    </div>
+    <p>
+      Himpunan \(A\) dikatakan <strong>terbatas di bawah</strong> (<em>bounded below</em>)
+      jika ada batas bawahnya.
+    </p>
+  </div>
+
+  <div class="tbl-wrap">
+    <table>
+      <thead>
+        <tr>
+          <th>Himpunan \(A\)</th>
+          <th>Contoh Batas Atas</th>
+          <th>Contoh Batas Bawah</th>
+          <th>Terbatas?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>\([1, 5]\)</td>
+          <td>\(5, 6, 100, \ldots\)</td>
+          <td>\(1, 0, -3, \ldots\)</td>
+          <td>Ya, di atas dan bawah</td>
+        </tr>
+        <tr>
+          <td>\((0, 1)\)</td>
+          <td>\(1, 2, \ldots\)</td>
+          <td>\(0, -1, \ldots\)</td>
+          <td>Ya, di atas dan bawah</td>
+        </tr>
+        <tr>
+          <td>\(\mathbb{N} = \{1,2,3,\ldots\}\)</td>
+          <td>Tidak ada</td>
+          <td>\(1, 0, -1, \ldots\)</td>
+          <td>Hanya di bawah</td>
+        </tr>
+        <tr>
+          <td>\(\{1/n : n \in \mathbb{N}\}\)</td>
+          <td>\(1, 2, \ldots\)</td>
+          <td>\(0, -1, \ldots\)</td>
+          <td>Ya, di atas dan bawah</td>
+        </tr>
+        <tr>
+          <td>\(\mathbb{R}\)</td>
+          <td>Tidak ada</td>
+          <td>Tidak ada</td>
+          <td>Tidak terbatas</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- S3: SUPREMUM & INFIMUM -->
+<div class="section fade-up" id="s3">
+  <div class="section-header">
+    <span class="section-num">§ 03</span>
+    <h2>Supremum &amp; Infimum</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="card gold">
+    <div class="card-label">Definisi 3.1 — Supremum</div>
+    <h3>Batas Atas Terkecil</h3>
+    <p>
+      Misalkan \(A \subseteq \mathbb{R}\) terbatas di atas. Suatu bilangan \(s = \sup A\)
+      disebut <strong>supremum</strong> (batas atas terkecil / <em>least upper bound</em>) dari \(A\) jika memenuhi dua syarat:
+    </p>
+    <div class="math-block">
+      $$\text{(i)}\quad a \leq s \quad \forall\, a \in A$$
+      $$\text{(ii)}\quad \text{Jika } u \text{ batas atas } A \Rightarrow s \leq u$$
+    </div>
+    <p>Dengan kata lain: \(s\) adalah batas atas, dan lebih kecil dari atau sama dengan semua batas atas lain.</p>
+  </div>
+
+  <div class="card teal">
+    <div class="card-label">Definisi 3.2 — Infimum</div>
+    <h3>Batas Bawah Terbesar</h3>
+    <p>
+      Misalkan \(A \subseteq \mathbb{R}\) terbatas di bawah. Suatu bilangan \(i = \inf A\)
+      disebut <strong>infimum</strong> (batas bawah terbesar / <em>greatest lower bound</em>) dari \(A\) jika:
+    </p>
+    <div class="math-block teal-border">
+      $$\text{(i)}\quad i \leq a \quad \forall\, a \in A$$
+      $$\text{(ii)}\quad \text{Jika } l \text{ batas bawah } A \Rightarrow l \leq i$$
+    </div>
+  </div>
+
+  <div class="card rose">
+    <div class="card-label">Catatan Penting</div>
+    <h3>Sup/Inf vs Maks/Min</h3>
+    <ul>
+      <li>Jika \(\sup A \in A\), maka \(\sup A = \max A\).</li>
+      <li>Jika \(\inf A \in A\), maka \(\inf A = \min A\).</li>
+      <li>Untuk \(A = (0,1)\): \(\sup A = 1 \notin A\) dan \(\inf A = 0 \notin A\).</li>
+      <li>Untuk \(A = [0,1]\): \(\sup A = \max A = 1\) dan \(\inf A = \min A = 0\).</li>
+    </ul>
+    <div class="math-block rose-border">
+      $$\sup(0,1) = 1 \notin (0,1), \quad \max(0,1) \text{ tidak ada}$$
+    </div>
+  </div>
+
+  <div class="highlight success">
+    <strong>Keunikan Supremum:</strong> Jika supremum suatu himpunan ada, maka supremum tersebut tunggal (unik). Hal yang sama berlaku untuk infimum.
+  </div>
+</div>
+
+<!-- S4: SIFAT KELENGKAPAN -->
+<div class="section fade-up" id="s4">
+  <div class="section-header">
+    <span class="section-num">§ 04</span>
+    <h2>Sifat Kelengkapan ℝ</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="card violet" style="border: 2px solid rgba(155,123,232,.5);">
+    <div class="card-label">Aksioma Kelengkapan (Completeness Axiom)</div>
+    <h3 style="font-size:20px;">The Supremum Property of ℝ</h3>
+    <div class="math-block">
+      $$\boxed{\text{Setiap himpunan tak kosong } A \subseteq \mathbb{R} \text{ yang terbatas di atas}
+      \text{ memiliki supremum di } \mathbb{R}}$$
+    </div>
+    <p>
+      Ini adalah aksioma, bukan teorema — tidak perlu dibuktikan, tetapi diterima sebagai
+      kebenaran fundamental yang mendefinisikan ℝ.
+    </p>
+  </div>
+
+  <div class="highlight warning">
+    <strong>Perbedaan ℝ vs ℚ:</strong> Aksioma ini <em>gagal</em> di ℚ. Himpunan
+    \(A = \{q \in \mathbb{Q} : q^2 < 2\}\) terbatas di atas di dalam ℚ, tetapi
+    supremumnya adalah \(\sqrt{2} \notin \mathbb{Q}\).
+  </div>
+
+  <!-- Theorem accordion -->
+  <div class="theorem-block" onclick="toggleTheorem(this)">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 4.1</span>
+        <span class="theorem-title">Aksioma Kelengkapan setara dengan Infimum Property</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">Pernyataan</div>
+        <p>Setiap himpunan tak kosong \(A \subseteq \mathbb{R}\) yang terbatas di bawah memiliki infimum di \(\mathbb{R}\).</p>
+        <br>
+        <div class="proof-label">Bukti</div>
+        <p>
+          Misalkan \(A\) terbatas di bawah. Definisikan himpunan:
+        </p>
+        <div class="math-block">$$B = \{-a : a \in A\}$$</div>
+        <p>
+          Jika \(l\) adalah batas bawah \(A\), maka \(-l\) adalah batas atas \(B\) 
+          (karena \(a \geq l \Rightarrow -a \leq -l\)).
+          Jadi \(B\) terbatas di atas.
+        </p>
+        <p>
+          Oleh Aksioma Kelengkapan, \(s = \sup B\) ada di ℝ.
+          Kita klaim \(\inf A = -s\).
+        </p>
+        <p>
+          (i) Untuk setiap \(a \in A\): \(-a \in B\), maka \(-a \leq s\), sehingga \(a \geq -s\).
+          Jadi \(-s\) adalah batas bawah \(A\).
+        </p>
+        <p>
+          (ii) Jika \(l\) batas bawah \(A\), maka \(-l\) batas atas \(B\), maka \(s \leq -l\),
+          sehingga \(-s \geq l\).
+        </p>
+        <p>Dari (i) dan (ii), \(-s = \inf A\). ∎</p>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theorem-block" onclick="toggleTheorem(this)">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 4.2</span>
+        <span class="theorem-title">Keunikan Supremum</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">Pernyataan</div>
+        <p>Jika \(s_1\) dan \(s_2\) keduanya adalah supremum dari himpunan \(A\), maka \(s_1 = s_2\).</p>
+        <br>
+        <div class="proof-label">Bukti</div>
+        <p>
+          Karena \(s_1 = \sup A\), maka \(s_1\) adalah batas atas terkecil dari \(A\).
+          Karena \(s_2\) adalah batas atas dari \(A\), maka:
+        </p>
+        <div class="math-block">$$s_1 \leq s_2$$</div>
+        <p>
+          Sebaliknya, karena \(s_2 = \sup A\), \(s_2\) adalah batas atas terkecil, dan \(s_1\) juga batas atas, maka:
+        </p>
+        <div class="math-block">$$s_2 \leq s_1$$</div>
+        <p>Dari kedua ketaksamaan, \(s_1 = s_2\). ∎</p>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S5: MANIPULASI SUP & INF -->
+<div class="section fade-up" id="s5">
+  <div class="section-header">
+    <span class="section-num">§ 05</span>
+    <h2>Manipulasi Supremum &amp; Infimum</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <p style="color:var(--muted); font-size:15px; margin-bottom:24px;">
+    Berikut adalah sifat-sifat penting untuk memanipulasi supremum dan infimum dalam pembuktian.
+    Klik setiap sifat untuk melihat penjelasan dan ilustrasinya.
+  </p>
+
+  <div class="ineq-vis">
+    <div class="simulator-title">
+      <div class="icon">⚙️</div>
+      Sifat-Sifat Manipulasi — Klik untuk Jelajahi
+    </div>
+    <div class="ineq-props" id="propGrid">
+      <div class="ineq-prop selected" onclick="showProp(0, this)">
+        <div class="p-name">Sifat 1: Penambahan Konstanta</div>
+        <div class="p-math">\(\sup(A + c) = \sup A + c\)</div>
+      </div>
+      <div class="ineq-prop" onclick="showProp(1, this)">
+        <div class="p-name">Sifat 2: Perkalian Positif</div>
+        <div class="p-math">\(\sup(cA) = c \cdot \sup A,\; c > 0\)</div>
+      </div>
+      <div class="ineq-prop" onclick="showProp(2, this)">
+        <div class="p-name">Sifat 3: Negatif Himpunan</div>
+        <div class="p-math">\(\sup(-A) = -\inf A\)</div>
+      </div>
+      <div class="ineq-prop" onclick="showProp(3, this)">
+        <div class="p-name">Sifat 4: Gabungan Himpunan</div>
+        <div class="p-math">\(\sup(A \cup B) = \max\{\sup A, \sup B\}\)</div>
+      </div>
+      <div class="ineq-prop" onclick="showProp(4, this)">
+        <div class="p-name">Sifat 5: Penjumlahan Himpunan</div>
+        <div class="p-math">\(\sup(A + B) = \sup A + \sup B\)</div>
+      </div>
+      <div class="ineq-prop" onclick="showProp(5, this)">
+        <div class="p-name">Sifat 6: Subset</div>
+        <div class="p-math">\(A \subseteq B \Rightarrow \sup A \leq \sup B\)</div>
+      </div>
+    </div>
+    <div class="ineq-detail" id="propDetail"></div>
+  </div>
+
+  <!-- Theorem: Sifat 1 proof -->
+  <div class="theorem-block" onclick="toggleTheorem(this)" style="margin-top:24px;">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 5.1</span>
+        <span class="theorem-title">Bukti: sup(A + c) = sup A + c</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">Pernyataan</div>
+        <p>
+          Misalkan \(A \subseteq \mathbb{R}\) terbatas di atas dan \(c \in \mathbb{R}\).
+          Definisikan \(A + c = \{a + c : a \in A\}\). Maka:
+          \[\sup(A + c) = \sup A + c\]
+        </p>
+        <div class="proof-label">Bukti</div>
+        <p>Misalkan \(s = \sup A\). Kita buktikan \(s + c = \sup(A + c)\).</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Buktikan \(s+c\) adalah batas atas \(A+c\):</strong>
+              <p>Untuk setiap \(a + c \in A + c\): karena \(a \leq s\), maka \(a + c \leq s + c\). ✓</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Buktikan \(s+c\) adalah batas atas terkecil:</strong>
+              <p>Misalkan \(u\) adalah sembarang batas atas dari \(A+c\). Maka untuk semua \(a \in A\): \(a + c \leq u\), sehingga \(a \leq u - c\). Jadi \(u-c\) adalah batas atas dari \(A\), maka \(s \leq u-c\), sehingga \(s+c \leq u\). ✓</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Kesimpulan:</strong>
+              <p>Dari (1) dan (2), \(s + c = \sup(A+c)\). ∎</p>
+            </div>
+          </div>
+        </div>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theorem-block" onclick="toggleTheorem(this)">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 5.2</span>
+        <span class="theorem-title">Bukti: sup(-A) = −inf A</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">Pernyataan</div>
+        <p>Misalkan \(A\) terbatas. Definisikan \(-A = \{-a : a \in A\}\). Maka \(\sup(-A) = -\inf A\).</p>
+        <div class="proof-label">Bukti</div>
+        <p>Misalkan \(i = \inf A\). Kita buktikan \(-i = \sup(-A)\).</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Batas atas:</strong>
+              <p>Untuk setiap \(-a \in -A\): \(a \geq i\), sehingga \(-a \leq -i\). Jadi \(-i\) adalah batas atas \(-A\). ✓</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Batas atas terkecil:</strong>
+              <p>Misalkan \(u\) batas atas \(-A\). Maka \(-a \leq u\) untuk semua \(a \in A\), sehingga \(-u \leq a\) untuk semua \(a \in A\). Jadi \(-u\) adalah batas bawah \(A\), maka \(-u \leq i\), sehingga \(-i \leq u\). ✓</p>
+            </div>
+          </div>
+        </div>
+        <p>Dari (1) dan (2), \(\sup(-A) = -i = -\inf A\). ∎</p>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="theorem-block" onclick="toggleTheorem(this)">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 5.3</span>
+        <span class="theorem-title">Bukti: sup(A + B) = sup A + sup B</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">Pernyataan</div>
+        <p>Misalkan \(A, B \subseteq \mathbb{R}\) terbatas di atas. Definisikan \(A + B = \{a + b : a \in A, b \in B\}\). Maka:</p>
+        <div class="math-block">\[\sup(A + B) = \sup A + \sup B\]</div>
+        <div class="proof-label">Bukti</div>
+        <p>Misalkan \(s = \sup A\) dan \(t = \sup B\).</p>
+        <div class="steps">
+          <div class="step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>\(s + t\) adalah batas atas \(A + B\):</strong>
+              <p>Untuk \(a + b \in A + B\): \(a \leq s\) dan \(b \leq t\), sehingga \(a + b \leq s + t\). ✓</p>
+            </div>
+          </div>
+          <div class="step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>\(s + t\) adalah batas atas terkecil:</strong>
+              <p>Misalkan \(u\) batas atas \(A + B\). Untuk sembarang \(a_0 \in A\): \(a_0 + b \leq u\) untuk semua \(b \in B\), jadi \(b \leq u - a_0\) untuk semua \(b\), maka \(t \leq u - a_0\), sehingga \(a_0 \leq u - t\). Karena \(a_0\) sembarang, \(s \leq u - t\), maka \(s + t \leq u\). ✓</p>
+            </div>
+          </div>
+        </div>
+        <p>Jadi \(\sup(A + B) = s + t = \sup A + \sup B\). ∎</p>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S6: LEMMA EPSILON -->
+<div class="section fade-up" id="s6">
+  <div class="section-header">
+    <span class="section-num">§ 06</span>
+    <h2>Lemma Epsilon Supremum</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="card gold" style="border: 2px solid rgba(201,168,76,.4);">
+    <div class="card-label">Lemma Kunci (Karakterisasi Supremum)</div>
+    <h3>Lemma ε-Supremum</h3>
+    <p>
+      Misalkan \(A \subseteq \mathbb{R}\) terbatas di atas dan \(s \in \mathbb{R}\). Maka:
+    </p>
+    <div class="math-block">
+      $$s = \sup A \iff 
+      \begin{cases}
+      (i)\; a \leq s \;\forall\, a \in A \\[4pt]
+      (ii)\; \forall\,\varepsilon > 0,\; \exists\, a \in A \;\text{s.t.}\; a > s - \varepsilon
+      \end{cases}$$
+    </div>
+    <p>
+      Syarat (ii) menyatakan bahwa tidak ada batas atas yang lebih kecil dari \(s\).
+      Selalu dapat ditemukan elemen \(A\) yang "sangat dekat" dengan \(s\).
+    </p>
+  </div>
+
+  <div class="theorem-block" onclick="toggleTheorem(this)">
+    <div class="theorem-header">
+      <div class="theorem-header-left">
+        <span class="theorem-badge">Teorema 6.1</span>
+        <span class="theorem-title">Bukti Lemma ε-Supremum</span>
+      </div>
+      <div class="theorem-toggle">+</div>
+    </div>
+    <div class="theorem-body">
+      <div class="theorem-body-inner">
+        <div class="proof-label">(⇒) Jika s = sup A</div>
+        <p>
+          (i) Langsung dari definisi supremum sebagai batas atas. ✓<br><br>
+          (ii) Ambil \(\varepsilon > 0\). Karena \(s - \varepsilon < s\), dan \(s\) adalah batas atas terkecil, maka \(s - \varepsilon\) bukan batas atas \(A\). Artinya, ada \(a \in A\) dengan \(a > s - \varepsilon\). ✓
+        </p>
+        <div class="proof-label">(⇐) Jika (i) dan (ii) terpenuhi</div>
+        <p>
+          Dari (i), \(s\) adalah batas atas. Misalkan \(u < s\). Ambil \(\varepsilon = s - u > 0\).
+          Oleh (ii), ada \(a \in A\) dengan \(a > s - \varepsilon = s - (s-u) = u\).
+          Jadi \(u\) bukan batas atas, sehingga \(s\) adalah batas atas terkecil. ✓
+        </p>
+        <div class="qed">□</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card violet">
+    <div class="card-label">Lemma ε-Infimum (Analog)</div>
+    <h3>Karakterisasi Infimum</h3>
+    <div class="math-block">
+      $$i = \inf A \iff 
+      \begin{cases}
+      (i)\; i \leq a \;\forall\, a \in A \\[4pt]
+      (ii)\; \forall\,\varepsilon > 0,\; \exists\, a \in A \;\text{s.t.}\; a < i + \varepsilon
+      \end{cases}$$
+    </div>
+  </div>
+
+  <div class="highlight info">
+    <strong>Kegunaan Lemma ε:</strong> Lemma ini sangat berguna untuk membuktikan bahwa suatu
+    nilai memang merupakan supremum, terutama dalam pembuktian ketaksamaan yang melibatkan
+    limit dan konvergensi barisan.
+  </div>
+</div>
+
+<!-- S7: SIMULATOR -->
+<div class="section fade-up" id="s7">
+  <div class="section-header">
+    <span class="section-num">§ 07</span>
+    <h2>Simulator Interaktif</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="simulator">
+    <div class="simulator-title">
+      <div class="icon">📐</div>
+      Visualisasi Sup &amp; Inf pada Interval
+    </div>
+    <p class="sim-subtitle">Geser slider untuk mengubah interval [a, b] atau (a, b) dan amati supremum, infimum, serta batas-batasnya pada garis bilangan.</p>
+
+    <div class="sim-controls">
+      <div class="sim-group">
+        <label>Batas Kiri (a)</label>
+        <input type="range" id="leftBound" min="-10" max="0" step="0.5" value="-3">
+        <div class="val-display" id="leftVal">a = -3</div>
+      </div>
+      <div class="sim-group">
+        <label>Batas Kanan (b)</label>
+        <input type="range" id="rightBound" min="0" max="10" step="0.5" value="5">
+        <div class="val-display" id="rightVal">b = 5</div>
+      </div>
+      <div class="sim-group">
+        <label>Tipe Interval</label>
+        <select id="intervalType" style="width:100%;padding:8px 12px;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;">
+          <option value="closed">[a, b] — Tertutup</option>
+          <option value="open">(a, b) — Terbuka</option>
+          <option value="left-open">(a, b] — Kiri Terbuka</option>
+          <option value="right-open">[a, b) — Kanan Terbuka</option>
+        </select>
+      </div>
+      <div class="sim-group">
+        <label>Himpunan Khusus</label>
+        <select id="specialSet" style="width:100%;padding:8px 12px;background:var(--code-bg);border:1px solid var(--border);border-radius:6px;color:var(--text);font-family:'JetBrains Mono',monospace;font-size:13px;">
+          <option value="interval">Interval Biasa</option>
+          <option value="reciprocal">1/n (n=1..10)</option>
+          <option value="natural">N ∩ [a,b]</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="numberline-wrap">
+      <canvas id="numberline"></canvas>
+    </div>
+
+    <div class="sim-results">
+      <div class="sim-result-card sup">
+        <div class="r-label">Supremum</div>
+        <div class="r-val" id="supVal">5</div>
+      </div>
+      <div class="sim-result-card inf">
+        <div class="r-label">Infimum</div>
+        <div class="r-val" id="infVal">-3</div>
+      </div>
+      <div class="sim-result-card bound">
+        <div class="r-label">Anggota A?</div>
+        <div class="r-val" id="memVal" style="font-size:14px; margin-top:4px;">sup ✓ inf ✓</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- S8: LATIHAN & KUIS -->
+<div class="section fade-up" id="s8">
+  <div class="section-header">
+    <span class="section-num">§ 08</span>
+    <h2>Latihan &amp; Kuis</h2>
+  </div>
+  <div class="section-divider"></div>
+
+  <div class="quiz-wrap">
+    <div class="simulator-title" style="margin-bottom:6px;">
+      <div class="icon">📝</div>
+      Uji Pemahaman
+    </div>
+    <p class="sim-subtitle">Pilih jawaban yang paling tepat.</p>
+
+    <!-- Q1 -->
+    <div class="quiz-q" id="qq1">
+      <div class="q-num">Soal 01</div>
+      <div class="q-text">Diketahui \(A = \{1/n : n \in \mathbb{N}\} = \{1, 1/2, 1/3, \ldots\}\). Manakah pernyataan yang benar?</div>
+      <div class="quiz-options">
+        <div class="quiz-option" onclick="selectOpt(this,'qq1')"><span class="opt-letter">A</span>\(\sup A = 1 \in A\) dan \(\inf A = 0 \notin A\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq1')"><span class="opt-letter">B</span>\(\sup A = 1 \in A\) dan \(\inf A = 1/10 \in A\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq1')"><span class="opt-letter">C</span>\(\sup A\) tidak ada karena \(A\) tidak terbatas</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq1')"><span class="opt-letter">D</span>\(\sup A = 2\) dan \(\inf A = 0\)</div>
+      </div>
+      <div class="quiz-feedback" id="fb1"></div>
+      <button class="quiz-submit" onclick="checkAns('qq1','fb1',0,
+        'Benar! sup A = 1 karena 1 ∈ A dan 1 ≥ 1/n untuk semua n. inf A = 0 karena 0 ≤ 1/n untuk semua n, dan untuk setiap ε > 0 ada n besar sehingga 1/n < ε, tetapi 0 ∉ A.',
+        'Coba lagi. Ingat: sup adalah batas atas terkecil, inf adalah batas bawah terbesar. Untuk n besar, 1/n mendekati 0 tetapi tidak pernah mencapai 0.')">Periksa Jawaban</button>
+    </div>
+
+    <!-- Q2 -->
+    <div class="quiz-q" id="qq2" style="margin-top:28px; border-top:1px solid var(--border); padding-top:28px;">
+      <div class="q-num">Soal 02</div>
+      <div class="q-text">Jika \(A = (-2, 3]\) dan \(c = 4\), maka \(\sup(A + c)\) adalah…</div>
+      <div class="quiz-options">
+        <div class="quiz-option" onclick="selectOpt(this,'qq2')"><span class="opt-letter">A</span>\(3\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq2')"><span class="opt-letter">B</span>\(7\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq2')"><span class="opt-letter">C</span>\(4\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq2')"><span class="opt-letter">D</span>\(-2\)</div>
+      </div>
+      <div class="quiz-feedback" id="fb2"></div>
+      <button class="quiz-submit" onclick="checkAns('qq2','fb2',1,
+        'Tepat! sup A = 3, dan menurut Teorema 5.1: sup(A + c) = sup A + c = 3 + 4 = 7.',
+        'Ingat Teorema: sup(A + c) = sup A + c. sup(-2,3] = 3, jadi sup(A+4) = 3 + 4 = 7.')">Periksa Jawaban</button>
+    </div>
+
+    <!-- Q3 -->
+    <div class="quiz-q" id="qq3" style="margin-top:28px; border-top:1px solid var(--border); padding-top:28px;">
+      <div class="q-num">Soal 03</div>
+      <div class="q-text">Diketahui himpunan \(B = \{-a : a \in A\}\) di mana \(A = [1, 5]\). Maka \(\sup B\) adalah…</div>
+      <div class="quiz-options">
+        <div class="quiz-option" onclick="selectOpt(this,'qq3')"><span class="opt-letter">A</span>\(5\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq3')"><span class="opt-letter">B</span>\(1\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq3')"><span class="opt-letter">C</span>\(-1\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq3')"><span class="opt-letter">D</span>\(-5\)</div>
+      </div>
+      <div class="quiz-feedback" id="fb3"></div>
+      <button class="quiz-submit" onclick="checkAns('qq3','fb3',2,
+        'Benar! B = -A = [-5, -1]. Menurut Teorema 5.2: sup(-A) = -inf A. inf A = 1, sehingga sup B = sup(-A) = -inf A = -1.',
+        'Gunakan Teorema: sup(-A) = -inf A. Untuk A = [1,5]: inf A = 1, sehingga sup(-A) = -1.')">Periksa Jawaban</button>
+    </div>
+
+    <!-- Q4 -->
+    <div class="quiz-q" id="qq4" style="margin-top:28px; border-top:1px solid var(--border); padding-top:28px;">
+      <div class="q-num">Soal 04</div>
+      <div class="q-text">
+        Menurut Lemma ε-Supremum, jika \(s = \sup A\), maka untuk setiap \(\varepsilon > 0\)…
+      </div>
+      <div class="quiz-options">
+        <div class="quiz-option" onclick="selectOpt(this,'qq4')"><span class="opt-letter">A</span>Terdapat \(a \in A\) sehingga \(a > s + \varepsilon\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq4')"><span class="opt-letter">B</span>Terdapat \(a \in A\) sehingga \(a > s - \varepsilon\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq4')"><span class="opt-letter">C</span>Untuk semua \(a \in A\): \(a > s - \varepsilon\)</div>
+        <div class="quiz-option" onclick="selectOpt(this,'qq4')"><span class="opt-letter">D</span>Untuk semua \(a \in A\): \(a \geq s\)</div>
+      </div>
+      <div class="quiz-feedback" id="fb4"></div>
+      <button class="quiz-submit" onclick="checkAns('qq4','fb4',1,
+        'Betul! Lemma ε menyatakan: untuk setiap ε > 0, TERDAPAT (bukan semua) a ∈ A sehingga a > s - ε. Ini menjamin bahwa s adalah batas atas terkecil.',
+        'Perhatikan Lemma ε: kondisi adalah ∃ a ∈ A sehingga a > s - ε (bukan ∀). Pilihan C salah karena menggunakan ∀.')">Periksa Jawaban</button>
+    </div>
+  </div>
+
+  <!-- Soal Latihan Tertulis -->
+  <div class="card gold" style="margin-top:28px;">
+    <div class="card-label">Latihan Mandiri</div>
+    <h3>Soal Pembuktian</h3>
+    <ol style="padding-left:20px; margin-top:12px;">
+      <li style="margin-bottom:14px; color:#c8c5be; font-size:15px;">
+        Buktikan bahwa jika \(A \subseteq B\) dan \(B\) terbatas di atas, maka \(\sup A \leq \sup B\).
+      </li>
+      <li style="margin-bottom:14px; color:#c8c5be; font-size:15px;">
+        Misalkan \(A\) dan \(B\) terbatas di atas. Buktikan:
+        \[\sup(A \cup B) = \max\{\sup A, \sup B\}\]
+      </li>
+      <li style="margin-bottom:14px; color:#c8c5be; font-size:15px;">
+        Tunjukkan bahwa \(\sup\{r \in \mathbb{Q} : r < \sqrt{2}\} = \sqrt{2}\) menggunakan Lemma ε.
+      </li>
+      <li style="color:#c8c5be; font-size:15px;">
+        Buktikan bahwa untuk \(c < 0\): \(\sup(cA) = c \cdot \inf A\).
+      </li>
+    </ol>
+  </div>
+</div>
+
+</div><!-- end .content -->
+</div><!-- end .main -->
+
+<div class="footer">
+  <span>Martin Bernard, M.Pd. &nbsp;·&nbsp; IKIP Siliwangi &nbsp;·&nbsp; Pendidikan Matematika</span>
+  <span>Analisis Real — Sifat Kelengkapan &amp; Supremum–Infimum</span>
+</div>
+
+<script>
+// ── NAV SCROLL ──────────────────────────────────────────
+function scrollTo(id, el) {
+  document.getElementById(id).scrollIntoView({ behavior: 'smooth', block: 'start' });
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ── PROGRESS BAR ────────────────────────────────────────
+window.addEventListener('scroll', () => {
+  const el = document.documentElement;
+  const pct = (el.scrollTop / (el.scrollHeight - el.clientHeight)) * 100;
+  document.getElementById('pbar').style.width = pct + '%';
+
+  // Active section highlight
+  const sections = ['s1','s2','s3','s4','s5','s6','s7','s8'];
+  const navItems = document.querySelectorAll('.nav-item');
+  for (let i = sections.length - 1; i >= 0; i--) {
+    const sec = document.getElementById(sections[i]);
+    if (sec && sec.getBoundingClientRect().top < 120) {
+      navItems.forEach(n => n.classList.remove('active'));
+      navItems[i].classList.add('active');
+      break;
+    }
+  }
+});
+
+// ── FADE-UP ANIMATIONS ──────────────────────────────────
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+}, { threshold: 0.08 });
+document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+// ── THEOREM ACCORDION ────────────────────────────────────
+function toggleTheorem(block) {
+  block.classList.toggle('open');
+  MathJax.typesetPromise && MathJax.typesetPromise();
+}
+
+// ── PROPERTY DETAILS ─────────────────────────────────────
+const propData = [
+  {
+    title: 'Sifat 1: Penambahan Konstanta',
+    math: '\\(A + c = \\{a + c : a \\in A\\}\\)',
+    detail: 'Menambahkan konstanta \\(c\\) pada setiap elemen himpunan menggeser semua nilai secara seragam. Supremum ikut bergeser sebesar \\(c\\): \\[\\sup(A+c) = \\sup A + c\\] Contoh: Jika \\(A = [1,3]\\), \\(c = 2\\), maka \\(A+c = [3,5]\\) dan \\(\\sup(A+c) = 5 = 3 + 2\\). Hal serupa berlaku untuk infimum: \\(\\inf(A+c) = \\inf A + c\\).'
+  },
+  {
+    title: 'Sifat 2: Perkalian Konstanta Positif',
+    math: '\\(cA = \\{ca : a \\in A\\},\\; c > 0\\)',
+    detail: 'Mengalikan semua elemen dengan \\(c > 0\\) menskala himpunan tanpa membalik urutan. \\[\\sup(cA) = c \\cdot \\sup A, \\quad \\inf(cA) = c \\cdot \\inf A\\] Contoh: \\(A = (1,4)\\), \\(c = 3\\) ⟹ \\(3A = (3, 12)\\), \\(\\sup(3A) = 12 = 3 \\cdot 4\\).'
+  },
+  {
+    title: 'Sifat 3: Negatif Himpunan',
+    math: '\\(-A = \\{-a : a \\in A\\}\\)',
+    detail: 'Membalik tanda semua elemen menukar supremum dan infimum (dengan tanda). \\[\\sup(-A) = -\\inf A \\qquad \\inf(-A) = -\\sup A\\] Contoh: \\(A = [-2, 5]\\) ⟹ \\(-A = [-5, 2]\\). \\(\\sup(-A) = 2 = -(-2) = -\\inf A\\). ✓'
+  },
+  {
+    title: 'Sifat 4: Gabungan Himpunan',
+    math: '\\(A \\cup B\\)',
+    detail: 'Supremum gabungan adalah maksimum dari kedua supremum: \\[\\sup(A \\cup B) = \\max\\{\\sup A,\\, \\sup B\\}\\] Secara intuitif: batas atas terkecil dari keseluruhan harus mampu membatasi kedua himpunan. Infimum: \\(\\inf(A \\cup B) = \\min\\{\\inf A, \\inf B\\}\\).'
+  },
+  {
+    title: 'Sifat 5: Penjumlahan Himpunan',
+    math: '\\(A + B = \\{a + b : a \\in A, b \\in B\\}\\)',
+    detail: 'Supremum dari penjumlahan Minkowski dua himpunan: \\[\\sup(A+B) = \\sup A + \\sup B\\] Contoh: \\(A = [1,3]\\), \\(B = [2,4]\\) ⟹ \\(A+B = [3,7]\\), \\(\\sup(A+B) = 7 = 3+4\\). Perlu diperhatikan bahwa ini hanya berlaku untuk supremum, bukan perkalian himpunan secara umum.'
+  },
+  {
+    title: 'Sifat 6: Monoton terhadap Subset',
+    math: '\\(A \\subseteq B\\)',
+    detail: 'Jika \\(A \\subseteq B\\), maka setiap batas atas \\(B\\) juga batas atas \\(A\\), sehingga batas atas terkecil \\(A\\) ≤ batas atas terkecil \\(B\\): \\[A \\subseteq B \\Rightarrow \\sup A \\leq \\sup B\\] Begitu pula: \\(\\inf B \\leq \\inf A\\). Ini sangat berguna untuk membuktikan ketaksamaan antara supremum.'
+  }
+];
+
+function showProp(idx, el) {
+  document.querySelectorAll('.ineq-prop').forEach(p => p.classList.remove('selected'));
+  el.classList.add('selected');
+  const d = propData[idx];
+  document.getElementById('propDetail').innerHTML =
+    `<strong style="color:var(--text);font-family:'Playfair Display',serif;font-size:15px;">${d.title}</strong>
+     <br><span style="color:var(--muted);font-size:13px;">${d.math}</span>
+     <br><br>${d.detail}`;
+  MathJax.typesetPromise && MathJax.typesetPromise([document.getElementById('propDetail')]);
+}
+
+// Init first prop
+document.addEventListener('DOMContentLoaded', () => {
+  showProp(0, document.querySelector('.ineq-prop.selected'));
+});
+
+// ── SIMULATOR ────────────────────────────────────────────
+const canvas = document.getElementById('numberline');
+const ctx = canvas.getContext('2d');
+
+function resizeCanvas() {
+  canvas.width = canvas.parentElement.clientWidth - 40;
+  canvas.height = 90;
+  drawLine();
+}
+
+function getSimState() {
+  const a = parseFloat(document.getElementById('leftBound').value);
+  const b = parseFloat(document.getElementById('rightBound').value);
+  const type = document.getElementById('intervalType').value;
+  const special = document.getElementById('specialSet').value;
+  return { a, b, type, special };
+}
+
+function drawLine() {
+  const { a, b, type, special } = getSimState();
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+
+  const pad = 40, lineY = H / 2;
+  const min = -12, max = 12;
+  const toX = v => pad + (v - min) / (max - min) * (W - 2*pad);
+
+  // Axis
+  ctx.strokeStyle = '#2a2d42';
+  ctx.lineWidth = 1;
+  ctx.beginPath(); ctx.moveTo(pad, lineY); ctx.lineTo(W-pad, lineY); ctx.stroke();
+
+  // Ticks
+  ctx.fillStyle = '#444';
+  for (let v = Math.ceil(min); v <= max; v++) {
+    const x = toX(v);
+    ctx.beginPath(); ctx.moveTo(x, lineY-4); ctx.lineTo(x, lineY+4);
+    ctx.strokeStyle = '#2a2d42'; ctx.stroke();
+    if (v % 2 === 0) {
+      ctx.fillStyle = '#666'; ctx.font = '11px JetBrains Mono,monospace';
+      ctx.textAlign = 'center'; ctx.fillText(v, x, lineY + 18);
+    }
+  }
+
+  let pts = [], sup, inf, supInA, infInA;
+
+  if (special === 'reciprocal') {
+    pts = Array.from({length:10}, (_,i)=>1/(i+1));
+    sup = Math.max(...pts); inf = Math.min(...pts);
+    supInA = true; infInA = false;
+  } else if (special === 'natural') {
+    pts = [];
+    for (let n = Math.ceil(a); n <= Math.floor(b); n++) pts.push(n);
+    if (pts.length === 0) { sup = b; inf = a; supInA = false; infInA = false; }
+    else { sup = Math.max(...pts); inf = Math.min(...pts); supInA = true; infInA = true; }
+  } else {
+    // interval
+    sup = b; inf = a;
+    supInA = (type === 'closed' || type === 'left-open');
+    infInA = (type === 'closed' || type === 'right-open');
+
+    // Draw interval bar
+    const x1 = toX(a), x2 = toX(b);
+    ctx.fillStyle = 'rgba(62,201,201,0.18)';
+    ctx.fillRect(x1, lineY-8, x2-x1, 16);
+
+    // Endpoints
+    const drawEndpt = (x, filled, col) => {
+      ctx.beginPath(); ctx.arc(x, lineY, 6, 0, Math.PI*2);
+      ctx.strokeStyle = col; ctx.lineWidth = 2;
+      if (filled) { ctx.fillStyle = col; ctx.fill(); }
+      else { ctx.fillStyle = var_bg(); ctx.fill(); }
+      ctx.stroke();
+    };
+    const leftFilled = type==='closed'||type==='right-open';
+    const rightFilled = type==='closed'||type==='left-open';
+    drawEndpt(x1, leftFilled, '#3ec9c9');
+    drawEndpt(x2, rightFilled, '#c9a84c');
+  }
+
+  if (special === 'reciprocal') {
+    pts.forEach(v => {
+      const x = toX(v);
+      ctx.beginPath(); ctx.arc(x, lineY, 4, 0, Math.PI*2);
+      ctx.fillStyle = '#9b7be8'; ctx.fill();
+    });
+  } else if (special === 'natural') {
+    pts.forEach(v => {
+      const x = toX(v);
+      ctx.beginPath(); ctx.arc(x, lineY, 5, 0, Math.PI*2);
+      ctx.fillStyle = '#9b7be8'; ctx.fill();
+    });
+  }
+
+  // Sup marker
+  const sx = toX(sup);
+  ctx.strokeStyle = '#c9a84c'; ctx.lineWidth = 2;
+  ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(sx, 8); ctx.lineTo(sx, lineY-10); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#c9a84c'; ctx.font = 'bold 11px JetBrains Mono,monospace';
+  ctx.textAlign = 'center';
+  ctx.fillText('sup', sx, 7);
+
+  // Inf marker
+  const ix = toX(inf);
+  ctx.strokeStyle = '#3ec9c9'; ctx.lineWidth = 2;
+  ctx.setLineDash([4,3]);
+  ctx.beginPath(); ctx.moveTo(ix, lineY+10); ctx.lineTo(ix, H-8); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle = '#3ec9c9'; ctx.font = 'bold 11px JetBrains Mono,monospace';
+  ctx.fillText('inf', ix, H-1);
+
+  // Results
+  document.getElementById('supVal').textContent = sup.toFixed(2);
+  document.getElementById('infVal').textContent = inf.toFixed(2);
+  const supTxt = supInA ? 'sup ✓' : 'sup ✗';
+  const infTxt = infInA ? 'inf ✓' : 'inf ✗';
+  document.getElementById('memVal').textContent = supTxt + '   ' + infTxt;
+  document.getElementById('memVal').title = 'Apakah sup/inf adalah anggota A?';
+}
+
+function var_bg() { return '#0a0c14'; }
+
+['leftBound','rightBound','intervalType','specialSet'].forEach(id => {
+  document.getElementById(id).addEventListener('input', function() {
+    if (id === 'leftBound') document.getElementById('leftVal').textContent = 'a = ' + this.value;
+    if (id === 'rightBound') document.getElementById('rightVal').textContent = 'b = ' + this.value;
+    drawLine();
+  });
+});
+
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+
+// ── QUIZ ─────────────────────────────────────────────────
+function selectOpt(el, qid) {
+  document.querySelectorAll(`#${qid} .quiz-option`).forEach(o => {
+    o.classList.remove('selected','correct','incorrect');
+  });
+  el.classList.add('selected');
+}
+
+function checkAns(qid, fbid, correct, okMsg, noMsg) {
+  const opts = document.querySelectorAll(`#${qid} .quiz-option`);
+  let sel = -1;
+  opts.forEach((o, i) => { if (o.classList.contains('selected')) sel = i; });
+  if (sel === -1) { alert('Pilih salah satu jawaban terlebih dahulu.'); return; }
+
+  opts.forEach((o, i) => {
+    o.classList.remove('selected','correct','incorrect');
+    if (i === correct) o.classList.add('correct');
+    else if (i === sel) o.classList.add('incorrect');
+  });
+
+  const fb = document.getElementById(fbid);
+  fb.classList.add('show');
+  if (sel === correct) {
+    fb.className = 'quiz-feedback show ok';
+    fb.innerHTML = '✓ ' + okMsg;
+  } else {
+    fb.className = 'quiz-feedback show no';
+    fb.innerHTML = '✗ ' + noMsg;
+  }
+  MathJax.typesetPromise && MathJax.typesetPromise([fb]);
+}
+
+// Init MathJax for dynamic content
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$','$']], displayMath: [['$$','$$'], ['\\[','\\]']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+</script>
+</body>
+</html>
