@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Latihan Pembuktian — The Real Numbers</title>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+:root {
+  --bg:        #0e0c0a;
+  --bg2:       #161310;
+  --bg3:       #1e1a15;
+  --bg4:       #252018;
+  --line:      #2e2820;
+  --gold:      #c9963a;
+  --gold-lt:   #e8b86a;
+  --gold-dim:  #7a5a20;
+  --cream:     #e8dfc8;
+  --cream-dim: #a09070;
+  --teal:      #3a8a8a;
+  --teal-lt:   #5aafaf;
+  --red:       #b84040;
+  --shadow:    rgba(0,0,0,0.5);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--cream);
+  font-family: 'Crimson Pro', Georgia, serif;
+  font-size: 17px;
+  line-height: 1.7;
+  min-height: 100vh;
+  background-image:
+    radial-gradient(ellipse at 10% 10%, rgba(201,150,58,0.07) 0%, transparent 45%),
+    radial-gradient(ellipse at 90% 85%, rgba(58,138,138,0.06) 0%, transparent 45%);
+}
+
+/* ── PROGRESS ── */
+#progress-bar {
+  position: fixed; top: 0; left: 0;
+  height: 2px; width: 0%;
+  background: linear-gradient(90deg, var(--gold-dim), var(--gold), var(--gold-lt));
+  z-index: 999;
+  transition: width .08s linear;
+}
+
+/* ── HEADER ── */
+header {
+  text-align: center;
+  padding: 4.5rem 2rem 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+header::before {
+  content: '∀ε>0 ∃δ>0';
+  position: absolute; top: 1.5rem; left: 50%;
+  transform: translateX(-50%);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.35em;
+  opacity: 0.5;
+}
+
+.badge {
+  display: inline-block;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.22em;
+  color: var(--gold);
+  border: 1px solid var(--gold-dim);
+  padding: 0.25rem 0.9rem;
+  margin-bottom: 1.4rem;
+  background: rgba(201,150,58,0.06);
+}
+
+h1 {
+  font-family: 'Cormorant Garamond', Georgia, serif;
+  font-size: clamp(2rem, 5vw, 3.6rem);
+  font-weight: 700;
+  color: var(--cream);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+}
+
+h1 em { color: var(--gold); font-style: italic; }
+
+.header-sub {
+  font-family: 'Crimson Pro', serif;
+  font-style: italic;
+  color: var(--cream-dim);
+  font-size: 1.05rem;
+  margin-top: 0.6rem;
+}
+
+.header-meta {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.1em;
+  margin-top: 0.9rem;
+}
+
+.header-rule {
+  width: 80px; height: 1px;
+  background: linear-gradient(90deg, transparent, var(--gold), transparent);
+  margin: 1.5rem auto 0;
+}
+
+/* ── STATS BAR ── */
+.stats-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: var(--bg2);
+}
+
+.stat-item {
+  flex: 1;
+  max-width: 160px;
+  text-align: center;
+  padding: 0.9rem 0.5rem;
+  border-right: 1px solid var(--line);
+}
+.stat-item:last-child { border-right: none; }
+
+.stat-num {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--gold);
+  line-height: 1;
+  display: block;
+}
+
+.stat-label {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--cream-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  display: block;
+  margin-top: 0.25rem;
+}
+
+/* ── FILTER TABS ── */
+.filter-bar {
+  display: flex;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 1.2rem 1rem;
+  flex-wrap: wrap;
+  background: var(--bg2);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.filter-btn {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.85rem;
+  border: 1px solid var(--line);
+  background: transparent;
+  color: var(--cream-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+  border-radius: 1px;
+}
+
+.filter-btn:hover { border-color: var(--gold-dim); color: var(--gold); }
+.filter-btn.active { background: var(--gold); color: var(--bg); border-color: var(--gold); font-weight: 600; }
+
+/* ── MAIN ── */
+main {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 2.5rem 1.5rem 6rem;
+}
+
+/* ── QUESTION CARD ── */
+.q-card {
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-left: 3px solid var(--gold-dim);
+  margin-bottom: 1.4rem;
+  transition: border-color 0.25s, box-shadow 0.25s, opacity 0.3s;
+  position: relative;
+  overflow: hidden;
+}
+
+.q-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+  opacity: 0.5;
+}
+
+.q-card:hover {
+  border-left-color: var(--gold);
+  box-shadow: 0 4px 24px rgba(201,150,58,0.08);
+}
+
+.q-card.done { border-left-color: var(--teal); }
+.q-card.hidden-card { display: none; }
+
+/* ── CARD HEADER ── */
+.q-header {
+  display: flex;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.2rem 1.4rem 0.6rem;
+}
+
+.q-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  font-weight: 600;
+  background: var(--gold-dim);
+  color: var(--bg);
+  padding: 0.2rem 0.55rem;
+  flex-shrink: 0;
+  margin-top: 0.25rem;
+  letter-spacing: 0.05em;
+}
+
+.q-card.done .q-num { background: var(--teal); }
+
+.q-topic {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.58rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  margin-top: 0.35rem;
+  padding: 0.18rem 0.55rem;
+  border: 1px solid var(--gold-dim);
+  opacity: 0.7;
+}
+
+/* ── QUESTION TEXT ── */
+.q-stem {
+  padding: 0 1.4rem 0.8rem;
+  font-size: 1rem;
+  color: var(--cream);
+  line-height: 1.75;
+}
+
+.q-stem strong { color: var(--gold-lt); }
+
+/* ── PROOF STEPS ── */
+.proof-frame {
+  margin: 0 1.4rem 1.2rem;
+  background: var(--bg3);
+  border: 1px solid var(--line);
+  padding: 1rem 1.2rem;
+}
+
+.proof-frame .proof-title {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  margin-bottom: 0.8rem;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 0.5rem;
+}
+
+.proof-step {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.7rem;
+  padding: 0.5rem 0;
+  border-bottom: 1px solid rgba(46,40,32,0.5);
+  font-size: 0.95rem;
+}
+
+.proof-step:last-child { border-bottom: none; }
+
+.step-num {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.6rem;
+  color: var(--gold-dim);
+  flex-shrink: 0;
+  margin-top: 0.1rem;
+  width: 1.8rem;
+}
+
+.step-content {
+  flex: 1;
+  color: var(--cream);
+  line-height: 1.65;
+}
+
+/* ── BLANK INPUT ── */
+.blank-wrap {
+  display: inline-flex;
+  align-items: center;
+  position: relative;
+  vertical-align: middle;
+}
+
+.blank {
+  display: inline-block;
+  min-width: 120px;
+  border: none;
+  border-bottom: 2px solid var(--gold-dim);
+  background: rgba(201,150,58,0.06);
+  color: var(--gold-lt);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.82rem;
+  padding: 0.15rem 0.5rem;
+  outline: none;
+  transition: border-color 0.2s, background 0.2s;
+  text-align: center;
+  margin: 0 0.3rem;
+}
+
+.blank:focus {
+  border-bottom-color: var(--gold);
+  background: rgba(201,150,58,0.12);
+}
+
+.blank.filled {
+  border-bottom-color: var(--teal);
+  background: rgba(58,138,138,0.08);
+  color: var(--teal-lt);
+}
+
+/* ── REASON SELECT ── */
+.reason-select {
+  font-family: 'Crimson Pro', serif;
+  font-size: 0.9rem;
+  background: var(--bg4);
+  color: var(--cream-dim);
+  border: 1px solid var(--line);
+  padding: 0.2rem 0.6rem;
+  outline: none;
+  cursor: pointer;
+  margin: 0 0.3rem;
+  transition: border-color 0.2s;
+}
+
+.reason-select:focus { border-color: var(--gold-dim); color: var(--cream); }
+.reason-select.filled { border-color: var(--teal); color: var(--teal-lt); }
+
+/* ── CARD FOOTER ── */
+.q-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.7rem 1.4rem;
+  border-top: 1px solid var(--line);
+  gap: 1rem;
+}
+
+.q-hint {
+  font-style: italic;
+  font-size: 0.85rem;
+  color: var(--cream-dim);
+  opacity: 0.7;
+}
+
+.btn-done {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  padding: 0.35rem 0.9rem;
+  border: 1px solid var(--gold-dim);
+  background: transparent;
+  color: var(--gold-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-done:hover { background: var(--gold-dim); color: var(--bg); }
+.q-card.done .btn-done { border-color: var(--teal); color: var(--teal); }
+.q-card.done .btn-done:hover { background: var(--teal); color: var(--bg); }
+
+/* ── SECTION LABELS ── */
+.section-label {
+  font-family: 'Cormorant Garamond', serif;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--gold);
+  margin: 2.5rem 0 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  letter-spacing: 0.01em;
+}
+
+.section-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: linear-gradient(90deg, var(--gold-dim), transparent);
+}
+
+.section-label span {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--gold-dim);
+  font-weight: 400;
+}
+
+/* ── MATH INLINE ── */
+.math-inline {
+  background: rgba(201,150,58,0.07);
+  border-left: 2px solid var(--gold-dim);
+  padding: 0.5rem 0.9rem;
+  margin: 0.5rem 0;
+  font-size: 0.95rem;
+  overflow-x: auto;
+}
+
+/* ── FOOTER ── */
+footer {
+  text-align: center;
+  padding: 2rem;
+  border-top: 1px solid var(--line);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 0.62rem;
+  color: var(--gold-dim);
+  letter-spacing: 0.08em;
+}
+
+footer strong { color: var(--gold); }
+
+/* ── FADE IN ── */
+.fade-in { opacity: 0; transform: translateY(14px); transition: opacity 0.5s, transform 0.5s; }
+.fade-in.vis { opacity: 1; transform: none; }
+
+/* ── RESPONSIVE ── */
+@media (max-width: 600px) {
+  main { padding: 1.5rem 0.8rem 5rem; }
+  .q-header { flex-wrap: wrap; gap: 0.5rem; }
+  .blank { min-width: 80px; }
+}
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header>
+  <div class="badge">ANALISIS REAL · IKIP SILIWANGI</div>
+  <h1>Latihan <em>Pembuktian</em></h1>
+  <p class="header-sub">The Real Numbers — Isian Langkah Bukti</p>
+  <p class="header-meta">Martin Bernard, M.Pd. · Pendidikan Matematika · 20 Soal</p>
+  <div class="header-rule"></div>
+</header>
+
+<div class="stats-bar">
+  <div class="stat-item">
+    <span class="stat-num" id="cnt-total">20</span>
+    <span class="stat-label">Total Soal</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="cnt-done">0</span>
+    <span class="stat-label">Selesai</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="cnt-filled">0</span>
+    <span class="stat-label">Isian Diisi</span>
+  </div>
+  <div class="stat-item">
+    <span class="stat-num" id="cnt-pct">0%</span>
+    <span class="stat-label">Progress</span>
+  </div>
+</div>
+
+<div class="filter-bar">
+  <button class="filter-btn active" onclick="filterCards('all')">Semua</button>
+  <button class="filter-btn" onclick="filterCards('2.1')">§2.1 Aljabar</button>
+  <button class="filter-btn" onclick="filterCards('2.2')">§2.2 Nilai Mutlak</button>
+  <button class="filter-btn" onclick="filterCards('2.3')">§2.3 Kelengkapan</button>
+  <button class="filter-btn" onclick="filterCards('2.4')">§2.4 Supremum</button>
+  <button class="filter-btn" onclick="filterCards('2.5')">§2.5 Interval</button>
+  <button class="filter-btn" onclick="filterCards('done')">✓ Selesai</button>
+</div>
+
+<main>
+
+<!-- ════════ §2.1 ════════ -->
+<div class="section-label fade-in">§2.1 Sifat Aljabar dan Urutan ℝ <span>6 soal</span></div>
+
+<!-- Q1 -->
+<div class="q-card fade-in" data-section="2.1" data-id="1">
+  <div class="q-header">
+    <span class="q-num">01</span>
+    <span class="q-topic">2.1 · Aksioma Lapangan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa untuk setiap \(a \in \mathbb{R}\), berlaku <strong>\(a \cdot 0 = 0\)</strong>. Lengkapi langkah-langkah berikut:
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Berdasarkan aksioma identitas penjumlahan: \(0 + 0 = \) <input class="blank" data-key="q1s1" placeholder="..."> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Kalikan kedua ruas dengan \(a\): \(a(0+0) = \) <input class="blank" data-key="q1s2" placeholder="..."> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Gunakan sifat <select class="reason-select" data-key="q1s3"><option value="">— alasan —</option><option>Distributif</option><option>Komutatif</option><option>Asosiatif</option><option>Invers penjumlahan</option></select>: \(a \cdot 0 + a \cdot 0 = a \cdot 0\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Tambahkan \(-(a \cdot 0)\) ke kedua ruas, diperoleh \(a \cdot 0 = \) <input class="blank" data-key="q1s4" placeholder="..."> </span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Gunakan A3, A4, dan sifat distributif (D)</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q2 -->
+<div class="q-card fade-in" data-section="2.1" data-id="2">
+  <div class="q-header">
+    <span class="q-num">02</span>
+    <span class="q-topic">2.1 · Aksioma Lapangan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa invers penjumlahan bersifat unik: Jika \(a + b = 0\) dan \(a + c = 0\), maka <strong>\(b = c\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Dari hipotesis: \(a + b = 0\) dan \(a + c = 0\), maka \(a + b = \) <input class="blank" data-key="q2s1" placeholder="..."> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Tambahkan \(b\) ke ruas kiri: \(b + (a + b) = \) <input class="blank" data-key="q2s2" placeholder="..."> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Gunakan sifat <select class="reason-select" data-key="q2s3"><option value="">— alasan —</option><option>Asosiatif</option><option>Komutatif</option><option>Distributif</option></select>: \((b + a) + b = (b + a) + c\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Karena \(b + a = a + b = \) <input class="blank" data-key="q2s4" placeholder="..."> , maka \(0 + b = 0 + c\), sehingga \(b = c\). \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Keunikan invers menjamin konsistensi aksioma A4</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q3 -->
+<div class="q-card fade-in" data-section="2.1" data-id="3">
+  <div class="q-header">
+    <span class="q-num">03</span>
+    <span class="q-topic">2.1 · Sifat Urutan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa jika \(a > b\) dan \(c < 0\), maka <strong>\(ac < bc\)</strong>. Lengkapi alasan setiap langkah:
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Karena \(a > b\), maka \(a - b \in \) <input class="blank" data-key="q3s1" placeholder="..."> (definisi positif)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Karena \(c < 0\), maka \(-c \in \mathbb{R}^+\) berdasarkan aksioma <select class="reason-select" data-key="q3s2"><option value="">— pilih —</option><option>Trikotomi (O3)</option><option>Tertutup penjumlahan (O1)</option><option>Tertutup perkalian (O2)</option></select></span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Berdasarkan (O2): \((a-b) \cdot (-c) \in \mathbb{R}^+\), artinya \(-(ac - bc) = \) <input class="blank" data-key="q3s3" placeholder="..."> \(> 0\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Maka \(bc - ac > 0\), yang berarti \(bc \) <input class="blank" data-key="q3s4" placeholder="..."> \(ac\), yaitu \(ac < bc\). \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Perhatikan pembalikan tanda ketika pengali negatif</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q4 -->
+<div class="q-card fade-in" data-section="2.1" data-id="4">
+  <div class="q-header">
+    <span class="q-num">04</span>
+    <span class="q-topic">2.1 · Sifat Urutan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa untuk setiap \(a \in \mathbb{R}\), <strong>\(a^2 \geq 0\)</strong>, dan \(a^2 = 0\) jika dan hanya jika \(a = 0\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content"><strong>Kasus \(a = 0\):</strong> \(0^2 = 0 \cdot 0 = \) <input class="blank" data-key="q4s1" placeholder="..."> \(\geq 0\). ✓</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content"><strong>Kasus \(a > 0\):</strong> Berdasarkan aksioma O2 (tertutup perkalian), \(a \cdot a \in \) <input class="blank" data-key="q4s2" placeholder="..."> , sehingga \(a^2 > 0\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content"><strong>Kasus \(a < 0\):</strong> Maka \(-a > 0\), sehingga \((-a)(-a) \in \mathbb{R}^+\). Karena \((-a)(-a) = \) <input class="blank" data-key="q4s3" placeholder="..."> , maka \(a^2 > 0\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Dalam semua kasus \(a \neq 0\), terbukti \(a^2 \) <input class="blank" data-key="q4s4" placeholder="..."> \(0\). Maka \(a^2 \geq 0\) untuk semua \(a\). \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Gunakan trikotomi: \(a>0\), \(a=0\), atau \(a<0\)</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q5 -->
+<div class="q-card fade-in" data-section="2.1" data-id="5">
+  <div class="q-header">
+    <span class="q-num">05</span>
+    <span class="q-topic">2.1 · Bernoulli</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Ketidaksamaan Bernoulli</strong>: Untuk \(x > -1\) dan \(n \in \mathbb{N}\), berlaku \((1+x)^n \geq 1 + nx\). Gunakan induksi matematika:
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti dengan Induksi Matematika</div>
+    <div class="proof-step">
+      <span class="step-num">Basis</span>
+      <span class="step-content">\(n = 1\): \((1+x)^1 = \) <input class="blank" data-key="q5s1" placeholder="..."> \(= 1 + 1 \cdot x\). Basis terpenuhi. ✓</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">H.I.</span>
+      <span class="step-content">Asumsikan \((1+x)^k \geq \) <input class="blank" data-key="q5s2" placeholder="..."> untuk suatu \(k \in \mathbb{N}\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">L.I.</span>
+      <span class="step-content">Karena \(1 + x > 0\), kalikan H.I. dengan \((1+x)\):
+        <div class="math-inline">\[(1+x)^{k+1} \geq (1+kx)(1+x) = 1 + kx + x + kx^2 = 1 + (k+1)x + \underbrace{kx^2}_{\geq\, 0}\]</div>
+        Maka \((1+x)^{k+1} \geq 1 + \) <input class="blank" data-key="q5s3" placeholder="..."> \(x\). \(\square\)
+      </span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Kunci: \(kx^2 \geq 0\) untuk semua \(x \in \mathbb{R}\)</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q6 -->
+<div class="q-card fade-in" data-section="2.1" data-id="6">
+  <div class="q-header">
+    <span class="q-num">06</span>
+    <span class="q-topic">2.1 · Aksioma Lapangan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa <strong>\((-1) \cdot a = -a\)</strong> untuk setiap \(a \in \mathbb{R}\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Hitung \(a + (-1) \cdot a\) menggunakan sifat distributif: \(a + (-1) \cdot a = \) <input class="blank" data-key="q6s1" placeholder="... · a + ... · a"> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Faktorkan: \(= (1 + (-1)) \cdot a = \) <input class="blank" data-key="q6s2" placeholder="..."> \(\cdot a\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Dari soal 01, \(0 \cdot a = 0\). Maka \(a + (-1)a = \) <input class="blank" data-key="q6s3" placeholder="..."> </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Karena \(a + (-a) = 0\) juga, dan invers bersifat unik (soal 02), disimpulkan \((-1) \cdot a = \) <input class="blank" data-key="q6s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Gunakan keunikan invers yang telah dibuktikan di soal 02</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- ════════ §2.2 ════════ -->
+<div class="section-label fade-in">§2.2 Nilai Mutlak <span>4 soal</span></div>
+
+<!-- Q7 -->
+<div class="q-card fade-in" data-section="2.2" data-id="7">
+  <div class="q-header">
+    <span class="q-num">07</span>
+    <span class="q-topic">2.2 · Nilai Mutlak</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa <strong>\(|ab| = |a|\,|b|\)</strong> untuk setiap \(a, b \in \mathbb{R}\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (analisis kasus)</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Perhatikan bahwa \(|a|^2 = a^2\) (dari sifat nilai mutlak). Maka:
+        \[|ab|^2 = (ab)^2 = a^2 b^2 = |a|^2\,|b|^2 = (|a|\,|b|)^2\]
+      </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Karena \(|ab| \geq 0\) dan \(|a|\,|b| \geq \) <input class="blank" data-key="q7s2" placeholder="..."> , dan keduanya memiliki kuadrat yang sama, maka \(|ab| = \) <input class="blank" data-key="q7s3" placeholder="..."> . \(\square\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">Ket.</span>
+      <span class="step-content">Argumen ini menggunakan fakta bahwa jika \(x, y \geq 0\) dan \(x^2 = y^2\), maka \(x = \) <input class="blank" data-key="q7s4" placeholder="..."> .</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Kuadratkan kedua ruas untuk menghindari analisis kasus ±</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q8 -->
+<div class="q-card fade-in" data-section="2.2" data-id="8">
+  <div class="q-header">
+    <span class="q-num">08</span>
+    <span class="q-topic">2.2 · Segitiga</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Ketidaksamaan Segitiga</strong>: \(|a + b| \leq |a| + |b|\) untuk \(a, b \in \mathbb{R}\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Untuk setiap \(x \in \mathbb{R}\), berlaku \(-|x| \leq x \leq |x|\). Tuliskan untuk \(a\) dan \(b\):
+        \[-|a| \leq a \leq |a|, \quad -|b| \leq b \leq \] <input class="blank" data-key="q8s1" placeholder="...">
+      </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Jumlahkan kedua ketidaksamaan:
+        \[-(|a|+|b|) \leq a+b \leq \] <input class="blank" data-key="q8s2" placeholder="...">
+      </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Ketidaksamaan ganda \(-M \leq x \leq M\) ekuivalen dengan \(|x| \leq \) <input class="blank" data-key="q8s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Substitusi \(x = a+b\) dan \(M = |a| + |b|\): diperoleh \(|a+b| \leq \) <input class="blank" data-key="q8s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Lemma: \(-M \leq x \leq M \Leftrightarrow |x| \leq M\) (untuk \(M \geq 0\))</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q9 -->
+<div class="q-card fade-in" data-section="2.2" data-id="9">
+  <div class="q-header">
+    <span class="q-num">09</span>
+    <span class="q-topic">2.2 · Segitiga Terbalik</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Ketidaksamaan Segitiga Terbalik</strong>: \(\big||a| - |b|\big| \leq |a - b|\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Tulis \(a = (a - b) + b\). Gunakan ketidaksamaan segitiga:
+        \[|a| = |(a-b) + b| \leq |a-b| + \] <input class="blank" data-key="q9s1" placeholder="...">
+      </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Maka \(|a| - |b| \leq \) <input class="blank" data-key="q9s2" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Sebaliknya, tulis \(b = (b-a) + a\), maka \(|b| - |a| \leq |b - a| = \) <input class="blank" data-key="q9s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Dari (2) dan (3): \(-|a-b| \leq |a| - |b| \leq |a-b|\), sehingga \(\big||a|-|b|\big| \leq \) <input class="blank" data-key="q9s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Terapkan segitiga dua kali dengan peran \(a\) dan \(b\) ditukar</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q10 -->
+<div class="q-card fade-in" data-section="2.2" data-id="10">
+  <div class="q-header">
+    <span class="q-num">10</span>
+    <span class="q-topic">2.2 · Karakterisasi</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa untuk \(\varepsilon > 0\): <strong>\(|a - b| < \varepsilon \Leftrightarrow b - \varepsilon < a < b + \varepsilon\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (dua arah)</div>
+    <div class="proof-step">
+      <span class="step-num">(\(\Rightarrow\))</span>
+      <span class="step-content">Dari \(|a-b| < \varepsilon\), gunakan Lema 2.2.4: \(-\varepsilon < a - b < \) <input class="blank" data-key="q10s1" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num"></span>
+      <span class="step-content">Tambahkan \(b\) ke semua bagian: \(b - \varepsilon < a < \) <input class="blank" data-key="q10s2" placeholder="..."> . ✓</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(\(\Leftarrow\))</span>
+      <span class="step-content">Dari \(b - \varepsilon < a < b + \varepsilon\), kurangi \(b\): \(-\varepsilon < \) <input class="blank" data-key="q10s3" placeholder="..."> \(< \varepsilon\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num"></span>
+      <span class="step-content">Ini ekuivalen dengan \(|a - b| < \) <input class="blank" data-key="q10s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Hubungan ini dasar untuk definisi limit (\(\varepsilon\)-\(\delta\))</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- ════════ §2.3 ════════ -->
+<div class="section-label fade-in">§2.3 Sifat Kelengkapan ℝ <span>4 soal</span></div>
+
+<!-- Q11 -->
+<div class="q-card fade-in" data-section="2.3" data-id="11">
+  <div class="q-header">
+    <span class="q-num">11</span>
+    <span class="q-topic">2.3 · Archimedean</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Sifat Archimedean</strong>: Untuk setiap \(x \in \mathbb{R}\), terdapat \(n \in \mathbb{N}\) dengan \(n > x\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (kontradiksi)</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Asumsikan kontradiksi: \(n \leq x\) untuk semua \(n \in \mathbb{N}\). Artinya \(\mathbb{N}\) <select class="reason-select" data-key="q11s1"><option value="">— pilih —</option><option>terbatas ke atas oleh x</option><option>terbatas ke bawah oleh x</option><option>tidak terbatas</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Berdasarkan Aksioma Kelengkapan, \(\alpha = \sup \mathbb{N}\) <select class="reason-select" data-key="q11s2"><option value="">— pilih —</option><option>ada di ℝ</option><option>tidak ada di ℝ</option><option>sama dengan x</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Karena \(\alpha - 1\) bukan batas atas \(\mathbb{N}\), terdapat \(m \in \mathbb{N}\) dengan \(m > \) <input class="blank" data-key="q11s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Maka \(m + 1 \in \mathbb{N}\) dan \(m + 1 > \alpha\). Ini kontradiksi dengan \(\alpha = \) <input class="blank" data-key="q11s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Kontradiksi muncul dari: jika \(\alpha = \sup\mathbb{N}\), maka \(\alpha+1\) bukan batas atas</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q12 -->
+<div class="q-card fade-in" data-section="2.3" data-id="12">
+  <div class="q-header">
+    <span class="q-num">12</span>
+    <span class="q-topic">2.3 · Archimedean</span>
+  </div>
+  <div class="q-stem">
+    Gunakan Sifat Archimedean untuk membuktikan: untuk setiap \(\varepsilon > 0\), terdapat \(n \in \mathbb{N}\) sehingga <strong>\(\dfrac{1}{n} < \varepsilon\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Terapkan Sifat Archimedean pada \(x = \dfrac{1}{\varepsilon}\): terdapat \(n \in \mathbb{N}\) dengan \(n > \) <input class="blank" data-key="q12s1" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Karena \(n > \dfrac{1}{\varepsilon}\) dan \(n > 0\), \(\varepsilon > 0\), maka \(\dfrac{1}{n} < \) <input class="blank" data-key="q12s2" placeholder="..."> . \(\square\)</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">Ket.</span>
+      <span class="step-content">Hasil ini menyatakan bahwa barisan \(\left(\dfrac{1}{n}\right)\) <select class="reason-select" data-key="q12s3"><option value="">— pilih —</option><option>konvergen ke 0</option><option>divergen ke ∞</option><option>terbatas tapi tidak konvergen</option></select> .</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Ambil \(x = 1/\varepsilon\) dalam Sifat Archimedean</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q13 -->
+<div class="q-card fade-in" data-section="2.3" data-id="13">
+  <div class="q-header">
+    <span class="q-num">13</span>
+    <span class="q-topic">2.3 · Kerapatan ℚ</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Kerapatan ℚ di ℝ</strong>: Jika \(a < b\), terdapat \(q \in \mathbb{Q}\) dengan \(a < q < b\). Lengkapi konstruksi:
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (konstruktif)</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Karena \(b - a > 0\), berdasarkan Archimedean terdapat \(n \in \mathbb{N}\) dengan \(n > \dfrac{1}{b-a}\), maka \(\dfrac{1}{n} < \) <input class="blank" data-key="q13s1" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Ambil \(m = \lceil na \rceil + 1\) (bilangan bulat terkecil lebih dari \(na\)). Maka \(m - 1 \leq na < m\), sehingga \(a < \dfrac{m}{n}\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Karena \(\dfrac{1}{n} < b - a\), maka \(\dfrac{m}{n} \leq \dfrac{na + 1}{n} = a + \dfrac{1}{n} < a + (b - a) = \) <input class="blank" data-key="q13s2" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Jadi \(q = \dfrac{m}{n} \in \) <input class="blank" data-key="q13s3" placeholder="..."> memenuhi \(a < q < b\). \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Konstruksi eksplisit: pilih \(n\) cukup besar lalu cari pembilang \(m\) yang tepat</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q14 -->
+<div class="q-card fade-in" data-section="2.3" data-id="14">
+  <div class="q-header">
+    <span class="q-num">14</span>
+    <span class="q-topic">2.3 · Akar Kuadrat</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa <strong>\(\sqrt{2}\) adalah irasional</strong>, yaitu \(\sqrt{2} \notin \mathbb{Q}\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (kontradiksi)</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Asumsikan \(\sqrt{2} = \dfrac{p}{q}\) dengan \(p, q \in \mathbb{Z}\), \(q \neq 0\), dan \(\gcd(p,q) = \) <input class="blank" data-key="q14s1" placeholder="..."> (dalam bentuk paling sederhana).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Kuadratkan: \(2 = \dfrac{p^2}{q^2}\), sehingga \(p^2 = \) <input class="blank" data-key="q14s2" placeholder="..."> . Maka \(p^2\) genap, sehingga \(p\) pun <select class="reason-select" data-key="q14s3"><option value="">— pilih —</option><option>genap</option><option>ganjil</option><option>prima</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Tulis \(p = 2k\). Substitusi: \((2k)^2 = 2q^2 \Rightarrow 4k^2 = 2q^2 \Rightarrow q^2 = \) <input class="blank" data-key="q14s4" placeholder="..."> . Maka \(q\) pun genap.</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Maka \(\gcd(p,q) \geq 2\), kontradiksi dengan \(\gcd(p,q) = 1\). Jadi \(\sqrt{2} \notin \) <input class="blank" data-key="q14s5" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Bukti klasik: asumsi \(p/q\) paling sederhana → keduanya genap → kontradiksi</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- ════════ §2.4 ════════ -->
+<div class="section-label fade-in">§2.4 Supremum dan Infimum <span>4 soal</span></div>
+
+<!-- Q15 -->
+<div class="q-card fade-in" data-section="2.4" data-id="15">
+  <div class="q-header">
+    <span class="q-num">15</span>
+    <span class="q-topic">2.4 · Supremum</span>
+  </div>
+  <div class="q-stem">
+    Buktikan: Jika \(u = \sup S\), maka untuk setiap \(\varepsilon > 0\) terdapat \(s_\varepsilon \in S\) dengan <strong>\(u - \varepsilon < s_\varepsilon \leq u\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Karena \(u = \sup S\), maka \(u\) adalah <select class="reason-select" data-key="q15s1"><option value="">— pilih —</option><option>batas atas terkecil</option><option>batas bawah terbesar</option><option>elemen terbesar</option></select> dari \(S\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Misalkan ada \(\varepsilon > 0\) sehingga tidak ada \(s \in S\) dengan \(s > u - \varepsilon\). Maka \(u - \varepsilon\) adalah <select class="reason-select" data-key="q15s2"><option value="">— pilih —</option><option>batas atas dari S</option><option>batas bawah dari S</option><option>supremum dari S</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Karena \(u - \varepsilon < \) <input class="blank" data-key="q15s3" placeholder="..."> , ini kontradiksi dengan \(u\) sebagai batas atas terkecil.</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Maka untuk setiap \(\varepsilon > 0\), pasti terdapat \(s_\varepsilon \in S\) dengan \(s_\varepsilon > u - \varepsilon\). Karena \(u\) batas atas, \(s_\varepsilon \leq \) <input class="blank" data-key="q15s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Ini adalah karakterisasi ε dari supremum — sangat penting!</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q16 -->
+<div class="q-card fade-in" data-section="2.4" data-id="16">
+  <div class="q-header">
+    <span class="q-num">16</span>
+    <span class="q-topic">2.4 · Inf dan Sup</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa <strong>\(\inf S = -\sup(-S)\)</strong>, di mana \(-S = \{-s : s \in S\}\).
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Misalkan \(w = \inf S\). Maka \(w \leq s\) untuk semua \(s \in S\), sehingga \(-w \geq \) <input class="blank" data-key="q16s1" placeholder="..."> untuk semua \(-s \in -S\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Ini berarti \(-w\) adalah <select class="reason-select" data-key="q16s2"><option value="">— pilih —</option><option>batas atas dari -S</option><option>batas bawah dari -S</option><option>infimum dari -S</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Jika \(v < -w\), maka \(-v > w\), dan karena \(w = \inf S\), terdapat \(s \in S\) dengan \(s < -v\), artinya \(-s > v\). Jadi \(v\) bukan batas atas \(-S\). Maka \(-w = \) <input class="blank" data-key="q16s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Dari \(-w = \sup(-S)\), diperoleh \(w = \) <input class="blank" data-key="q16s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Negasikan semua elemen → min menjadi maks, sup menjadi inf</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q17 -->
+<div class="q-card fade-in" data-section="2.4" data-id="17">
+  <div class="q-header">
+    <span class="q-num">17</span>
+    <span class="q-topic">2.4 · Sup & Subset</span>
+  </div>
+  <div class="q-stem">
+    Buktikan: Jika \(A \subseteq B \subseteq \mathbb{R}\) dan \(B\) terbatas ke atas, maka <strong>\(\sup A \leq \sup B\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Misalkan \(\beta = \sup B\). Maka untuk semua \(b \in B\): \(b \leq \) <input class="blank" data-key="q17s1" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Karena \(A \subseteq B\), setiap \(a \in A\) juga \(a \in \) <input class="blank" data-key="q17s2" placeholder="..."> , sehingga \(a \leq \beta\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Jadi \(\beta\) adalah <select class="reason-select" data-key="q17s3"><option value="">— pilih —</option><option>batas atas dari A</option><option>batas bawah dari A</option><option>infimum dari A</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Karena \(\sup A\) adalah batas atas terkecil dari \(A\), dan \(\beta\) batas atas \(A\), maka \(\sup A \leq \) <input class="blank" data-key="q17s4" placeholder="..."> \(= \sup B\). \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Sup adalah batas atas terkecil — setiap batas atas lain pasti ≥ sup</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q18 -->
+<div class="q-card fade-in" data-section="2.4" data-id="18">
+  <div class="q-header">
+    <span class="q-num">18</span>
+    <span class="q-topic">2.4 · Sup Penjumlahan</span>
+  </div>
+  <div class="q-stem">
+    Buktikan: Jika \(A, B \subseteq \mathbb{R}\) terbatas, dan \(A + B = \{a+b : a\in A, b\in B\}\), maka <strong>\(\sup(A+B) = \sup A + \sup B\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Misalkan \(\alpha = \sup A\) dan \(\beta = \sup B\). Untuk setiap \(a+b \in A+B\):
+        \[a + b \leq \alpha + \] <input class="blank" data-key="q18s1" placeholder="...">
+      </span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Jadi \(\alpha + \beta\) adalah batas atas dari \(A+B\), maka \(\sup(A+B) \leq \) <input class="blank" data-key="q18s2" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Untuk arah lain: ambil \(\varepsilon > 0\). Terdapat \(a \in A\) dengan \(a > \alpha - \varepsilon/2\) dan \(b \in B\) dengan \(b > \) <input class="blank" data-key="q18s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Maka \(a + b > \alpha + \beta - \varepsilon\), sehingga \(\sup(A+B) \geq \alpha + \beta - \varepsilon\). Karena \(\varepsilon\) sembarang, \(\sup(A+B) \geq \) <input class="blank" data-key="q18s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Gunakan karakterisasi ε: untuk setiap ε ada elemen yang "dekat" dengan sup</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- ════════ §2.5 ════════ -->
+<div class="section-label fade-in">§2.5 Interval <span>2 soal</span></div>
+
+<!-- Q19 -->
+<div class="q-card fade-in" data-section="2.5" data-id="19">
+  <div class="q-header">
+    <span class="q-num">19</span>
+    <span class="q-topic">2.5 · Karakterisasi Interval</span>
+  </div>
+  <div class="q-stem">
+    Buktikan bahwa himpunan \(S = [a,b]\) memenuhi sifat: jika \(x, y \in S\) dan \(x < y\), maka untuk setiap \(z\) dengan \(x < z < y\), berlaku <strong>\(z \in S\)</strong>.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Ambil sembarang \(x, y \in [a,b]\) dengan \(x < y\). Maka \(a \leq x\) dan \(y \leq \) <input class="blank" data-key="q19s1" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Ambil \(z\) dengan \(x < z < y\). Dari \(a \leq x < z\) diperoleh \(a \leq \) <input class="blank" data-key="q19s2" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Dari \(z < y \leq b\) diperoleh \(z \leq \) <input class="blank" data-key="q19s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Dari (2) dan (3): \(a \leq z \leq b\), sehingga \(z \in \) <input class="blank" data-key="q19s4" placeholder="..."> . \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Sifat ini (konveksitas) digunakan untuk mengkarakterisasi semua interval di ℝ</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+<!-- Q20 -->
+<div class="q-card fade-in" data-section="2.5" data-id="20">
+  <div class="q-header">
+    <span class="q-num">20</span>
+    <span class="q-topic">2.5 · Nested Intervals</span>
+  </div>
+  <div class="q-stem">
+    Buktikan <strong>Teorema Interval Bersarang</strong>: Jika \([a_n, b_n] \supseteq [a_{n+1}, b_{n+1}]\) untuk semua \(n\) dan \(\lim(b_n - a_n) = 0\), maka \(\bigcap_{n=1}^\infty [a_n, b_n]\) berisi tepat satu titik.
+  </div>
+  <div class="proof-frame">
+    <div class="proof-title">Bukti (menggunakan Aksioma Kelengkapan)</div>
+    <div class="proof-step">
+      <span class="step-num">(1)</span>
+      <span class="step-content">Himpunan \(A = \{a_n : n \in \mathbb{N}\}\) terbatas ke atas (oleh setiap \(b_n\)). Maka \(\xi = \sup A\) <select class="reason-select" data-key="q20s1"><option value="">— pilih —</option><option>ada di ℝ</option><option>tidak ada</option><option>sama dengan b₁</option></select> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(2)</span>
+      <span class="step-content">Karena \(a_n \leq \xi\) dan \(\xi \leq b_n\) untuk semua \(n\), maka \(\xi \in \) <input class="blank" data-key="q20s2" placeholder="..."> untuk semua \(n\). Jadi \(\xi \in \bigcap [a_n, b_n]\).</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(3)</span>
+      <span class="step-content">Misalkan \(\xi' \in \bigcap [a_n, b_n]\), \(\xi' \neq \xi\). Maka \(|\xi' - \xi| = c > 0\). Karena \(b_n - a_n \to 0\), terdapat \(N\) dengan \(b_N - a_N < \) <input class="blank" data-key="q20s3" placeholder="..."> .</span>
+    </div>
+    <div class="proof-step">
+      <span class="step-num">(4)</span>
+      <span class="step-content">Namun \(\xi, \xi' \in [a_N, b_N]\) mengharuskan \(|\xi - \xi'| \leq b_N - a_N < c\), kontradiksi. Jadi irisan berisi tepat <input class="blank" data-key="q20s4" placeholder="..."> titik. \(\square\)</span>
+    </div>
+  </div>
+  <div class="q-footer">
+    <span class="q-hint">💡 Keunikan: dua titik dalam irisan tidak bisa berjarak lebih dari \(b_N - a_N \to 0\)</span>
+    <button class="btn-done" onclick="markDone(this)">Tandai Selesai</button>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <strong>Martin Bernard, M.Pd.</strong> · Pendidikan Matematika · IKIP Siliwangi, Cimahi<br>
+  Soal Latihan Pembuktian — The Real Numbers · Analisis Real
+</footer>
+
+<script>
+// ── PROGRESS BAR ──
+window.addEventListener('scroll', () => {
+  const t = document.documentElement.scrollHeight - window.innerHeight;
+  document.getElementById('progress-bar').style.width = (scrollY / t * 100) + '%';
+});
+
+// ── FILTER ──
+function filterCards(section) {
+  document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+  event.target.classList.add('active');
+
+  document.querySelectorAll('.q-card').forEach(card => {
+    if (section === 'all') {
+      card.classList.remove('hidden-card');
+    } else if (section === 'done') {
+      card.classList.toggle('hidden-card', !card.classList.contains('done'));
+    } else {
+      card.classList.toggle('hidden-card', card.dataset.section !== section);
+    }
+  });
+
+  document.querySelectorAll('.section-label').forEach(lbl => {
+    lbl.style.display = (section === 'all' || section === 'done') ? '' : 'none';
+  });
+}
+
+// ── MARK DONE ──
+function markDone(btn) {
+  const card = btn.closest('.q-card');
+  card.classList.toggle('done');
+  updateStats();
+}
+
+// ── STATS ──
+function updateStats() {
+  const total = document.querySelectorAll('.q-card').length;
+  const done  = document.querySelectorAll('.q-card.done').length;
+  const allBlanks = document.querySelectorAll('.blank');
+  const filled = [...allBlanks].filter(b => b.value.trim().length > 0).length;
+  const pct = Math.round(done / total * 100);
+
+  document.getElementById('cnt-total').textContent = total;
+  document.getElementById('cnt-done').textContent  = done;
+  document.getElementById('cnt-filled').textContent = filled;
+  document.getElementById('cnt-pct').textContent   = pct + '%';
+}
+
+// ── BLANK / SELECT WATCHERS ──
+document.querySelectorAll('.blank').forEach(inp => {
+  inp.addEventListener('input', () => {
+    inp.classList.toggle('filled', inp.value.trim().length > 0);
+    updateStats();
+  });
+});
+
+document.querySelectorAll('.reason-select').forEach(sel => {
+  sel.addEventListener('change', () => {
+    sel.classList.toggle('filled', sel.value.length > 0);
+    updateStats();
+  });
+});
+
+// ── INTERSECTION OBSERVER ──
+const io = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      setTimeout(() => e.target.classList.add('vis'), 60);
+      io.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.08 });
+
+document.querySelectorAll('.fade-in').forEach(el => io.observe(el));
+
+// ── MATHJAX CONFIG ──
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'], ['$','$']] },
+  options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+};
+
+updateStats();
+</script>
+</body>
+</html>
