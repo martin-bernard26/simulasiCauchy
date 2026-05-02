@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Real Numbers — Referensi Analisis Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,900;1,400;1,600&family=Source+Serif+4:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --ink: #1a1208;
+    --parchment: #f5eedc;
+    --parchment-mid: #ede3c8;
+    --parchment-dark: #d9c99a;
+    --amber: #b5722a;
+    --amber-light: #d4943e;
+    --rust: #8b3a1a;
+    --teal: #1e5f6b;
+    --teal-light: #2d8a9e;
+    --gold: #c9a227;
+    --shadow: rgba(26,18,8,0.18);
+    --card-bg: #faf5e8;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--parchment);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.75;
+    min-height: 100vh;
+    background-image:
+      radial-gradient(ellipse at 15% 20%, rgba(181,114,42,0.06) 0%, transparent 55%),
+      radial-gradient(ellipse at 85% 75%, rgba(30,95,107,0.06) 0%, transparent 55%),
+      url("data:image/svg+xml,%3Csvg width='80' height='80' viewBox='0 0 80 80' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='%23b5722a' fill-opacity='0.03'%3E%3Cpath d='M0 0h80v80H0z'/%3E%3Cpath d='M0 40h80M40 0v80' stroke='%23b5722a' stroke-opacity='0.05' stroke-width='1' fill='none'/%3E%3C/g%3E%3C/svg%3E");
+  }
+
+  /* SCROLL PROGRESS */
+  #progress-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 3px;
+    width: 0%;
+    background: linear-gradient(90deg, var(--amber), var(--gold), var(--teal-light));
+    z-index: 1000;
+    transition: width 0.1s;
+  }
+
+  /* HEADER */
+  header {
+    text-align: center;
+    padding: 4rem 2rem 2.5rem;
+    border-bottom: 2px solid var(--parchment-dark);
+    position: relative;
+  }
+
+  header::before {
+    content: '';
+    display: block;
+    width: 120px; height: 2px;
+    background: linear-gradient(90deg, transparent, var(--amber), transparent);
+    margin: 0 auto 1.5rem;
+  }
+
+  .header-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--amber);
+    border: 1px solid var(--parchment-dark);
+    padding: 0.25rem 1rem;
+    margin-bottom: 1.2rem;
+    background: rgba(181,114,42,0.07);
+  }
+
+  h1.main-title {
+    font-family: 'Playfair Display', Georgia, serif;
+    font-size: clamp(2.2rem, 5vw, 3.8rem);
+    font-weight: 900;
+    color: var(--ink);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.5rem;
+  }
+
+  h1.main-title em {
+    color: var(--amber);
+    font-style: italic;
+  }
+
+  .header-subtitle {
+    font-size: 1rem;
+    color: var(--amber);
+    font-style: italic;
+    margin-bottom: 0.5rem;
+  }
+
+  .header-meta {
+    font-size: 0.8rem;
+    color: #7a6a4a;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+
+  /* NAV TABS */
+  nav.chapter-nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(245,238,220,0.97);
+    backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--parchment-dark);
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    overflow-x: auto;
+    padding: 0 1rem;
+  }
+
+  nav.chapter-nav button {
+    font-family: 'Source Serif 4', serif;
+    font-size: 0.82rem;
+    font-style: italic;
+    padding: 0.85rem 1.2rem;
+    border: none;
+    background: transparent;
+    color: #7a6a4a;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    transition: all 0.25s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+
+  nav.chapter-nav button:hover,
+  nav.chapter-nav button.active {
+    color: var(--amber);
+    border-bottom-color: var(--amber);
+  }
+
+  nav.chapter-nav button span {
+    font-style: normal;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    margin-right: 0.4em;
+    opacity: 0.6;
+  }
+
+  /* MAIN LAYOUT */
+  main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 6rem;
+  }
+
+  /* SECTIONS */
+  .chapter-section {
+    display: none;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.4s, transform 0.4s;
+  }
+
+  .chapter-section.active {
+    display: block;
+    opacity: 1;
+    transform: none;
+  }
+
+  .section-header {
+    margin-bottom: 2.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--parchment-dark);
+  }
+
+  .section-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--amber);
+    letter-spacing: 0.15em;
+    display: block;
+    margin-bottom: 0.4rem;
+  }
+
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(1.6rem, 3vw, 2.4rem);
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.15;
+  }
+
+  .section-title em { color: var(--amber); font-style: italic; }
+
+  .section-intro {
+    font-size: 0.95rem;
+    color: #5a4a2a;
+    font-style: italic;
+    margin-top: 0.75rem;
+    line-height: 1.6;
+  }
+
+  /* CARDS */
+  .card {
+    margin-bottom: 1.5rem;
+    border-radius: 2px;
+    overflow: hidden;
+    box-shadow: 0 2px 12px var(--shadow), 0 0 0 1px rgba(181,114,42,0.1);
+    background: var(--card-bg);
+    transition: box-shadow 0.25s;
+  }
+
+  .card:hover {
+    box-shadow: 0 6px 24px var(--shadow), 0 0 0 1px rgba(181,114,42,0.2);
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 1rem 1.4rem;
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.2s;
+    position: relative;
+  }
+
+  .card-header:hover { background: rgba(181,114,42,0.04); }
+
+  .card-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.62rem;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.22rem 0.7rem;
+    border-radius: 1px;
+    flex-shrink: 0;
+  }
+
+  .tag-definisi  { background: #e8f0e9; color: #2a6b34; border: 1px solid #a8d4b0; }
+  .tag-lema      { background: #e8edf8; color: #2a3d8b; border: 1px solid #a8bce8; }
+  .tag-teorema   { background: #f8ede8; color: #8b2a1a; border: 1px solid #e8b0a0; }
+  .tag-aksioma   { background: #f5e8f8; color: #6b1a8b; border: 1px solid #d4a8e8; }
+  .tag-sifat     { background: #f8f4e8; color: #8b7a1a; border: 1px solid #e8d8a0; }
+  .tag-korolari  { background: #e8f4f8; color: #1a6b8b; border: 1px solid #a0d4e8; }
+
+  .card-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    color: #9a8a6a;
+    flex-shrink: 0;
+  }
+
+  .card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    font-weight: 600;
+    flex: 1;
+    color: var(--ink);
+  }
+
+  .card-chevron {
+    width: 18px; height: 18px;
+    color: var(--amber);
+    transition: transform 0.3s;
+    flex-shrink: 0;
+  }
+
+  .card.open .card-chevron { transform: rotate(180deg); }
+
+  .card-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.4s cubic-bezier(0.4,0,0.2,1);
+  }
+
+  .card.open .card-body { max-height: 1200px; }
+
+  .card-body-inner {
+    padding: 0 1.4rem 1.4rem;
+    border-top: 1px solid var(--parchment-dark);
+  }
+
+  .card-body-inner p, .card-body-inner li {
+    font-size: 0.95rem;
+    line-height: 1.8;
+    color: #2a2010;
+    margin-top: 0.6rem;
+  }
+
+  .card-body-inner ul {
+    padding-left: 1.4rem;
+    margin-top: 0.4rem;
+  }
+
+  .card-body-inner .proof-label {
+    font-style: italic;
+    color: var(--amber);
+    font-weight: 600;
+    display: block;
+    margin-top: 0.9rem;
+    margin-bottom: 0.2rem;
+    font-size: 0.88rem;
+    letter-spacing: 0.05em;
+  }
+
+  .card-body-inner .qed {
+    text-align: right;
+    color: var(--amber);
+    font-size: 1.1rem;
+    margin-top: 0.6rem;
+  }
+
+  .card-body-inner .math-block {
+    background: rgba(181,114,42,0.05);
+    border-left: 3px solid var(--amber-light);
+    padding: 0.7rem 1rem;
+    margin: 0.8rem 0;
+    border-radius: 0 2px 2px 0;
+    overflow-x: auto;
+  }
+
+  .card-body-inner .note-box {
+    background: rgba(30,95,107,0.06);
+    border-left: 3px solid var(--teal);
+    padding: 0.6rem 1rem;
+    margin-top: 0.9rem;
+    border-radius: 0 2px 2px 0;
+    font-size: 0.88rem;
+    color: var(--teal);
+  }
+
+  .card-body-inner .note-box strong { color: var(--teal); }
+
+  /* SUB-HEADING */
+  .sub-heading {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--amber);
+    margin: 2.2rem 0 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.7rem;
+  }
+
+  .sub-heading::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--parchment-dark), transparent);
+  }
+
+  /* DECORATIVE DIVIDER */
+  .divider {
+    text-align: center;
+    color: var(--parchment-dark);
+    margin: 2rem 0;
+    font-size: 1.2rem;
+    letter-spacing: 0.4em;
+  }
+
+  /* FOOTER */
+  footer {
+    text-align: center;
+    padding: 2rem;
+    border-top: 1px solid var(--parchment-dark);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    color: #9a8a6a;
+    letter-spacing: 0.08em;
+  }
+
+  footer strong { color: var(--amber); }
+
+  /* SCROLL ANIMATE */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.5s ease, transform 0.5s ease;
+  }
+  .fade-in.visible { opacity: 1; transform: none; }
+
+  /* RESPONSIVE */
+  @media (max-width: 600px) {
+    main { padding: 2rem 1rem 5rem; }
+    nav.chapter-nav button { padding: 0.7rem 0.8rem; font-size: 0.75rem; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<header>
+  <div class="header-badge">Analisis Real · IKIP Siliwangi</div>
+  <h1 class="main-title">The <em>Real</em> Numbers</h1>
+  <p class="header-subtitle">Definisi, Lema, dan Teorema Penting</p>
+  <p class="header-meta">Martin Bernard, M.Pd. · Pendidikan Matematika</p>
+  <div style="width:60px;height:2px;background:linear-gradient(90deg,transparent,var(--gold),transparent);margin:1.2rem auto 0;"></div>
+</header>
+
+<nav class="chapter-nav">
+  <button class="active" onclick="showSection('s21')"><span>2.1</span>Sifat Aljabar & Urutan ℝ</button>
+  <button onclick="showSection('s22')"><span>2.2</span>Nilai Mutlak</button>
+  <button onclick="showSection('s23')"><span>2.3</span>Kelengkapan ℝ</button>
+  <button onclick="showSection('s24')"><span>2.4</span>Supremum & Infimum</button>
+  <button onclick="showSection('s25')"><span>2.5</span>Interval</button>
+</nav>
+
+<main>
+
+<!-- ======================== SECTION 2.1 ======================== -->
+<div id="s21" class="chapter-section active">
+  <div class="section-header fade-in">
+    <span class="section-number">BAGIAN 2.1</span>
+    <h2 class="section-title">Sifat <em>Aljabar</em> dan Urutan ℝ</h2>
+    <p class="section-intro">Bilangan real ℝ didefinisikan melalui aksioma lapangan (field axioms) beserta aksioma urutan, yang membentuk fondasi seluruh analisis real.</p>
+  </div>
+
+  <div class="sub-heading fade-in">Aksioma Lapangan (Field Axioms)</div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-aksioma">Aksioma</span>
+      <span class="card-num">A.1–A.4</span>
+      <span class="card-title">Aksioma Penjumlahan</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk setiap \(a, b, c \in \mathbb{R}\), berlaku:</p>
+      <ul>
+        <li><strong>(A1) Komutatif:</strong> \(a + b = b + a\)</li>
+        <li><strong>(A2) Asosiatif:</strong> \((a+b)+c = a+(b+c)\)</li>
+        <li><strong>(A3) Elemen Identitas:</strong> Terdapat \(0 \in \mathbb{R}\) sehingga \(a + 0 = a\)</li>
+        <li><strong>(A4) Invers Penjumlahan:</strong> Terdapat \(-a \in \mathbb{R}\) sehingga \(a + (-a) = 0\)</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-aksioma">Aksioma</span>
+      <span class="card-num">M.1–M.4</span>
+      <span class="card-title">Aksioma Perkalian</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk setiap \(a, b, c \in \mathbb{R}\), berlaku:</p>
+      <ul>
+        <li><strong>(M1) Komutatif:</strong> \(a \cdot b = b \cdot a\)</li>
+        <li><strong>(M2) Asosiatif:</strong> \((a \cdot b) \cdot c = a \cdot (b \cdot c)\)</li>
+        <li><strong>(M3) Elemen Identitas:</strong> Terdapat \(1 \in \mathbb{R},\; 1 \neq 0\), sehingga \(a \cdot 1 = a\)</li>
+        <li><strong>(M4) Invers Perkalian:</strong> Untuk \(a \neq 0\), terdapat \(a^{-1} \in \mathbb{R}\) sehingga \(a \cdot a^{-1} = 1\)</li>
+      </ul>
+      <div class="math-block">
+        \[\text{(D) Distributif: } a(b+c) = ab + ac\]
+      </div>
+    </div></div>
+  </div>
+
+  <div class="sub-heading fade-in">Aksioma Urutan</div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-aksioma">Aksioma</span>
+      <span class="card-num">O.1–O.3</span>
+      <span class="card-title">Aksioma Urutan pada ℝ</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Terdapat himpunan bagian \(\mathbb{R}^+ \subset \mathbb{R}\) (bilangan positif) sedemikian sehingga:</p>
+      <ul>
+        <li><strong>(O1) Tertutup terhadap penjumlahan:</strong> Jika \(a,b \in \mathbb{R}^+\), maka \(a+b \in \mathbb{R}^+\)</li>
+        <li><strong>(O2) Tertutup terhadap perkalian:</strong> Jika \(a,b \in \mathbb{R}^+\), maka \(a \cdot b \in \mathbb{R}^+\)</li>
+        <li><strong>(O3) Trikotomi:</strong> Untuk setiap \(a \in \mathbb{R}\), tepat satu dari berikut berlaku:
+          \[a \in \mathbb{R}^+, \quad a = 0, \quad \text{atau } -a \in \mathbb{R}^+\]
+        </li>
+      </ul>
+      <div class="note-box"><strong>Catatan:</strong> Penulisan \(a &gt; 0\) berarti \(a \in \mathbb{R}^+\), dan \(a &gt; b\) berarti \(a - b \in \mathbb{R}^+\).</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.1.1</span>
+      <span class="card-title">Sifat-Sifat Urutan</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk \(a, b, c \in \mathbb{R}\), berlaku:</p>
+      <ul>
+        <li>(i) Jika \(a > b\) dan \(b > c\), maka \(a > c\) <em>(Transitif)</em></li>
+        <li>(ii) Jika \(a > b\), maka \(a + c > b + c\)</li>
+        <li>(iii) Jika \(a > b\) dan \(c > 0\), maka \(ac > bc\)</li>
+        <li>(iv) Jika \(a > b\) dan \(c < 0\), maka \(ac < bc\)</li>
+        <li>(v) Jika \(a \neq 0\), maka \(a^2 > 0\)</li>
+        <li>(vi) \(0 < 1\) dan \(n \in \mathbb{N} \Rightarrow n > 0\)</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.1.2</span>
+      <span class="card-title">Sifat Bernoulli</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p><strong>Pernyataan:</strong> Jika \(x > -1\), maka untuk setiap \(n \in \mathbb{N}\):</p>
+      <div class="math-block">\[(1+x)^n \geq 1 + nx\]</div>
+      <span class="proof-label">Bukti (Induksi):</span>
+      <p>Basis: \(n=1\): \((1+x)^1 = 1+x = 1+1\cdot x\). ✓</p>
+      <p>Langkah induksi: Asumsikan \((1+x)^k \geq 1+kx\). Karena \(1+x > 0\):</p>
+      <div class="math-block">\[(1+x)^{k+1} = (1+x)^k(1+x) \geq (1+kx)(1+x) = 1+(k+1)x+kx^2 \geq 1+(k+1)x\]</div>
+      <div class="qed">□</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 2.2 ======================== -->
+<div id="s22" class="chapter-section">
+  <div class="section-header fade-in">
+    <span class="section-number">BAGIAN 2.2</span>
+    <h2 class="section-title">Nilai <em>Mutlak</em> dan Garis Bilangan Real</h2>
+    <p class="section-intro">Nilai mutlak mengukur jarak pada garis bilangan real dan merupakan konsep sentral dalam analisis untuk mengontrol besaran-besaran.</p>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-definisi">Definisi</span>
+      <span class="card-num">2.2.1</span>
+      <span class="card-title">Nilai Mutlak</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Nilai mutlak dari \(a \in \mathbb{R}\) didefinisikan sebagai:</p>
+      <div class="math-block">
+        \[|a| = \begin{cases} a & \text{jika } a \geq 0 \\ -a & \text{jika } a < 0 \end{cases}\]
+      </div>
+      <p>Secara geometris, \(|a|\) adalah <em>jarak</em> antara \(a\) dan titik asal \(0\) pada garis bilangan real.</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.2.2</span>
+      <span class="card-title">Sifat-Sifat Nilai Mutlak</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk setiap \(a, b \in \mathbb{R}\):</p>
+      <ul>
+        <li>(a) \(|a| \geq 0\); dan \(|a| = 0 \Leftrightarrow a = 0\)</li>
+        <li>(b) \(|-a| = |a|\)</li>
+        <li>(c) \(|ab| = |a|\,|b|\)</li>
+        <li>(d) \(\left|\dfrac{a}{b}\right| = \dfrac{|a|}{|b|}\) untuk \(b \neq 0\)</li>
+        <li>(e) \(|a|^2 = a^2\)</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.2.3</span>
+      <span class="card-title">Ketidaksamaan Segitiga (Triangle Inequality)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p><strong>Pernyataan:</strong> Untuk setiap \(a, b \in \mathbb{R}\):</p>
+      <div class="math-block">\[|a + b| \leq |a| + |b|\]</div>
+      <span class="proof-label">Bukti:</span>
+      <p>Karena \(-|a| \leq a \leq |a|\) dan \(-|b| \leq b \leq |b|\), maka:</p>
+      <div class="math-block">\[-(|a|+|b|) \leq a+b \leq |a|+|b|\]</div>
+      <p>Ini ekuivalen dengan \(|a+b| \leq |a| + |b|\).</p>
+      <div class="qed">□</div>
+      <div class="note-box"><strong>Bentuk lain:</strong> \(|a - b| \leq |a| + |b|\) dan <em>ketidaksamaan segitiga terbalik</em>: \(\big||a| - |b|\big| \leq |a-b|\)</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-lema">Lema</span>
+      <span class="card-num">2.2.4</span>
+      <span class="card-title">Karakterisasi dengan Ketidaksamaan</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk \(a \in \mathbb{R}\) dan \(\varepsilon > 0\):</p>
+      <div class="math-block">\[|a| \leq \varepsilon \quad \Longleftrightarrow \quad -\varepsilon \leq a \leq \varepsilon\]</div>
+      <p>Lebih umum: \(|a - b| < \varepsilon\) berarti \(a\) berada dalam lingkungan \(\varepsilon\) di sekitar \(b\).</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-korolari">Korolari</span>
+      <span class="card-num">2.2.5</span>
+      <span class="card-title">Ketidaksamaan Segitiga Umum</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk \(a_1, a_2, \ldots, a_n \in \mathbb{R}\):</p>
+      <div class="math-block">\[\left|\sum_{k=1}^n a_k\right| \leq \sum_{k=1}^n |a_k|\]</div>
+      <p>Dibuktikan dengan induksi matematika menggunakan ketidaksamaan segitiga dasar.</p>
+    </div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 2.3 ======================== -->
+<div id="s23" class="chapter-section">
+  <div class="section-header fade-in">
+    <span class="section-number">BAGIAN 2.3</span>
+    <h2 class="section-title">Sifat <em>Kelengkapan</em> ℝ</h2>
+    <p class="section-intro">Aksioma kelengkapan membedakan ℝ dari ℚ — ia menjamin bahwa setiap himpunan tak-kosong yang terbatas ke atas memiliki supremum di dalam ℝ.</p>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-definisi">Definisi</span>
+      <span class="card-num">2.3.1</span>
+      <span class="card-title">Batas Atas dan Batas Bawah</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Misalkan \(S \subseteq \mathbb{R}\), \(S \neq \emptyset\).</p>
+      <ul>
+        <li>\(u \in \mathbb{R}\) disebut <strong>batas atas</strong> dari \(S\) jika \(s \leq u\) untuk semua \(s \in S\).</li>
+        <li>\(S\) disebut <strong>terbatas ke atas</strong> (<em>bounded above</em>) jika memiliki batas atas.</li>
+        <li>\(w \in \mathbb{R}\) disebut <strong>batas bawah</strong> dari \(S\) jika \(w \leq s\) untuk semua \(s \in S\).</li>
+        <li>\(S\) disebut <strong>terbatas ke bawah</strong> (<em>bounded below</em>) jika memiliki batas bawah.</li>
+        <li>\(S\) disebut <strong>terbatas</strong> jika terbatas ke atas dan ke bawah.</li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-aksioma">Aksioma</span>
+      <span class="card-num">2.3.2</span>
+      <span class="card-title">Aksioma Kelengkapan (Completeness Axiom)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p><strong>Setiap himpunan bagian tak-kosong dari \(\mathbb{R}\) yang terbatas ke atas memiliki supremum (batas atas terkecil) di dalam \(\mathbb{R}\).</strong></p>
+      <div class="math-block">\[S \neq \emptyset,\; S \subseteq \mathbb{R},\; S \text{ terbatas ke atas} \implies \sup S \in \mathbb{R}\]</div>
+      <div class="note-box"><strong>Catatan Penting:</strong> ℚ tidak lengkap — himpunan \(\{q \in \mathbb{Q} : q^2 < 2\}\) terbatas ke atas di ℚ tetapi tidak memiliki supremum di ℚ.</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.3.3</span>
+      <span class="card-title">Sifat Archimedean</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Jika \(x \in \mathbb{R}\), maka terdapat \(n \in \mathbb{N}\) sehingga \(n > x\).</p>
+      <div class="math-block">\[\forall x \in \mathbb{R},\; \exists n \in \mathbb{N} : n > x\]</div>
+      <span class="proof-label">Bukti (kontradiksi):</span>
+      <p>Asumsikan \(\mathbb{N}\) terbatas ke atas oleh \(x\). Maka \(\sup \mathbb{N} = \alpha\) ada di \(\mathbb{R}\). Karena \(\alpha - 1\) bukan batas atas, terdapat \(m \in \mathbb{N}\) dengan \(m > \alpha - 1\), sehingga \(m+1 > \alpha\) — kontradiksi.</p>
+      <div class="qed">□</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-korolari">Korolari</span>
+      <span class="card-num">2.3.4</span>
+      <span class="card-title">Ketebalan ℚ di ℝ (Densitas Rasional)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Jika \(a, b \in \mathbb{R}\) dengan \(a < b\), maka terdapat \(q \in \mathbb{Q}\) sehingga \(a < q < b\).</p>
+      <div class="math-block">\[\forall a, b \in \mathbb{R},\; a < b \implies \exists q \in \mathbb{Q}: a < q < b\]</div>
+      <p>Dengan kata lain, bilangan rasional <em>padat</em> (<em>dense</em>) di ℝ. Begitu pula bilangan irasional.</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.3.5</span>
+      <span class="card-title">Keberadaan Akar Kuadrat</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk setiap \(a > 0\), terdapat tepat satu \(x > 0\) di \(\mathbb{R}\) sehingga \(x^2 = a\).</p>
+      <span class="proof-label">Ide Bukti:</span>
+      <p>Definisikan \(S = \{t > 0 : t^2 \leq a\}\). Himpunan ini tak-kosong dan terbatas ke atas. Ambil \(x = \sup S\). Dengan aksioma kelengkapan dan analisis kasus \(x^2 < a\), \(x^2 > a\), terbukti \(x^2 = a\).</p>
+      <div class="qed">□</div>
+    </div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 2.4 ======================== -->
+<div id="s24" class="chapter-section">
+  <div class="section-header fade-in">
+    <span class="section-number">BAGIAN 2.4</span>
+    <h2 class="section-title">Aplikasi Sifat <em>Supremum</em></h2>
+    <p class="section-intro">Supremum dan infimum adalah alat utama dalam analisis real — hampir setiap pembuktian tentang barisan dan fungsi bergantung pada sifat-sifat ini.</p>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-definisi">Definisi</span>
+      <span class="card-num">2.4.1</span>
+      <span class="card-title">Supremum dan Infimum</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Misalkan \(S \subseteq \mathbb{R}\), \(S \neq \emptyset\).</p>
+      <ul>
+        <li><strong>Supremum</strong> \(\sup S\) adalah batas atas terkecil dari \(S\):
+          <div class="math-block">\[u = \sup S \iff \forall s \in S: s \leq u,\;\text{ dan }\;\forall \varepsilon > 0,\; \exists s \in S: s > u - \varepsilon\]</div>
+        </li>
+        <li><strong>Infimum</strong> \(\inf S\) adalah batas bawah terbesar dari \(S\):
+          <div class="math-block">\[w = \inf S \iff \forall s \in S: s \geq w,\;\text{ dan }\;\forall \varepsilon > 0,\; \exists s \in S: s < w + \varepsilon\]</div>
+        </li>
+      </ul>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-lema">Lema</span>
+      <span class="card-num">2.4.2</span>
+      <span class="card-title">Karakterisasi Supremum dengan ε</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>\(u = \sup S\) jika dan hanya jika:</p>
+      <ul>
+        <li>(i) \(u\) adalah batas atas dari \(S\)</li>
+        <li>(ii) Untuk setiap \(\varepsilon > 0\), terdapat \(s_\varepsilon \in S\) dengan \(u - \varepsilon < s_\varepsilon \leq u\)</li>
+      </ul>
+      <p>Artinya, tidak ada batas atas yang lebih kecil dari \(u\) yang masih bisa menjadi batas atas \(S\).</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.4.3</span>
+      <span class="card-title">Hubungan Supremum dan Infimum</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Jika \(S \subseteq \mathbb{R}\) tak-kosong dan terbatas ke bawah, maka:</p>
+      <div class="math-block">\[\inf S = -\sup(-S)\]</div>
+      <p>di mana \(-S = \{-s : s \in S\}\). Teorema ini menghubungkan aksioma kelengkapan dengan keberadaan infimum.</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.4.4</span>
+      <span class="card-title">Prinsip Nested Intervals (Interval Bersarang)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Jika \(\{[a_n, b_n]\}_{n=1}^\infty\) adalah barisan interval tertutup dengan \([a_{n+1}, b_{n+1}] \subseteq [a_n, b_n]\) dan \(b_n - a_n \to 0\), maka:</p>
+      <div class="math-block">\[\bigcap_{n=1}^\infty [a_n, b_n] \neq \emptyset\]</div>
+      <p>Bahkan, terdapat tepat satu titik dalam irisan tersebut, yaitu \(\{\xi\} = \bigcap_{n=1}^\infty [a_n, b_n]\) dengan \(\xi = \sup\{a_n\} = \inf\{b_n\}\).</p>
+      <div class="note-box"><strong>Aplikasi:</strong> Digunakan dalam pembuktian Teorema Bolzano-Weierstrass dan ketakcacahan ℝ.</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-sifat">Sifat</span>
+      <span class="card-num">2.4.5</span>
+      <span class="card-title">Sifat Supremum untuk Operasi Himpunan</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk himpunan \(A, B \subseteq \mathbb{R}\) yang terbatas:</p>
+      <ul>
+        <li>\(\sup(A + B) = \sup A + \sup B\), di mana \(A+B = \{a+b : a\in A, b\in B\}\)</li>
+        <li>Jika \(A \subseteq B\), maka \(\sup A \leq \sup B\) dan \(\inf A \geq \inf B\)</li>
+        <li>\(\sup(cA) = c \cdot \sup A\) untuk \(c > 0\); dan \(\sup(cA) = c \cdot \inf A\) untuk \(c < 0\)</li>
+      </ul>
+    </div></div>
+  </div>
+</div>
+
+<!-- ======================== SECTION 2.5 ======================== -->
+<div id="s25" class="chapter-section">
+  <div class="section-header fade-in">
+    <span class="section-number">BAGIAN 2.5</span>
+    <h2 class="section-title"><em>Interval</em></h2>
+    <p class="section-intro">Interval adalah himpunan bagian dasar dari ℝ yang digunakan dalam hampir setiap definisi kontinuitas, turunan, dan integral.</p>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-definisi">Definisi</span>
+      <span class="card-num">2.5.1</span>
+      <span class="card-title">Jenis-Jenis Interval</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk \(a, b \in \mathbb{R}\) dengan \(a < b\), interval-interval didefinisikan sebagai:</p>
+      <div class="math-block">
+        \[\begin{array}{lll}
+        [a,b] &= \{x \in \mathbb{R} : a \leq x \leq b\} & \text{(tertutup/closed)}\\[4pt]
+        (a,b) &= \{x \in \mathbb{R} : a < x < b\} & \text{(terbuka/open)}\\[4pt]
+        [a,b) &= \{x \in \mathbb{R} : a \leq x < b\} & \text{(setengah terbuka)}\\[4pt]
+        (a,b] &= \{x \in \mathbb{R} : a < x \leq b\} & \text{(setengah terbuka)}\\[4pt]
+        [a,\infty) &= \{x \in \mathbb{R} : x \geq a\} & \text{(tak terbatas)}\\[4pt]
+        (-\infty, b] &= \{x \in \mathbb{R} : x \leq b\} & \text{(tak terbatas)}
+        \end{array}\]
+      </div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.5.2</span>
+      <span class="card-title">Karakterisasi Interval</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Himpunan \(S \subseteq \mathbb{R}\) adalah interval jika dan hanya jika untuk setiap \(x, y \in S\) dengan \(x < y\), berlaku \([x,y] \subseteq S\).</p>
+      <p>Dengan kata lain: \(S\) adalah interval \(\iff S\) <em>konveks</em> dalam \(\mathbb{R}\).</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-lema">Lema</span>
+      <span class="card-num">2.5.3</span>
+      <span class="card-title">Panjang dan Lingkungan (Neighborhood)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Untuk \(c \in \mathbb{R}\) dan \(\varepsilon > 0\), <strong>lingkungan \(\varepsilon\)</strong> di sekitar \(c\) didefinisikan:</p>
+      <div class="math-block">\[V_\varepsilon(c) = (c - \varepsilon,\; c + \varepsilon) = \{x \in \mathbb{R} : |x - c| < \varepsilon\}\]</div>
+      <p>Lingkungan ini adalah interval terbuka berpusat di \(c\) dengan radius \(\varepsilon\), digunakan dalam definisi limit dan kontinuitas.</p>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-teorema">Teorema</span>
+      <span class="card-num">2.5.4</span>
+      <span class="card-title">Interval Tak-Cacah (Uncountable)</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <p>Setiap interval tak-kosong \(I \subseteq \mathbb{R}\) adalah tak-cacah (<em>uncountable</em>).</p>
+      <span class="proof-label">Ide Bukti (Cantor):</span>
+      <p>Asumsikan \([0,1]\) cacah. Tuliskan elemen-elemennya sebagai barisan \((x_n)\). Dengan argumen diagonal Cantor, konstruksi bilangan \(y \in [0,1]\) yang berbeda dari setiap \(x_n\) — kontradiksi.</p>
+      <div class="note-box"><strong>Implikasi:</strong> ℝ tidak dapat dihitung satu-per-satu, berbeda dengan ℕ, ℤ, dan ℚ yang semuanya cacah (<em>countable</em>).</div>
+    </div></div>
+  </div>
+
+  <div class="card fade-in">
+    <div class="card-header" onclick="toggleCard(this)">
+      <span class="card-tag tag-sifat">Sifat</span>
+      <span class="card-num">2.5.5</span>
+      <span class="card-title">Supremum dan Infimum pada Interval</span>
+      <svg class="card-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="card-body"><div class="card-body-inner">
+      <ul>
+        <li>Untuk \([a,b]\): \(\sup [a,b] = b \in [a,b]\) (supremum tercapai)</li>
+        <li>Untuk \((a,b)\): \(\sup (a,b) = b \notin (a,b)\) (supremum tidak tercapai)</li>
+        <li>Untuk \([a,\infty)\): \(\sup [a,\infty) = +\infty\) (tidak terbatas)</li>
+      </ul>
+      <div class="math-block">\[\inf[a,b] = \inf(a,b) = a, \quad \sup[a,b] = \sup(a,b) = b\]</div>
+    </div></div>
+  </div>
+</div>
+
+</main>
+
+<footer>
+  <strong>Martin Bernard, M.Pd.</strong> · Pendidikan Matematika · IKIP Siliwangi, Cimahi<br>
+  Referensi: Bartle & Sherbert — <em>Introduction to Real Analysis</em>
+</footer>
+
+<script>
+  // PROGRESS BAR
+  window.addEventListener('scroll', () => {
+    const scroll = window.scrollY;
+    const total = document.documentElement.scrollHeight - window.innerHeight;
+    document.getElementById('progress-bar').style.width = (scroll / total * 100) + '%';
+  });
+
+  // SECTION SWITCHING
+  function showSection(id) {
+    document.querySelectorAll('.chapter-section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('nav.chapter-nav button').forEach(b => b.classList.remove('active'));
+
+    const el = document.getElementById(id);
+    el.classList.add('active');
+
+    // trigger reflow for animation
+    setTimeout(() => {
+      el.querySelectorAll('.fade-in').forEach((f, i) => {
+        setTimeout(() => f.classList.add('visible'), i * 80);
+      });
+    }, 30);
+
+    // update nav active
+    const btns = document.querySelectorAll('nav.chapter-nav button');
+    const sectionIdx = ['s21','s22','s23','s24','s25'].indexOf(id);
+    if (btns[sectionIdx]) btns[sectionIdx].classList.add('active');
+
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // ACCORDION TOGGLE
+  function toggleCard(header) {
+    const card = header.closest('.card');
+    const wasOpen = card.classList.contains('open');
+    card.classList.toggle('open', !wasOpen);
+    if (!wasOpen) MathJax.typesetPromise([card]).catch(e => {});
+  }
+
+  // INTERSECTION OBSERVER for fade-in
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) e.target.classList.add('visible');
+    });
+  }, { threshold: 0.12 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+
+  // Initial MathJax render
+  window.MathJax = {
+    tex: { inlineMath: [['\\(','\\)'], ['$','$']] },
+    options: { skipHtmlTags: ['script','noscript','style','textarea'] }
+  };
+</script>
+</body>
+</html>
