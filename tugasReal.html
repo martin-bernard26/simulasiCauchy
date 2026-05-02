@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tugas Analisis Real</title>
+
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #1e3a8a;
+    }
+
+    .info {
+      margin-bottom: 20px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      margin-bottom: 15px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 120px;
+      margin-top: 10px;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      resize: vertical;
+    }
+
+    .question {
+      margin-bottom: 30px;
+      padding: 15px;
+      background: #f9fafb;
+      border-left: 5px solid #2563eb;
+      border-radius: 10px;
+    }
+
+    button {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-right: 10px;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    .footer {
+      margin-top: 30px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h1>Tugas Analisis Pembuktian Bilangan Real</h1>
+
+  <div class="info">
+    <label>Nama Mahasiswa</label>
+    <input type="text" id="nama">
+
+    <label>NIM</label>
+    <input type="text" id="nim">
+  </div>
+
+  <form id="formTugas">
+
+    <div class="question">
+      <h3>1. The Algebraic and Order Properties of ℝ</h3>
+      <p>Buktikan bahwa jika a > b dan c > 0 maka ac > bc.</p>
+      <textarea id="q1"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>2. The Algebraic and Order Properties of ℝ</h3>
+      <p>Buktikan bahwa jika a > 0 maka a² > 0.</p>
+      <textarea id="q2"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>3. Absolute Value and the Real Line</h3>
+      <p>Buktikan bahwa |ab| = |a||b|.</p>
+      <textarea id="q3"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>4. Absolute Value and the Real Line</h3>
+      <p>Buktikan pertidaksamaan segitiga: |a+b| ≤ |a| + |b|.</p>
+      <textarea id="q4"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>5. The Completeness Property of ℝ</h3>
+      <p>Jelaskan mengapa himpunan bilangan real memiliki sifat kelengkapan.</p>
+      <textarea id="q5"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>6. The Completeness Property of ℝ</h3>
+      <p>Buktikan bahwa setiap himpunan tak kosong yang dibatasi atas memiliki supremum.</p>
+      <textarea id="q6"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>7. Applications of the Supremum Property</h3>
+      <p>Tentukan supremum himpunan A = {x ∈ ℝ | x < 5} dan jelaskan.</p>
+      <textarea id="q7"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>8. Applications of the Supremum Property</h3>
+      <p>Buktikan bahwa √2 ada dalam ℝ menggunakan sifat supremum.</p>
+      <textarea id="q8"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>9. Intervals</h3>
+      <p>Jelaskan perbedaan interval terbuka dan interval tertutup.</p>
+      <textarea id="q9"></textarea>
+    </div>
+
+    <div class="question">
+      <h3>10. Intervals</h3>
+      <p>Buktikan bahwa irisan dua interval tertutup adalah interval tertutup.</p>
+      <textarea id="q10"></textarea>
+    </div>
+
+    <div class="footer">
+      <button type="button" onclick="simpanData()">Simpan ke Firebase</button>
+      <button type="button" onclick="downloadPDF()">Download PDF</button>
+    </div>
+
+  </form>
+
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script type="module">
+
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+
+  import {
+    getDatabase,
+    ref,
+    push,
+    set
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-database.js";
+
+  // ============================
+  // KONFIGURASI FIREBASE
+  // ============================
+
+  const firebaseConfig = {
+   apiKey: "AIzaSyDGpG2vAoWqwn46upNtU9M-Cx1gkKwBE-c",
+     authDomain: "chatting-matematika.firebaseapp.com",
+      databaseURL: "https://chatting-matematika-default-rtdb.firebaseio.com",
+      projectId: "chatting-matematika",
+      storageBucket: "chatting-matematika.appspot.com",
+      messagingSenderId: "811492413631",
+      appId: "1:811492413631:web:a29a4bba38a6541f90360a",
+  };
+
+  // ============================
+  // INISIALISASI FIREBASE
+  // ============================
+
+  const app = initializeApp(firebaseConfig);
+  const database = getDatabase(app);
+
+  // ============================
+  // SIMPAN DATA
+  // ============================
+
+  window.simpanData = function () {
+
+    const nama = document.getElementById("nama").value;
+    const nim = document.getElementById("nim").value;
+
+    const data = {
+      nama,
+      nim,
+      q1: document.getElementById("q1").value,
+      q2: document.getElementById("q2").value,
+      q3: document.getElementById("q3").value,
+      q4: document.getElementById("q4").value,
+      q5: document.getElementById("q5").value,
+      q6: document.getElementById("q6").value,
+      q7: document.getElementById("q7").value,
+      q8: document.getElementById("q8").value,
+      q9: document.getElementById("q9").value,
+      q10: document.getElementById("q10").value,
+      waktu: new Date().toLocaleString()
+    };
+
+    const tugasRef = ref(database, 'tugasAnalisisReal');
+    const newData = push(tugasRef);
+
+    set(newData, data)
+      .then(() => {
+        alert("Data berhasil disimpan ke Firebase!");
+      })
+      .catch((error) => {
+        alert("Error: " + error);
+      });
+  }
+
+  // ============================
+  // DOWNLOAD PDF
+  // ============================
+
+  window.downloadPDF = function () {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF();
+
+    const nama = document.getElementById("nama").value;
+    const nim = document.getElementById("nim").value;
+
+    let y = 10;
+
+    doc.setFontSize(16);
+    doc.text("Tugas Analisis Real", 10, y);
+
+    y += 10;
+
+    doc.setFontSize(12);
+    doc.text("Nama: " + nama, 10, y);
+
+    y += 8;
+
+    doc.text("NIM: " + nim, 10, y);
+
+    y += 12;
+
+    const questions = [
+      "1. Buktikan bahwa jika a > b dan c > 0 maka ac > bc.",
+      "2. Buktikan bahwa jika a > 0 maka a² > 0.",
+      "3. Buktikan bahwa |ab| = |a||b|.",
+      "4. Buktikan pertidaksamaan segitiga.",
+      "5. Jelaskan sifat kelengkapan bilangan real.",
+      "6. Buktikan setiap himpunan dibatasi atas memiliki supremum.",
+      "7. Tentukan supremum himpunan A = {x ∈ ℝ | x < 5}.",
+      "8. Buktikan √2 ada dalam ℝ menggunakan supremum.",
+      "9. Jelaskan interval terbuka dan tertutup.",
+      "10. Buktikan irisan dua interval tertutup adalah interval tertutup."
+    ];
+
+    for (let i = 1; i <= 10; i++) {
+
+      const jawaban = document.getElementById("q" + i).value;
+
+      const text = questions[i - 1] + "\nJawaban: " + jawaban;
+
+      const splitText = doc.splitTextToSize(text, 180);
+
+      doc.text(splitText, 10, y);
+
+      y += splitText.length * 7;
+
+      if (y > 260) {
+        doc.addPage();
+        y = 10;
+      }
+    }
+
+    doc.save("Tugas_Analisis_Real.pdf");
+  }
+
+</script>
+
+</body>
+</html>
