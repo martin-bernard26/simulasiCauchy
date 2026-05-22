@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<title>Tes Analisis Real - Barisan</title>
+
+<style>
+body{
+    font-family: Arial;
+    margin:0;
+    background: linear-gradient(135deg,#141e30,#243b55);
+}
+
+.container{
+    max-width:900px;
+    margin:30px auto;
+    background:#fff;
+    padding:25px;
+    border-radius:15px;
+    box-shadow:0 10px 25px rgba(0,0,0,0.4);
+}
+
+h1{
+    text-align:center;
+    color:#243b55;
+}
+
+.question{
+    background:#f4f6f8;
+    padding:15px;
+    margin:15px 0;
+    border-left:5px solid #243b55;
+    border-radius:8px;
+}
+
+textarea{
+    width:100%;
+    height:80px;
+    margin-top:8px;
+    padding:10px;
+    border-radius:8px;
+    border:1px solid #ccc;
+}
+
+button{
+    width:100%;
+    padding:15px;
+    background:#243b55;
+    color:white;
+    border:none;
+    border-radius:10px;
+    font-size:16px;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#1a2533;
+}
+
+.status{
+    text-align:center;
+    margin-top:10px;
+    font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="container">
+
+<h1>Tes Diagnostik Analisis Real</h1>
+<p style="text-align:center;">
+Barisan & Kekonvergenan Barisan
+</p>
+
+<form id="quizForm">
+
+<div class="question">
+Nama
+<input type="text" name="nama" required></textarea>
+<br>
+<br>
+NIM
+<input type="text" name="nim" required></textarea>
+</div>
+
+<div class="question">
+1. Jelaskan pengertian barisan bilangan real
+<textarea name="q1" required></textarea>
+</div>
+
+<div class="question">
+2. Apa itu barisan konvergen
+<textarea name="q2" required></textarea>
+</div>
+
+<div class="question">
+3. Contoh barisan konvergen
+<textarea name="q3" required></textarea>
+</div>
+
+<div class="question">
+4. Perbedaan konvergen dan divergen
+<textarea name="q4" required></textarea>
+</div>
+
+<div class="question">
+5. Konsep limit barisan
+<textarea name="q5" required></textarea>
+</div>
+
+<div class="question">
+6. Makna intuitif konvergen
+<textarea name="q6" required></textarea>
+</div>
+
+<div class="question">
+7. Apakah semua barisan terbatas konvergen?
+<textarea name="q7"></textarea>
+</div>
+
+<div class="question">
+8. Barisan monoton
+<textarea name="q8"></textarea>
+</div>
+
+<div class="question">
+9. Contoh barisan divergen
+<textarea name="q9"></textarea>
+</div>
+
+<div class="question">
+10. Kesulitan memahami materi
+<textarea name="q10"></textarea>
+</div>
+
+<button type="submit">Kirim ke Google Form</button>
+
+<p class="status" id="status"></p>
+
+</form>
+
+</div>
+
+<script>
+const formURL = "https://docs.google.com/forms/u/0/d/e/1FAIpQLScfc5sbmte7axxRi218jzhp1Hz3HL7-KckBuwEKdsvdtz7O6w/formResponse";
+
+document.getElementById("quizForm").addEventListener("submit", function(e){
+    e.preventDefault();
+
+    document.getElementById("status").innerText = "Mengirim...";
+
+    const data = new FormData();
+	
+    data.append("entry.1645503323", this.nama.value);
+    data.append("entry.1105288112", this.nim.value);
+    data.append("entry.1615648416", this.q1.value);
+    data.append("entry.92214332", this.q2.value);
+    data.append("entry.925389317", this.q3.value);
+    data.append("entry.1404373792", this.q4.value);
+    data.append("entry.307838709", this.q5.value);
+    data.append("entry.1241088926", this.q6.value);
+    data.append("entry.732087262", this.q7.value);
+    data.append("entry.2125466877", this.q8.value);
+    data.append("entry.991697680", this.q9.value);
+    data.append("entry.2069602", this.q10.value);
+
+    fetch(formURL, {
+        method: "POST",
+        mode: "no-cors",
+        body: data
+    }).then(() => {
+        document.getElementById("status").innerText = "Berhasil terkirim ke Google Form!";
+        document.getElementById("quizForm").reset();
+    }).catch(() => {
+        document.getElementById("status").innerText = "Gagal mengirim data!";
+    });
+
+});
+</script>
+
+</body>
+</html>
