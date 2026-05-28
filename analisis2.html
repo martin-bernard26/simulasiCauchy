@@ -5,23 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
     <script src="https://www.geogebra.org/apps/deployggb.js"></script>
-    <script>
-        window.MathJax = {
-            tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']]
-            },
-            startup: {
-                pageReady: () => {
-                    console.log('MathJax siap digunakan!');
-                    return MathJax.startup.defaultPageReady();
-                }
-            }
-        };
-    </script>
-    <!-- Perbaikan Link CDN MathJax v3 -->
-    <script id="MathJax-script" async src="https://cloudflare.com"></script>
     <style>
+    body{
+        background-color:white;
+    }
     #control{
         display:flex;
         flex-direction:row;
