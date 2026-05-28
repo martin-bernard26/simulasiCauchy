@@ -1,0 +1,1521 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Teori Limit & Barisan Monoton — Analisis Real</title>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,600;0,700;1,400;1,600&family=Source+Sans+3:wght@300;400;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  :root {
+    --ink:       #1c1a14;
+    --ink2:      #3d3a2e;
+    --ink3:      #6b6454;
+    --parch:     #faf6ee;
+    --parch2:    #f3ede0;
+    --parch3:    #e8dfcc;
+    --gold:      #b8860b;
+    --gold2:     #d4a017;
+    --gold-lt:   #f5e6b8;
+    --teal:      #1a5f5a;
+    --teal-lt:   #d0ecea;
+    --red:       #8b1a1a;
+    --red-lt:    #f5dada;
+    --blue:      #1a3a6b;
+    --blue-lt:   #d8e4f5;
+    --green:     #2d5a1e;
+    --green-lt:  #dbefd4;
+    --radius:    8px;
+    --shadow:    0 2px 12px rgba(28,26,20,0.10);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Source Sans 3', sans-serif;
+    background: var(--parch);
+    color: var(--ink);
+    font-size: 16px;
+    line-height: 1.75;
+  }
+
+  /* ── PROGRESS BAR ── */
+  #progress-bar {
+    position: fixed; top: 0; left: 0; height: 3px;
+    background: linear-gradient(90deg, var(--gold), var(--gold2));
+    z-index: 1000; width: 0%; transition: width .2s;
+  }
+
+  /* ── NAVIGATION ── */
+  nav {
+    position: sticky; top: 0; z-index: 900;
+    background: var(--ink);
+    display: flex; align-items: center; gap: 0;
+    padding: 0 2rem;
+    box-shadow: 0 2px 16px rgba(0,0,0,.3);
+  }
+  nav .nav-brand {
+    font-family: 'Lora', serif;
+    color: var(--gold2);
+    font-size: 0.9rem;
+    font-weight: 700;
+    letter-spacing: .04em;
+    padding: 1rem 1.5rem 1rem 0;
+    border-right: 1px solid rgba(255,255,255,.12);
+    white-space: nowrap;
+  }
+  nav .nav-links {
+    display: flex; gap: 0; overflow-x: auto; flex: 1;
+    scrollbar-width: none;
+  }
+  nav .nav-links::-webkit-scrollbar { display: none; }
+  nav a {
+    color: rgba(255,255,255,.65);
+    text-decoration: none;
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: .06em;
+    text-transform: uppercase;
+    padding: .85rem 1rem;
+    white-space: nowrap;
+    transition: color .2s, background .2s;
+    border-bottom: 2px solid transparent;
+  }
+  nav a:hover, nav a.active {
+    color: var(--gold2);
+    border-bottom-color: var(--gold2);
+    background: rgba(212,160,23,.07);
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: var(--ink);
+    color: white;
+    padding: 5rem 2rem 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 40px,
+      rgba(212,160,23,.04) 40px,
+      rgba(212,160,23,.04) 41px
+    );
+  }
+  .hero-tag {
+    display: inline-block;
+    font-size: .72rem; font-weight: 700; letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--gold2);
+    border: 1px solid rgba(212,160,23,.4);
+    padding: .3rem .9rem;
+    border-radius: 20px;
+    margin-bottom: 1.5rem;
+  }
+  .hero h1 {
+    font-family: 'Lora', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 700;
+    line-height: 1.2;
+    margin-bottom: 1rem;
+    position: relative;
+  }
+  .hero h1 em { color: var(--gold2); font-style: normal; }
+  .hero p {
+    color: rgba(255,255,255,.65);
+    max-width: 600px; margin: 0 auto 2rem;
+    font-size: 1rem;
+  }
+  .hero-meta {
+    display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;
+    font-size: .82rem; color: rgba(255,255,255,.5);
+  }
+  .hero-meta span { display: flex; align-items: center; gap: .4rem; }
+
+  /* ── LAYOUT ── */
+  .page-wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 3rem 1.5rem 5rem;
+  }
+
+  /* ── SECTION TITLES ── */
+  .section-block {
+    margin-bottom: 4rem;
+    scroll-margin-top: 80px;
+  }
+  .section-header {
+    display: flex; align-items: center; gap: 1rem;
+    margin-bottom: 1.8rem;
+  }
+  .section-num {
+    font-family: 'Lora', serif;
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--parch3);
+    line-height: 1;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .section-header h2 {
+    font-family: 'Lora', serif;
+    font-size: 1.55rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height: 1.25;
+    border-bottom: 2px solid var(--gold2);
+    padding-bottom: .3rem;
+  }
+
+  /* ── PROSE ── */
+  p { margin-bottom: 1rem; color: var(--ink2); }
+
+  /* ── DEFINITION BOX ── */
+  .def-box {
+    background: var(--blue-lt);
+    border-left: 4px solid var(--blue);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.2rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .def-box .label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--blue);
+    margin-bottom: .4rem;
+  }
+  .def-box p { color: var(--blue); margin: 0; line-height: 1.7; }
+
+  /* ── THEOREM BOX ── */
+  .thm-box {
+    background: var(--gold-lt);
+    border: 1px solid var(--gold2);
+    border-radius: var(--radius);
+    padding: 1.2rem 1.4rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .thm-box .label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--gold);
+    margin-bottom: .5rem;
+  }
+  .thm-box p { color: var(--ink2); margin: 0; }
+
+  /* ── PROOF BOX ── */
+  .proof-box {
+    background: var(--parch2);
+    border-radius: var(--radius);
+    margin: 1rem 0 1.5rem;
+    overflow: hidden;
+  }
+  .proof-toggle {
+    width: 100%; text-align: left;
+    background: var(--parch3);
+    border: none; cursor: pointer;
+    padding: .85rem 1.2rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: .85rem; font-weight: 700;
+    color: var(--ink2); letter-spacing: .04em;
+    display: flex; align-items: center; gap: .6rem;
+    transition: background .2s;
+  }
+  .proof-toggle:hover { background: #ddd4bb; }
+  .proof-toggle .arrow { transition: transform .25s; display: inline-block; }
+  .proof-toggle.open .arrow { transform: rotate(90deg); }
+  .proof-content {
+    display: none; padding: 1rem 1.4rem;
+    font-size: .95rem; color: var(--ink2);
+    border-top: 1px solid var(--parch3);
+  }
+  .proof-content.open { display: block; }
+  .proof-content p { margin-bottom: .7rem; }
+  .qed { text-align: right; font-size: 1.2rem; margin-top: .5rem; color: var(--gold); }
+
+  /* ── EXAMPLE BOX ── */
+  .example-box {
+    background: var(--green-lt);
+    border-left: 4px solid var(--green);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.2rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .example-box .label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--green);
+    margin-bottom: .5rem;
+  }
+  .example-box p { color: var(--ink2); margin-bottom: .5rem; }
+
+  /* ── REMARK BOX ── */
+  .remark-box {
+    background: var(--teal-lt);
+    border-left: 4px solid var(--teal);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .remark-box .label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--teal);
+    margin-bottom: .4rem;
+  }
+  .remark-box p { color: var(--ink2); margin: 0; }
+
+  /* ── WARNING / CAUTION ── */
+  .warn-box {
+    background: var(--red-lt);
+    border-left: 4px solid var(--red);
+    border-radius: 0 var(--radius) var(--radius) 0;
+    padding: 1.1rem 1.4rem;
+    margin: 1.5rem 0;
+  }
+  .warn-box .label {
+    font-size: .7rem; font-weight: 700; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--red);
+    margin-bottom: .4rem;
+  }
+  .warn-box p { color: var(--ink2); margin: 0; }
+
+  /* ── MATH DISPLAY ── */
+  .math-block {
+    background: white;
+    border: 1px solid var(--parch3);
+    border-radius: var(--radius);
+    padding: 1rem 1.5rem;
+    margin: 1rem 0;
+    overflow-x: auto;
+    text-align: center;
+  }
+
+  /* ── INTERACTIVE SIMULATOR ── */
+  .simulator {
+    background: white;
+    border: 1px solid var(--parch3);
+    border-radius: var(--radius);
+    overflow: hidden;
+    margin: 1.8rem 0;
+    box-shadow: var(--shadow);
+  }
+  .sim-header {
+    background: var(--ink);
+    color: white;
+    padding: .75rem 1.2rem;
+    font-size: .78rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    display: flex; align-items: center; gap: .6rem;
+  }
+  .sim-header .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--gold2); }
+  .sim-body { padding: 1.4rem; }
+  .sim-controls {
+    display: flex; flex-wrap: wrap; gap: 1rem; margin-bottom: 1.2rem; align-items: flex-end;
+  }
+  .ctrl-group { display: flex; flex-direction: column; gap: .3rem; flex: 1; min-width: 140px; }
+  .ctrl-group label {
+    font-size: .75rem; font-weight: 700; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--ink3);
+  }
+  .ctrl-group select, .ctrl-group input[type=range] {
+    width: 100%;
+  }
+  select {
+    border: 1px solid var(--parch3);
+    border-radius: var(--radius);
+    padding: .5rem .7rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: .9rem;
+    background: var(--parch);
+    color: var(--ink);
+    cursor: pointer;
+  }
+  input[type=range] {
+    -webkit-appearance: none;
+    height: 4px; background: var(--parch3);
+    border-radius: 2px; cursor: pointer;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 16px; height: 16px;
+    border-radius: 50%;
+    background: var(--gold2);
+    border: 2px solid white;
+    box-shadow: 0 1px 4px rgba(0,0,0,.2);
+  }
+  canvas {
+    width: 100%; border-radius: 4px;
+    background: var(--parch);
+    display: block;
+  }
+  .sim-stats {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+    gap: .7rem; margin-top: 1rem;
+  }
+  .stat-card {
+    background: var(--parch);
+    border-radius: var(--radius);
+    padding: .7rem .9rem;
+    text-align: center;
+  }
+  .stat-card .sv { font-size: 1.1rem; font-weight: 700; color: var(--ink); font-family: 'JetBrains Mono', monospace; }
+  .stat-card .sl { font-size: .72rem; color: var(--ink3); margin-top: .1rem; text-transform: uppercase; letter-spacing: .06em; }
+
+  /* ── STEPS LIST ── */
+  .steps {
+    counter-reset: step;
+    list-style: none;
+    margin: 1rem 0 1.5rem;
+  }
+  .steps li {
+    counter-increment: step;
+    display: flex; gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .steps li::before {
+    content: counter(step);
+    font-family: 'Lora', serif;
+    font-weight: 700; font-size: .85rem;
+    color: white; background: var(--gold);
+    width: 26px; height: 26px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0; margin-top: .15rem;
+  }
+  .steps li p { margin: 0; color: var(--ink2); }
+
+  /* ── TABLE ── */
+  table {
+    width: 100%; border-collapse: collapse;
+    margin: 1.2rem 0; font-size: .92rem;
+  }
+  th {
+    background: var(--ink);
+    color: white;
+    padding: .65rem 1rem;
+    text-align: left; font-size: .75rem;
+    letter-spacing: .06em; text-transform: uppercase;
+  }
+  td {
+    padding: .6rem 1rem;
+    border-bottom: 1px solid var(--parch3);
+    color: var(--ink2);
+  }
+  tr:nth-child(even) td { background: var(--parch2); }
+
+  /* ── ACCORDION ── */
+  .accordion { margin: 1.5rem 0; }
+  .acc-item {
+    border: 1px solid var(--parch3);
+    border-radius: var(--radius);
+    margin-bottom: .5rem;
+    overflow: hidden;
+  }
+  .acc-btn {
+    width: 100%; text-align: left; background: var(--parch2);
+    border: none; cursor: pointer;
+    padding: .9rem 1.1rem;
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: .95rem; font-weight: 600; color: var(--ink);
+    display: flex; justify-content: space-between; align-items: center;
+    transition: background .2s;
+  }
+  .acc-btn:hover { background: var(--parch3); }
+  .acc-btn .arr { font-size: .75rem; transition: transform .25s; }
+  .acc-btn.open .arr { transform: rotate(180deg); }
+  .acc-content {
+    display: none; padding: 1rem 1.2rem;
+    font-size: .95rem; color: var(--ink2);
+    border-top: 1px solid var(--parch3);
+  }
+  .acc-content.open { display: block; }
+  .acc-content p { margin-bottom: .5rem; }
+
+  /* ── QUIZ ── */
+  .quiz-wrap {
+    background: white;
+    border: 1px solid var(--parch3);
+    border-radius: var(--radius);
+    padding: 1.4rem;
+    margin: 1.8rem 0;
+    box-shadow: var(--shadow);
+  }
+  .quiz-wrap h3 { font-family: 'Lora', serif; margin-bottom: 1rem; color: var(--ink); }
+  .quiz-q { margin-bottom: 1.4rem; }
+  .quiz-q .q-text { font-weight: 600; color: var(--ink); margin-bottom: .7rem; }
+  .quiz-opts { display: flex; flex-direction: column; gap: .4rem; }
+  .quiz-opts label {
+    display: flex; align-items: flex-start; gap: .7rem;
+    cursor: pointer; padding: .6rem .9rem;
+    border: 1px solid var(--parch3); border-radius: var(--radius);
+    transition: background .15s; font-size: .95rem; color: var(--ink2);
+  }
+  .quiz-opts label:hover { background: var(--parch2); }
+  .quiz-opts input[type=radio] { margin-top: .15rem; flex-shrink: 0; }
+  .quiz-opts label.correct { background: var(--green-lt); border-color: var(--green); color: var(--green); font-weight: 600; }
+  .quiz-opts label.wrong { background: var(--red-lt); border-color: var(--red); color: var(--red); }
+  .quiz-btn {
+    background: var(--gold);
+    color: white; border: none; cursor: pointer;
+    padding: .7rem 2rem;
+    border-radius: var(--radius);
+    font-family: 'Source Sans 3', sans-serif;
+    font-size: .95rem; font-weight: 700;
+    transition: background .2s;
+    margin-top: .5rem;
+  }
+  .quiz-btn:hover { background: var(--gold2); }
+  .quiz-result {
+    margin-top: 1rem; padding: .8rem 1rem;
+    border-radius: var(--radius); font-weight: 600;
+    display: none;
+  }
+  .quiz-result.show { display: block; }
+  .quiz-result.pass { background: var(--green-lt); color: var(--green); }
+  .quiz-result.fail { background: var(--red-lt); color: var(--red); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--ink);
+    color: rgba(255,255,255,.45);
+    text-align: center;
+    padding: 2rem;
+    font-size: .8rem;
+  }
+  footer strong { color: rgba(255,255,255,.7); }
+
+  /* ── UTILITIES ── */
+  .mt-1 { margin-top: .5rem; }
+  .mt-2 { margin-top: 1rem; }
+  .mono { font-family: 'JetBrains Mono', monospace; font-size: .9em; }
+  .divider {
+    border: none; border-top: 1px solid var(--parch3);
+    margin: 2.5rem 0;
+  }
+
+  @media (max-width: 640px) {
+    nav { padding: 0 1rem; }
+    .hero { padding: 3rem 1rem 2.5rem; }
+    .page-wrap { padding: 2rem 1rem 4rem; }
+    .sim-controls { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<div id="progress-bar"></div>
+
+<!-- NAVIGATION -->
+<nav>
+  <div class="nav-brand">Analisis Real</div>
+  <div class="nav-links">
+    <a href="#sec1">Barisan</a>
+    <a href="#sec2">Limit Barisan</a>
+    <a href="#sec3">Sifat-sifat</a>
+    <a href="#sec4">Barisan Monoton</a>
+    <a href="#sec5">Teorema Besar</a>
+    <a href="#sec6">Contoh</a>
+    <a href="#sec7">Latihan</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag">Analisis Real · Bab IV</div>
+  <h1>Teori-teori <em>Limit</em> &amp;<br>Barisan yang <em>Monoton</em></h1>
+  <p>Studi mendalam tentang konvergensi, divergensi, dan perilaku asimtotik barisan bilangan real.</p>
+  <div class="hero-meta">
+    <span>📚 Mata Kuliah: Analisis Real</span>
+    <span>✍️ Martin Bernard, M.Pd.</span>
+    <span>🏛️ IKIP Siliwangi, Cimahi</span>
+  </div>
+</div>
+
+<div class="page-wrap">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 1 — BARISAN BILANGAN REAL
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec1">
+  <div class="section-header">
+    <div class="section-num">01</div>
+    <h2>Barisan Bilangan Real</h2>
+  </div>
+
+  <p>Sebelum membahas limit, kita perlu memahami dengan tepat apa yang dimaksud dengan <em>barisan</em> dalam konteks Analisis Real.</p>
+
+  <div class="def-box">
+    <div class="label">📖 Definisi 1.1 — Barisan Bilangan Real</div>
+    <p>Sebuah <strong>barisan bilangan real</strong> adalah fungsi \( f : \mathbb{N} \to \mathbb{R} \). Nilai \( f(n) \) biasa ditulis sebagai \( a_n \), dan barisan itu sendiri ditulis sebagai \( (a_n)_{n=1}^{\infty} \) atau cukup \( (a_n) \).</p>
+  </div>
+
+  <p>Secara intuitif, barisan adalah daftar bilangan real yang terurut:</p>
+  <div class="math-block">
+    \[ a_1,\ a_2,\ a_3,\ \ldots,\ a_n,\ \ldots \]
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 1.1 — Berbagai Jenis Barisan</div>
+    <p><strong>(a)</strong> Barisan \( \left(\dfrac{1}{n}\right) = 1,\ \dfrac{1}{2},\ \dfrac{1}{3},\ \dfrac{1}{4},\ \ldots \) → konvergen ke 0</p>
+    <p><strong>(b)</strong> Barisan \( ((-1)^n) = -1,\ 1,\ -1,\ 1,\ \ldots \) → osilasi, divergen</p>
+    <p><strong>(c)</strong> Barisan \( (n^2) = 1,\ 4,\ 9,\ 16,\ \ldots \) → tak terbatas, divergen ke \(+\infty\)</p>
+    <p><strong>(d)</strong> Barisan \( \left(\dfrac{n}{n+1}\right) = \dfrac{1}{2},\ \dfrac{2}{3},\ \dfrac{3}{4},\ \ldots \) → konvergen ke 1</p>
+  </div>
+
+  <div class="remark-box">
+    <div class="label">💡 Catatan</div>
+    <p>Domain barisan bisa dimulai dari \(n=0\) atau \(n=1\) tergantung konteks. Yang penting adalah bahwa domain merupakan himpunan bilangan asli (atau bilangan bulat non-negatif).</p>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 2 — LIMIT BARISAN
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec2">
+  <div class="section-header">
+    <div class="section-num">02</div>
+    <h2>Definisi Limit Barisan (ε–N)</h2>
+  </div>
+
+  <p>Definisi formal limit barisan menggunakan kuantifikasi \(\varepsilon\text{–}N\), yang menjadi pondasi dari seluruh Analisis Real modern.</p>
+
+  <div class="def-box">
+    <div class="label">📖 Definisi 2.1 — Konvergensi Barisan</div>
+    <p>Barisan \( (a_n) \) dikatakan <strong>konvergen</strong> ke bilangan real \( L \), ditulis
+    \[ \lim_{n \to \infty} a_n = L \]
+    jika untuk setiap \( \varepsilon > 0 \), terdapat \( N \in \mathbb{N} \) sedemikian sehingga untuk semua \( n > N \), berlaku \( |a_n - L| < \varepsilon \).</p>
+  </div>
+
+  <p>Secara simbolis:</p>
+  <div class="math-block">
+    \[ \lim_{n\to\infty} a_n = L \iff \forall\,\varepsilon>0,\ \exists\, N\in\mathbb{N}:\ n>N \Rightarrow |a_n - L| < \varepsilon \]
+  </div>
+
+  <div class="remark-box">
+    <div class="label">💡 Interpretasi Geometris</div>
+    <p>Definisi ini berarti: apapun <em>pita sempit</em> \( (L-\varepsilon, L+\varepsilon) \) yang kita pilih di sekitar \( L \), hampir semua suku barisan (yaitu semua suku setelah indeks ke-\(N\)) berada di dalam pita tersebut.</p>
+  </div>
+
+  <!-- SIMULATOR LIMIT -->
+  <div class="simulator">
+    <div class="sim-header">
+      <div class="dot"></div>
+      Simulator Definisi ε–N
+    </div>
+    <div class="sim-body">
+      <div class="sim-controls">
+        <div class="ctrl-group">
+          <label>Pilih Barisan</label>
+          <select id="seqSelect" onchange="updateSim()">
+            <option value="inv">aₙ = 1/n → L = 0</option>
+            <option value="frac">aₙ = n/(n+1) → L = 1</option>
+            <option value="exp">aₙ = (−1)ⁿ/n → L = 0</option>
+            <option value="sqrt">aₙ = √n/(n+1) → L = 0</option>
+            <option value="geom">aₙ = (1/2)ⁿ → L = 0</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Nilai ε = <span id="epsLabel">0.30</span></label>
+          <input type="range" id="epsSlider" min="0.05" max="0.90" step="0.05" value="0.30" oninput="onEpsChange(this.value)">
+        </div>
+        <div class="ctrl-group">
+          <label>Suku Ditampilkan: <span id="nLabel">30</span></label>
+          <input type="range" id="nSlider" min="10" max="60" step="5" value="30" oninput="onNChange(this.value)">
+        </div>
+      </div>
+      <canvas id="simCanvas" height="260"></canvas>
+      <div class="sim-stats">
+        <div class="stat-card"><div class="sv" id="sLim">—</div><div class="sl">Limit L</div></div>
+        <div class="stat-card"><div class="sv" id="sEps">0.30</div><div class="sl">ε (epsilon)</div></div>
+        <div class="stat-card"><div class="sv" id="sNstar">—</div><div class="sl">N* (batas)</div></div>
+        <div class="stat-card"><div class="sv" id="sIn">—</div><div class="sl">Suku dlm pita</div></div>
+      </div>
+      <p style="font-size:.8rem;color:var(--ink3);margin-top:.7rem">
+        🟡 Titik kuning = suku di luar pita ε · 🟢 Titik hijau = suku di dalam pita ε · Garis merah putus-putus = batas L ± ε
+      </p>
+    </div>
+  </div>
+
+  <p>Mari kita buktikan secara formal beberapa contoh klasik.</p>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 2.1 — Bukti Formal: lim 1/n = 0</div>
+    <p>Tunjukkan bahwa \( \displaystyle\lim_{n\to\infty} \frac{1}{n} = 0 \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti Lengkap
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti.</strong> Diberikan \( \varepsilon > 0 \) sembarang. Kita perlu mencari \( N \in \mathbb{N} \) sedemikian sehingga:</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ n > N \implies \left|\frac{1}{n} - 0\right| < \varepsilon \]
+      </div>
+      <p>Perhatikan bahwa \( \left|\dfrac{1}{n} - 0\right| = \dfrac{1}{n} \). Maka kondisi di atas ekuivalen dengan \( \dfrac{1}{n} < \varepsilon \), atau \( n > \dfrac{1}{\varepsilon} \).</p>
+      <p>Pilih \( N = \left\lceil \dfrac{1}{\varepsilon} \right\rceil \) (bilangan asli terkecil yang \(\geq \dfrac{1}{\varepsilon}\)). Maka untuk setiap \( n > N \geq \dfrac{1}{\varepsilon} \), berlaku \( \dfrac{1}{n} < \varepsilon \), sehingga \( \left|\dfrac{1}{n} - 0\right| < \varepsilon \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 2.2 — Bukti Formal: lim n/(n+1) = 1</div>
+    <p>Tunjukkan bahwa \( \displaystyle\lim_{n\to\infty} \frac{n}{n+1} = 1 \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti Lengkap
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti.</strong> Diberikan \( \varepsilon > 0 \) sembarang. Perhatikan:</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ \left|\frac{n}{n+1} - 1\right| = \left|\frac{n - (n+1)}{n+1}\right| = \frac{1}{n+1} < \frac{1}{n} \]
+      </div>
+      <p>Pilih \( N = \left\lceil \dfrac{1}{\varepsilon} \right\rceil \). Maka untuk \( n > N \):</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ \left|\frac{n}{n+1} - 1\right| = \frac{1}{n+1} < \frac{1}{n} < \frac{1}{N} \leq \varepsilon \]
+      </div>
+      <div class="qed">□</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 3 — SIFAT-SIFAT LIMIT
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec3">
+  <div class="section-header">
+    <div class="section-num">03</div>
+    <h2>Sifat-sifat Limit Barisan</h2>
+  </div>
+
+  <p>Berikut adalah teorema-teorema utama yang memudahkan perhitungan limit tanpa harus selalu kembali ke definisi ε–N.</p>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 3.1 — Keunikan Limit</div>
+    <p>Jika \( (a_n) \) konvergen, maka limitnya <strong>tunggal</strong>. Artinya, jika \( \lim a_n = L \) dan \( \lim a_n = M \), maka \( L = M \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti (Metode Kontradiksi)
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti.</strong> Misalkan \( L \neq M \). Tanpa kehilangan keumuman, asumsikan \( L < M \). Pilih \( \varepsilon = \dfrac{M-L}{2} > 0 \).</p>
+      <p>Karena \( \lim a_n = L \), ada \( N_1 \) sehingga \( n > N_1 \Rightarrow a_n \in (L-\varepsilon, L+\varepsilon) \).</p>
+      <p>Karena \( \lim a_n = M \), ada \( N_2 \) sehingga \( n > N_2 \Rightarrow a_n \in (M-\varepsilon, M+\varepsilon) \).</p>
+      <p>Untuk \( n > \max(N_1, N_2) \), kita punya \( a_n \) harus berada di kedua interval sekaligus. Tetapi \( L + \varepsilon = \dfrac{L+M}{2} = M - \varepsilon \), sehingga kedua interval <em>terputus</em> (disjoint). Kontradiksi. Jadi \( L = M \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 3.2 — Teorema Limit Aljabar</div>
+    <p>Jika \( \lim_{n\to\infty} a_n = A \) dan \( \lim_{n\to\infty} b_n = B \), maka:</p>
+    <p style="margin-top:.6rem">
+      (i) \( \lim(a_n \pm b_n) = A \pm B \)<br>
+      (ii) \( \lim(a_n \cdot b_n) = A \cdot B \)<br>
+      (iii) \( \lim(c \cdot a_n) = c \cdot A \) untuk konstanta \( c \in \mathbb{R} \)<br>
+      (iv) \( \lim\dfrac{a_n}{b_n} = \dfrac{A}{B} \) asalkan \( B \neq 0 \) dan \( b_n \neq 0 \) untuk semua \( n \)
+    </p>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 3.3 — Teorema Apit (Squeeze Theorem)</div>
+    <p>Jika \( a_n \leq b_n \leq c_n \) untuk semua \( n \) (atau untuk semua \( n > N_0 \) tertentu), dan \( \lim a_n = \lim c_n = L \), maka \( \lim b_n = L \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti Teorema Apit
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti.</strong> Diberikan \( \varepsilon > 0 \). Karena \( \lim a_n = L \), ada \( N_1 \) dengan \( n > N_1 \Rightarrow L - \varepsilon < a_n \). Karena \( \lim c_n = L \), ada \( N_2 \) dengan \( n > N_2 \Rightarrow c_n < L + \varepsilon \).</p>
+      <p>Untuk \( n > N = \max(N_0, N_1, N_2) \):</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ L - \varepsilon < a_n \leq b_n \leq c_n < L + \varepsilon \]
+      </div>
+      <p>Sehingga \( |b_n - L| < \varepsilon \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 3.1 — Aplikasi Teorema Apit</div>
+    <p>Tunjukkan bahwa \( \displaystyle\lim_{n\to\infty} \frac{\sin n}{n} = 0 \).</p>
+    <p><strong>Solusi:</strong> Karena \( |\sin n| \leq 1 \) untuk semua \( n \), maka:</p>
+    <div class="math-block">
+      \[ -\frac{1}{n} \leq \frac{\sin n}{n} \leq \frac{1}{n} \]
+    </div>
+    <p>Karena \( \displaystyle\lim_{n\to\infty} \left(-\frac{1}{n}\right) = 0 \) dan \( \displaystyle\lim_{n\to\infty} \frac{1}{n} = 0 \), maka oleh Teorema Apit, \( \displaystyle\lim_{n\to\infty} \frac{\sin n}{n} = 0 \). ∎</p>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 3.4 — Barisan Konvergen Pasti Terbatas</div>
+    <p>Jika \( (a_n) \) konvergen, maka \( (a_n) \) <strong>terbatas</strong>, yaitu ada \( M > 0 \) sedemikian sehingga \( |a_n| \leq M \) untuk semua \( n \in \mathbb{N} \).</p>
+  </div>
+
+  <div class="warn-box">
+    <div class="label">⚠️ Perhatian — Kebalikan Tidak Selalu Benar</div>
+    <p>Barisan terbatas belum tentu konvergen! Contoh: \( (a_n) = ((-1)^n) \) terbatas (oleh \(M=1\)) tetapi divergen (berosilasi antara \(-1\) dan \(1\)).</p>
+  </div>
+
+  <!-- Tabel Ringkasan -->
+  <table>
+    <thead>
+      <tr><th>Sifat</th><th>Pernyataan</th><th>Syarat</th></tr>
+    </thead>
+    <tbody>
+      <tr><td>Keunikan Limit</td><td>Limit bersifat tunggal</td><td>Barisan konvergen</td></tr>
+      <tr><td>Penjumlahan</td><td>\(\lim(a_n+b_n)=A+B\)</td><td>\(\lim a_n=A, \lim b_n=B\)</td></tr>
+      <tr><td>Perkalian</td><td>\(\lim(a_n \cdot b_n)=AB\)</td><td>\(\lim a_n=A, \lim b_n=B\)</td></tr>
+      <tr><td>Pembagian</td><td>\(\lim(a_n/b_n)=A/B\)</td><td>\(B\neq 0\)</td></tr>
+      <tr><td>Teorema Apit</td><td>\(\lim b_n = L\)</td><td>\(a_n \leq b_n \leq c_n\), \(\lim a_n=\lim c_n=L\)</td></tr>
+      <tr><td>Terbatas</td><td>\(|a_n| \leq M\) untuk suatu \(M\)</td><td>Barisan konvergen</td></tr>
+    </tbody>
+  </table>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 4 — BARISAN MONOTON
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec4">
+  <div class="section-header">
+    <div class="section-num">04</div>
+    <h2>Barisan yang Monoton</h2>
+  </div>
+
+  <p>Monotonisitas adalah sifat penting barisan yang memberi informasi tentang <em>arah perubahan</em> suku-sukunya.</p>
+
+  <div class="def-box">
+    <div class="label">📖 Definisi 4.1 — Barisan Monoton</div>
+    <p>Barisan \( (a_n) \) disebut:</p>
+    <p style="margin-top:.5rem">
+      • <strong>Monoton naik (non-decreasing)</strong> jika \( a_n \leq a_{n+1} \) untuk semua \( n \in \mathbb{N} \)<br>
+      • <strong>Monoton naik ketat (strictly increasing)</strong> jika \( a_n < a_{n+1} \) untuk semua \( n \in \mathbb{N} \)<br>
+      • <strong>Monoton turun (non-increasing)</strong> jika \( a_n \geq a_{n+1} \) untuk semua \( n \in \mathbb{N} \)<br>
+      • <strong>Monoton turun ketat (strictly decreasing)</strong> jika \( a_n > a_{n+1} \) untuk semua \( n \in \mathbb{N} \)
+    </p>
+  </div>
+
+  <!-- SIMULATOR BARISAN MONOTON -->
+  <div class="simulator">
+    <div class="sim-header">
+      <div class="dot"></div>
+      Visualisasi Barisan Monoton
+    </div>
+    <div class="sim-body">
+      <div class="sim-controls">
+        <div class="ctrl-group">
+          <label>Pilih Barisan</label>
+          <select id="monoSelect" onchange="updateMono()">
+            <option value="incr1">Monoton naik: 1/2 + 1/(n+1)</option>
+            <option value="incr2">Monoton naik: n/(n+1)</option>
+            <option value="decr1">Monoton turun: 1/n</option>
+            <option value="decr2">Monoton turun: 2/(n+2)</option>
+            <option value="noMono">Tidak monoton: sin(n)/n + 0.5</option>
+          </select>
+        </div>
+        <div class="ctrl-group">
+          <label>Jumlah Suku: <span id="monoN">25</span></label>
+          <input type="range" id="monoSlider" min="10" max="50" step="5" value="25" oninput="onMonoN(this.value)">
+        </div>
+      </div>
+      <canvas id="monoCanvas" height="240"></canvas>
+      <div class="sim-stats">
+        <div class="stat-card"><div class="sv" id="mType">—</div><div class="sl">Tipe</div></div>
+        <div class="stat-card"><div class="sv" id="mBound">—</div><div class="sl">Terbatas?</div></div>
+        <div class="stat-card"><div class="sv" id="mLimit">—</div><div class="sl">Limit</div></div>
+        <div class="stat-card"><div class="sv" id="mSup">—</div><div class="sl">Sup / Inf</div></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="accordion" id="monoExamples">
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Cara menentukan monotonisitas <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p>Ada beberapa metode untuk menentukan apakah barisan monoton:</p>
+        <p><strong>Metode 1 — Selisih:</strong> Hitung \( a_{n+1} - a_n \). Jika selisihnya selalu \(\geq 0\) → naik; selalu \(\leq 0\) → turun.</p>
+        <p><strong>Metode 2 — Rasio:</strong> Hitung \( \dfrac{a_{n+1}}{a_n} \) (untuk barisan positif). Jika rasionya selalu \(\geq 1\) → naik; selalu \(\leq 1\) → turun.</p>
+        <p><strong>Metode 3 — Turunan:</strong> Jika \( a_n = f(n) \) untuk fungsi \( f \) yang dapat diturunkan, periksa tanda \( f'(x) \) untuk \( x > 0 \).</p>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Contoh: menentukan monotonisitas \( a_n = \frac{n}{n+1} \) <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Metode Selisih:</strong></p>
+        <div class="math-block" style="margin:.5rem 0">
+          \[ a_{n+1} - a_n = \frac{n+1}{n+2} - \frac{n}{n+1} = \frac{(n+1)^2 - n(n+2)}{(n+2)(n+1)} = \frac{1}{(n+2)(n+1)} > 0 \]
+        </div>
+        <p>Karena \( a_{n+1} - a_n > 0 \) untuk semua \( n \), barisan ini <strong>monoton naik ketat</strong>.</p>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Contoh: menentukan monotonisitas \( a_n = \frac{2^n}{n!} \) <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Metode Rasio:</strong></p>
+        <div class="math-block" style="margin:.5rem 0">
+          \[ \frac{a_{n+1}}{a_n} = \frac{2^{n+1}/(n+1)!}{2^n/n!} = \frac{2}{n+1} \]
+        </div>
+        <p>Untuk \( n \geq 2 \): \( \dfrac{2}{n+1} \leq \dfrac{2}{3} < 1 \), jadi \( a_{n+1} < a_n \).</p>
+        <p>Barisan ini <strong>monoton turun</strong> (untuk \( n \geq 2 \)). Untuk \( n=1 \): \( a_1 = 2, a_2 = 2 \) → konstan; \( n=2 \): \( a_2 = 2, a_3 = 4/3 < 2 \).</p>
+        <p>Jadi barisan ini <strong>akhirnya monoton turun</strong> (eventually decreasing) untuk \( n \geq 2 \).</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 5 — TEOREMA KONVERGENSI MONOTON
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec5">
+  <div class="section-header">
+    <div class="section-num">05</div>
+    <h2>Teorema-Teorema Utama</h2>
+  </div>
+
+  <p>Berikut adalah teorema-teorema fundamental yang menghubungkan monotonisitas, keterbatasan, dan konvergensi.</p>
+
+  <div class="thm-box" style="border: 2px solid var(--gold); padding: 1.4rem;">
+    <div class="label" style="font-size:.8rem">⭐ Teorema 5.1 — Teorema Konvergensi Monoton (Monotone Convergence Theorem)</div>
+    <p><strong>Setiap barisan yang monoton dan terbatas pasti konvergen.</strong></p>
+    <p style="margin-top:.6rem">Lebih spesifik:</p>
+    <p>(a) Jika \( (a_n) \) monoton naik dan terbatas di atas, maka \( \displaystyle\lim_{n\to\infty} a_n = \sup\{a_n : n \in \mathbb{N}\} \).</p>
+    <p>(b) Jika \( (a_n) \) monoton turun dan terbatas di bawah, maka \( \displaystyle\lim_{n\to\infty} a_n = \inf\{a_n : n \in \mathbb{N}\} \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti (Kasus Monoton Naik)
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti (kasus naik).</strong> Misalkan \( (a_n) \) monoton naik dan terbatas di atas. Himpunan \( S = \{a_n : n \in \mathbb{N}\} \) terbatas di atas, sehingga oleh <em>Aksioma Kelengkapan</em> (Least Upper Bound Property), \( L = \sup S \) ada.</p>
+      <ol class="steps" style="margin-top:.7rem">
+        <li><p>Diberikan \( \varepsilon > 0 \). Karena \( L = \sup S \), maka \( L - \varepsilon \) bukan batas atas dari \( S \). Jadi ada \( N \in \mathbb{N} \) dengan \( a_N > L - \varepsilon \).</p></li>
+        <li><p>Karena \( (a_n) \) monoton naik, untuk semua \( n > N \): \( a_n \geq a_N > L - \varepsilon \).</p></li>
+        <li><p>Juga \( a_n \leq L \) (karena \( L = \sup S \)), sehingga \( a_n \leq L < L + \varepsilon \).</p></li>
+        <li><p>Gabungkan: \( L - \varepsilon < a_n \leq L < L + \varepsilon \), yaitu \( |a_n - L| < \varepsilon \).</p></li>
+      </ol>
+      <p>Ini membuktikan \( \displaystyle\lim_{n\to\infty} a_n = L = \sup S \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 5.2 — Divergensi Barisan Monoton Tak Terbatas</div>
+    <p>Jika \( (a_n) \) monoton naik dan tak terbatas di atas, maka \( \displaystyle\lim_{n\to\infty} a_n = +\infty \).</p>
+    <p>Jika \( (a_n) \) monoton turun dan tak terbatas di bawah, maka \( \displaystyle\lim_{n\to\infty} a_n = -\infty \).</p>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 5.3 — Barisan Cauchy</div>
+    <p>Barisan \( (a_n) \) disebut <strong>barisan Cauchy</strong> jika untuk setiap \( \varepsilon > 0 \), terdapat \( N \in \mathbb{N} \) sehingga untuk semua \( m, n > N \): \( |a_m - a_n| < \varepsilon \).</p>
+    <p style="margin-top:.5rem">Teorema: <strong>Di \( \mathbb{R} \), barisan konvergen \(\iff\) barisan Cauchy.</strong></p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti (Cauchy ⇒ Konvergen, sketsa)
+    </button>
+    <div class="proof-content">
+      <p><strong>Sketsa Bukti.</strong> (⇒) Jelas: jika \( a_n \to L \), maka \( |a_m - a_n| \leq |a_m - L| + |L - a_n| < \varepsilon/2 + \varepsilon/2 = \varepsilon \).</p>
+      <p>(⇐) Misalkan \( (a_n) \) adalah barisan Cauchy di \( \mathbb{R} \):</p>
+      <ol class="steps">
+        <li><p><strong>Terbatas:</strong> Barisan Cauchy selalu terbatas. (Pilih \(\varepsilon=1\); untuk \(n>N\), semua suku dalam interval \((a_{N+1}-1, a_{N+1}+1)\). Suku pertama s.d. \(N\) juga finit.)</p></li>
+        <li><p><strong>Teorema Bolzano–Weierstrass:</strong> Barisan terbatas punya subbarisan yang konvergen ke suatu \( L \in \mathbb{R} \).</p></li>
+        <li><p><strong>Konvergensi:</strong> Gunakan sifat Cauchy + konvergensi subbarisan untuk membuktikan barisan aslinya konvergen ke \( L \).</p></li>
+      </ol>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 5.4 — Teorema Bolzano–Weierstrass</div>
+    <p>Setiap barisan yang terbatas di \( \mathbb{R} \) memiliki <strong>subbarisan yang konvergen</strong>.</p>
+  </div>
+
+  <div class="thm-box">
+    <div class="label">📐 Teorema 5.5 — Barisan Monoton Naik yang Tidak Terbatas</div>
+    <p>Misalkan \( (a_n) \) monoton naik. Maka <strong>tepat satu</strong> dari dua kemungkinan berikut berlaku:</p>
+    <p>(a) \( (a_n) \) terbatas di atas dan konvergen ke \( \sup\{a_n\} \), atau</p>
+    <p>(b) \( (a_n) \) tak terbatas di atas dan divergen ke \( +\infty \).</p>
+  </div>
+
+  <!-- Diagram Ringkasan -->
+  <div style="background: var(--parch2); border-radius: var(--radius); padding: 1.4rem; margin: 1.5rem 0;">
+    <p style="font-weight:700; color:var(--ink); margin-bottom:1rem; font-family:'Lora',serif;">Ringkasan: Barisan Monoton</p>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+      <div style="background:var(--green-lt); border-radius:var(--radius); padding:1rem; border-left:3px solid var(--green);">
+        <p style="font-weight:700; color:var(--green); margin-bottom:.4rem;">↗ Monoton Naik + Terbatas Atas</p>
+        <p style="font-size:.9rem; color:var(--ink2); margin:0">Konvergen ke \( \sup\{a_n\} \)</p>
+      </div>
+      <div style="background:var(--red-lt); border-radius:var(--radius); padding:1rem; border-left:3px solid var(--red);">
+        <p style="font-weight:700; color:var(--red); margin-bottom:.4rem;">↗ Monoton Naik + Tak Terbatas</p>
+        <p style="font-size:.9rem; color:var(--ink2); margin:0">Divergen ke \( +\infty \)</p>
+      </div>
+      <div style="background:var(--blue-lt); border-radius:var(--radius); padding:1rem; border-left:3px solid var(--blue);">
+        <p style="font-weight:700; color:var(--blue); margin-bottom:.4rem;">↘ Monoton Turun + Terbatas Bawah</p>
+        <p style="font-size:.9rem; color:var(--ink2); margin:0">Konvergen ke \( \inf\{a_n\} \)</p>
+      </div>
+      <div style="background:var(--gold-lt); border-radius:var(--radius); padding:1rem; border-left:3px solid var(--gold);">
+        <p style="font-weight:700; color:var(--gold); margin-bottom:.4rem;">↘ Monoton Turun + Tak Terbatas</p>
+        <p style="font-size:.9rem; color:var(--ink2); margin:0">Divergen ke \( -\infty \)</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 6 — CONTOH APLIKASI
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec6">
+  <div class="section-header">
+    <div class="section-num">06</div>
+    <h2>Contoh-Contoh Aplikasi</h2>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 6.1 — Barisan Rekursif (Definisi \(e\))</div>
+    <p>Tunjukkan bahwa barisan \( a_n = \left(1 + \dfrac{1}{n}\right)^n \) konvergen.</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Strategi Pembuktian
+    </button>
+    <div class="proof-content">
+      <p><strong>Strategi:</strong> Kita tunjukkan \( (a_n) \) monoton naik dan terbatas di atas (oleh 3), lalu gunakan Teorema Konvergensi Monoton.</p>
+      <p><strong>Terbatas:</strong> Dengan ekspansi binomial:</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ a_n = \sum_{k=0}^{n} \binom{n}{k}\frac{1}{n^k} = \sum_{k=0}^{n} \frac{1}{k!}\cdot\frac{n(n-1)\cdots(n-k+1)}{n^k} \leq \sum_{k=0}^{n}\frac{1}{k!} \leq \sum_{k=0}^{\infty}\frac{1}{k!} = e < 3 \]
+      </div>
+      <p><strong>Monoton Naik:</strong> Dapat dibuktikan dengan AM-GM bahwa \( a_n < a_{n+1} \).</p>
+      <p>Jadi \( (a_n) \) konvergen, dan limitnya didefinisikan sebagai bilangan \( e = \lim_{n\to\infty}\left(1+\frac{1}{n}\right)^n \approx 2.71828\ldots \)</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 6.2 — Barisan Rekursif Umum</div>
+    <p>Didefinisikan \( a_1 = 1 \) dan \( a_{n+1} = \sqrt{2 + a_n} \). Tunjukkan barisan ini konvergen dan cari limitnya.</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Solusi Lengkap
+    </button>
+    <div class="proof-content">
+      <p><strong>Langkah 1: Terbatas di atas oleh 2.</strong> Klaim: \( a_n \leq 2 \) untuk semua \( n \).</p>
+      <p>Basis: \( a_1 = 1 \leq 2 \). ✓</p>
+      <p>Induktif: Misalkan \( a_k \leq 2 \). Maka \( a_{k+1} = \sqrt{2+a_k} \leq \sqrt{2+2} = 2 \). ✓</p>
+      <p><strong>Langkah 2: Monoton naik.</strong> Klaim: \( a_n \leq a_{n+1} \).</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ a_{n+1} = \sqrt{2+a_n} \geq a_n \iff 2+a_n \geq a_n^2 \iff a_n^2 - a_n - 2 \leq 0 \iff (a_n-2)(a_n+1) \leq 0 \]
+      </div>
+      <p>Karena \( 0 \leq a_n \leq 2 \), kita punya \( a_n - 2 \leq 0 \) dan \( a_n + 1 > 0 \), sehingga \( (a_n-2)(a_n+1) \leq 0 \). ✓</p>
+      <p><strong>Langkah 3: Konvergensi.</strong> Oleh Teorema Konvergensi Monoton, \( L = \lim a_n \) ada.</p>
+      <p><strong>Langkah 4: Mencari L.</strong> Ambil limit di kedua ruas \( a_{n+1} = \sqrt{2+a_n} \):</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ L = \sqrt{2+L} \implies L^2 = 2+L \implies L^2 - L - 2 = 0 \implies (L-2)(L+1) = 0 \]
+      </div>
+      <p>Karena \( L \geq 0 \), maka \( L = 2 \).</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 6.3 — Metode Newton-Raphson</div>
+    <p>Barisan yang didefinisikan oleh \( x_{n+1} = \dfrac{1}{2}\left(x_n + \dfrac{a}{x_n}\right) \), dengan \( x_1 > 0 \) dan \( a > 0 \), adalah metode Newton-Raphson untuk mencari \( \sqrt{a} \). Tunjukkan bahwa barisan ini monoton turun (untuk \( n \geq 2 \)) dan konvergen ke \( \sqrt{a} \).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Solusi
+    </button>
+    <div class="proof-content">
+      <p><strong>Terbatas di bawah oleh \(\sqrt{a}\).</strong> Oleh pertidaksamaan AM-GM:</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ x_{n+1} = \frac{1}{2}\left(x_n + \frac{a}{x_n}\right) \geq \sqrt{x_n \cdot \frac{a}{x_n}} = \sqrt{a} \]
+      </div>
+      <p><strong>Monoton turun (untuk \( n \geq 2 \)).</strong></p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ x_{n+1} - x_n = \frac{1}{2}\left(x_n + \frac{a}{x_n}\right) - x_n = \frac{a - x_n^2}{2x_n} \]
+      </div>
+      <p>Karena \( x_n \geq \sqrt{a} \) untuk \( n \geq 2 \), kita punya \( x_n^2 \geq a \), sehingga \( x_{n+1} - x_n \leq 0 \). Jadi monoton turun.</p>
+      <p><strong>Limit.</strong> \( L = \frac{1}{2}(L + a/L) \Rightarrow 2L^2 = L^2 + a \Rightarrow L^2 = a \Rightarrow L = \sqrt{a} \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+
+  <div class="example-box">
+    <div class="label">✏️ Contoh 6.4 — Barisan Harmonik</div>
+    <p>Tunjukkan bahwa barisan parsial \( H_n = \displaystyle\sum_{k=1}^{n} \frac{1}{k} = 1 + \frac{1}{2} + \frac{1}{3} + \cdots + \frac{1}{n} \) divergen ke \(+\infty\).</p>
+  </div>
+
+  <div class="proof-box">
+    <button class="proof-toggle" onclick="toggleProof(this)">
+      <span class="arrow">▶</span> Lihat Bukti (Cauchy 1821)
+    </button>
+    <div class="proof-content">
+      <p><strong>Bukti.</strong> Jelas \( H_n \) monoton naik. Cukup tunjukkan \( H_n \) tak terbatas. Perhatikan:</p>
+      <div class="math-block" style="margin:.5rem 0">
+        \[ H_{2^n} \geq 1 + \frac{n}{2} \]
+      </div>
+      <p>Dibuktikan dengan induksi:</p>
+      <p>Basis \( n=1 \): \( H_2 = 1 + \frac{1}{2} = \frac{3}{2} \geq 1 + \frac{1}{2} \). ✓</p>
+      <p>Induktif: \( H_{2^{n+1}} = H_{2^n} + \dfrac{1}{2^n+1} + \cdots + \dfrac{1}{2^{n+1}} \geq H_{2^n} + 2^n \cdot \dfrac{1}{2^{n+1}} = H_{2^n} + \dfrac{1}{2} \geq 1 + \dfrac{n+1}{2} \). ✓</p>
+      <p>Karena \( H_{2^n} \to +\infty \), dan \( H_n \) monoton naik, maka \( H_n \to +\infty \). ∎</p>
+      <div class="qed">□</div>
+    </div>
+  </div>
+</div>
+
+<hr class="divider">
+
+<!-- ═══════════════════════════════════════════
+     SECTION 7 — LATIHAN
+═══════════════════════════════════════════ -->
+<div class="section-block" id="sec7">
+  <div class="section-header">
+    <div class="section-num">07</div>
+    <h2>Latihan Mandiri</h2>
+  </div>
+
+  <div class="quiz-wrap">
+    <h3>Uji Pemahaman — Teori Limit &amp; Barisan Monoton</h3>
+    <div id="quizContent"></div>
+    <button class="quiz-btn" onclick="checkQuiz()">Periksa Jawaban</button>
+    <div class="quiz-result" id="quizResult"></div>
+  </div>
+
+  <p style="font-weight:700; color:var(--ink); font-family:'Lora',serif; margin-top:2rem; margin-bottom:1rem;">Soal Latihan Tertulis</p>
+
+  <div class="accordion">
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Soal 1: Buktikan \(\lim_{n\to\infty} \frac{3n+1}{2n-5} = \frac{3}{2}\) <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Petunjuk:</strong> Tuliskan \(\left|\dfrac{3n+1}{2n-5} - \dfrac{3}{2}\right|\) dan sederhanakan. Cari \(N\) dalam bentuk \(\varepsilon\). Ingat bahwa penyebut harus positif, sehingga \(n > 3\) (agar \(2n-5 > 1\)).</p>
+        <div class="math-block">
+          \[ \left|\frac{3n+1}{2n-5} - \frac{3}{2}\right| = \left|\frac{6n+2-6n+15}{2(2n-5)}\right| = \frac{17}{2(2n-5)} < \frac{17}{2n} \]
+        </div>
+        <p>Pilih \( N = \max\!\left(3, \left\lceil\dfrac{17}{2\varepsilon}\right\rceil\right) \).</p>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Soal 2: Tunjukkan barisan \(a_n = \frac{n^2+3}{n^2+1}\) monoton turun <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Petunjuk:</strong> Hitung \( a_{n+1} - a_n \) dan tunjukkan hasilnya negatif. Atau gunakan metode turunan: periksa \(f'(x) < 0\) untuk \(f(x) = \dfrac{x^2+3}{x^2+1}\).</p>
+        <div class="math-block">
+          \[ f'(x) = \frac{2x(x^2+1) - 2x(x^2+3)}{(x^2+1)^2} = \frac{-4x}{(x^2+1)^2} < 0 \quad (x > 0) \]
+        </div>
+        <p>Jadi barisan monoton turun. Limitnya = \(\displaystyle\lim_{n\to\infty} \frac{n^2+3}{n^2+1} = 1\).</p>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Soal 3: Barisan rekursif \(a_1=2, a_{n+1}=\frac{1}{2}a_n+1\) <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Langkah:</strong> (1) Tunjukkan terbatas (misal \(a_n \leq 2\) untuk semua \(n\)). (2) Tunjukkan monoton turun. (3) Cari limit.</p>
+        <p><em>Hint:</em> Untuk limit \(L\): \( L = \frac{1}{2}L + 1 \Rightarrow \frac{1}{2}L = 1 \Rightarrow L = 2 \).</p>
+        <p>Barisan ini ternyata konstan! \(a_n = 2\) untuk semua \(n\). (Cek: \(a_2 = \frac{1}{2}(2)+1 = 2\).) Maka \(\lim a_n = 2\).</p>
+      </div>
+    </div>
+    <div class="acc-item">
+      <button class="acc-btn" onclick="toggleAcc(this)">
+        Soal 4 (Tantangan): Tunjukkan \(\lim_{n\to\infty} n^{1/n} = 1\) <span class="arr">▼</span>
+      </button>
+      <div class="acc-content">
+        <p><strong>Petunjuk (Metode Binomial):</strong> Tuliskan \( n^{1/n} = 1 + h_n \) dengan \( h_n \geq 0 \). Maka:</p>
+        <div class="math-block">
+          \[ n = (1+h_n)^n \geq \binom{n}{2}h_n^2 = \frac{n(n-1)}{2}h_n^2 \]
+        </div>
+        <p>Sehingga \( h_n^2 \leq \dfrac{2}{n-1} \to 0 \), jadi \( h_n \to 0 \), dan \( n^{1/n} = 1 + h_n \to 1 \). ∎</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div><!-- end .page-wrap -->
+
+<footer>
+  <p><strong>Martin Bernard, M.Pd.</strong> · IKIP Siliwangi, Cimahi</p>
+  <p style="margin-top:.3rem">Mata Kuliah: Analisis Real · Program Studi Pendidikan Matematika</p>
+</footer>
+
+<!-- ═══════════════════════════════════════════
+     SCRIPTS
+═══════════════════════════════════════════ -->
+<script>
+/* ── PROGRESS BAR ── */
+window.addEventListener('scroll', () => {
+  const s = document.documentElement, body = document.body;
+  const total = s.scrollHeight - s.clientHeight;
+  const pct = (window.scrollY / total) * 100;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+/* ── NAV ACTIVE ── */
+const navLinks = document.querySelectorAll('nav a');
+const sections = document.querySelectorAll('.section-block');
+window.addEventListener('scroll', () => {
+  let cur = '';
+  sections.forEach(s => { if (window.scrollY >= s.offsetTop - 100) cur = s.id; });
+  navLinks.forEach(a => {
+    a.classList.toggle('active', a.getAttribute('href') === '#' + cur);
+  });
+});
+
+/* ── PROOF TOGGLE ── */
+function toggleProof(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+/* ── ACCORDION ── */
+function toggleAcc(btn) {
+  btn.classList.toggle('open');
+  btn.nextElementSibling.classList.toggle('open');
+}
+
+/* ══════════════════════════════════════
+   SIMULATOR ε-N
+══════════════════════════════════════ */
+const sequences = {
+  inv:  { fn: n => 1/n,             L: 0,  label: '1/n',       color: '#1a5f5a' },
+  frac: { fn: n => n/(n+1),         L: 1,  label: 'n/(n+1)',   color: '#1a3a6b' },
+  exp:  { fn: n => Math.pow(-1,n)/n,L: 0,  label: '(-1)ⁿ/n',  color: '#8b1a1a' },
+  sqrt: { fn: n => Math.sqrt(n)/(n+1), L: 0, label:'√n/(n+1)', color:'#2d5a1e' },
+  geom: { fn: n => Math.pow(0.5,n), L: 0,  label:'(1/2)ⁿ',    color: '#5a1a6b' }
+};
+
+let simSeq = 'inv', simEps = 0.30, simN = 30;
+const simCanvas = document.getElementById('simCanvas');
+const simCtx = simCanvas.getContext('2d');
+
+function drawSim() {
+  const seq = sequences[simSeq];
+  const dpr = window.devicePixelRatio || 1;
+  const w = simCanvas.clientWidth, h = 260;
+  simCanvas.width = w * dpr; simCanvas.height = h * dpr;
+  simCtx.scale(dpr, dpr);
+
+  const L = seq.L, eps = simEps;
+  const pts = Array.from({length: simN}, (_,i) => seq.fn(i+1));
+
+  const minV = Math.min(...pts, L - eps - 0.05);
+  const maxV = Math.max(...pts, L + eps + 0.05);
+  const pad = { l:40, r:20, t:20, b:30 };
+  const cw = w - pad.l - pad.r, ch = h - pad.t - pad.b;
+
+  function tx(n) { return pad.l + ((n-1)/(simN-1)) * cw; }
+  function ty(v) { return pad.t + (1 - (v - minV)/(maxV - minV)) * ch; }
+
+  // Background
+  simCtx.fillStyle = '#faf6ee';
+  simCtx.fillRect(0, 0, w, h);
+
+  // Epsilon band
+  simCtx.fillStyle = 'rgba(26,95,90,0.08)';
+  simCtx.fillRect(pad.l, ty(L+eps), cw, ty(L-eps) - ty(L+eps));
+
+  // Epsilon band borders
+  simCtx.strokeStyle = 'rgba(220,50,50,0.7)';
+  simCtx.lineWidth = 1; simCtx.setLineDash([5,4]);
+  simCtx.beginPath(); simCtx.moveTo(pad.l, ty(L+eps)); simCtx.lineTo(pad.l+cw, ty(L+eps)); simCtx.stroke();
+  simCtx.beginPath(); simCtx.moveTo(pad.l, ty(L-eps)); simCtx.lineTo(pad.l+cw, ty(L-eps)); simCtx.stroke();
+  simCtx.setLineDash([]);
+
+  // L line
+  simCtx.strokeStyle = 'rgba(30,30,30,0.3)';
+  simCtx.lineWidth = 1.5;
+  simCtx.beginPath(); simCtx.moveTo(pad.l, ty(L)); simCtx.lineTo(pad.l+cw, ty(L)); simCtx.stroke();
+  simCtx.fillStyle = '#333'; simCtx.font = '11px sans-serif'; simCtx.textAlign = 'left';
+  simCtx.fillText('L=' + L, pad.l+3, ty(L)-5);
+
+  // Labels
+  simCtx.fillStyle = 'rgba(220,50,50,0.8)'; simCtx.font = '10px sans-serif'; simCtx.textAlign = 'left';
+  simCtx.fillText('L+ε', pad.l+3, ty(L+eps)-3);
+  simCtx.fillText('L−ε', pad.l+3, ty(L-eps)+12);
+
+  // Compute N*
+  let Nstar = 0;
+  for (let i = 0; i < pts.length; i++) {
+    if (Math.abs(pts[i] - L) >= eps) Nstar = i+1;
+  }
+
+  // N* line
+  if (Nstar > 0 && Nstar < simN) {
+    simCtx.strokeStyle = 'rgba(184,134,11,0.6)';
+    simCtx.lineWidth = 1.5; simCtx.setLineDash([4,3]);
+    simCtx.beginPath(); simCtx.moveTo(tx(Nstar+0.5), pad.t); simCtx.lineTo(tx(Nstar+0.5), pad.t+ch); simCtx.stroke();
+    simCtx.setLineDash([]);
+    simCtx.fillStyle = 'rgba(184,134,11,0.9)'; simCtx.font = '11px sans-serif'; simCtx.textAlign = 'center';
+    simCtx.fillText('N*=' + Nstar, tx(Nstar+0.5), pad.t + 14);
+  }
+
+  // Points
+  let inCount = 0;
+  pts.forEach((v, i) => {
+    const inside = Math.abs(v - L) < eps;
+    if (inside) inCount++;
+    simCtx.beginPath();
+    simCtx.arc(tx(i+1), ty(v), 4, 0, Math.PI*2);
+    simCtx.fillStyle = inside ? seq.color : '#d4a017';
+    simCtx.fill();
+    simCtx.strokeStyle = 'white'; simCtx.lineWidth = 1;
+    simCtx.stroke();
+  });
+
+  // X axis
+  simCtx.strokeStyle = '#ccc'; simCtx.lineWidth = 0.5;
+  simCtx.beginPath(); simCtx.moveTo(pad.l, pad.t+ch); simCtx.lineTo(pad.l+cw, pad.t+ch); simCtx.stroke();
+  simCtx.fillStyle = '#888'; simCtx.font = '10px sans-serif'; simCtx.textAlign = 'center';
+  for (let i=0; i<simN; i+=5) {
+    simCtx.fillText(i+1, tx(i+1), pad.t+ch+14);
+  }
+  simCtx.fillText('n', pad.l+cw, pad.t+ch+14);
+
+  // Stats
+  document.getElementById('sLim').textContent = L;
+  document.getElementById('sEps').textContent = eps.toFixed(2);
+  document.getElementById('sNstar').textContent = Nstar === 0 ? 'semua' : Nstar;
+  document.getElementById('sIn').textContent = inCount + '/' + simN;
+}
+
+function updateSim() { simSeq = document.getElementById('seqSelect').value; drawSim(); }
+function onEpsChange(v) { simEps = parseFloat(v); document.getElementById('epsLabel').textContent = parseFloat(v).toFixed(2); drawSim(); }
+function onNChange(v) { simN = parseInt(v); document.getElementById('nLabel').textContent = v; drawSim(); }
+drawSim();
+window.addEventListener('resize', drawSim);
+
+/* ══════════════════════════════════════
+   SIMULATOR MONOTON
+══════════════════════════════════════ */
+const monoSeqs = {
+  incr1: { fn: n => 0.5 + 1/(n+1), L: 0.5, type:'Monoton Naik ↗', bounded:'Ya (≤1.5)', sup:'1.5' },
+  incr2: { fn: n => n/(n+1),        L: 1,   type:'Monoton Naik ↗', bounded:'Ya (≤1)', sup:'1' },
+  decr1: { fn: n => 1/n,            L: 0,   type:'Monoton Turun ↘', bounded:'Ya (≥0)', sup:'inf=0' },
+  decr2: { fn: n => 2/(n+2),        L: 0,   type:'Monoton Turun ↘', bounded:'Ya (≥0)', sup:'inf=0' },
+  noMono:{ fn: n => Math.sin(n)/n+0.5, L:0.5,type:'Tidak Monoton', bounded:'Ya',sup:'~1.5' }
+};
+
+let monoKey = 'incr1', monoN = 25;
+const monoCanvas = document.getElementById('monoCanvas');
+const monoCtx = monoCanvas.getContext('2d');
+
+function drawMono() {
+  const seq = monoSeqs[monoKey];
+  const dpr = window.devicePixelRatio || 1;
+  const w = monoCanvas.clientWidth, h = 240;
+  monoCanvas.width = w * dpr; monoCanvas.height = h * dpr;
+  monoCtx.scale(dpr, dpr);
+
+  const pts = Array.from({length: monoN}, (_,i) => seq.fn(i+1));
+  const minV = Math.min(...pts) - 0.05, maxV = Math.max(...pts) + 0.05;
+  const pad = {l:40,r:20,t:15,b:30};
+  const cw = w-pad.l-pad.r, ch = h-pad.t-pad.b;
+
+  function tx(n) { return pad.l + ((n-1)/(monoN-1))*cw; }
+  function ty(v) { return pad.t + (1-(v-minV)/(maxV-minV))*ch; }
+
+  monoCtx.fillStyle = '#faf6ee'; monoCtx.fillRect(0,0,w,h);
+
+  // Grid
+  monoCtx.strokeStyle = '#e8dfcc'; monoCtx.lineWidth = 0.5;
+  for (let g=0; g<=4; g++) {
+    const yg = pad.t + g/4 * ch;
+    monoCtx.beginPath(); monoCtx.moveTo(pad.l, yg); monoCtx.lineTo(pad.l+cw, yg); monoCtx.stroke();
+    const val = maxV - g/4*(maxV-minV);
+    monoCtx.fillStyle = '#aaa'; monoCtx.font = '10px sans-serif'; monoCtx.textAlign = 'right';
+    monoCtx.fillText(val.toFixed(2), pad.l-4, yg+4);
+  }
+
+  // Line connecting points
+  const colorMap = { 'Monoton Naik ↗':'#1a3a6b','Monoton Turun ↘':'#8b1a1a','Tidak Monoton':'#5a1a6b' };
+  const col = colorMap[seq.type] || '#333';
+  monoCtx.strokeStyle = col + '55'; monoCtx.lineWidth = 1.5;
+  monoCtx.beginPath();
+  pts.forEach((v,i) => { i===0 ? monoCtx.moveTo(tx(i+1),ty(v)) : monoCtx.lineTo(tx(i+1),ty(v)); });
+  monoCtx.stroke();
+
+  // Limit line
+  monoCtx.strokeStyle = '#b8860b'; monoCtx.lineWidth = 1; monoCtx.setLineDash([5,3]);
+  monoCtx.beginPath(); monoCtx.moveTo(pad.l, ty(seq.L)); monoCtx.lineTo(pad.l+cw, ty(seq.L)); monoCtx.stroke();
+  monoCtx.setLineDash([]);
+  monoCtx.fillStyle = '#b8860b'; monoCtx.font = '10px sans-serif'; monoCtx.textAlign = 'left';
+  monoCtx.fillText('L=' + seq.L, pad.l+4, ty(seq.L)-4);
+
+  // Points
+  pts.forEach((v,i) => {
+    monoCtx.beginPath(); monoCtx.arc(tx(i+1),ty(v),4,0,Math.PI*2);
+    monoCtx.fillStyle = col; monoCtx.fill();
+    monoCtx.strokeStyle = 'white'; monoCtx.lineWidth = 1; monoCtx.stroke();
+  });
+
+  // Arrows for monotone direction
+  if (seq.type !== 'Tidak Monoton') {
+    const arrowDir = seq.type.includes('Naik') ? -1 : 1;
+    monoCtx.strokeStyle = col; monoCtx.lineWidth = 2;
+    for (let i=0; i<Math.min(5, monoN-1); i+=2) {
+      const x1=tx(i+1), y1=ty(pts[i]), x2=tx(i+2), y2=ty(pts[i+1]);
+      const mx=(x1+x2)/2, my=(y1+y2)/2;
+      monoCtx.fillStyle = col;
+      monoCtx.beginPath();
+      monoCtx.moveTo(mx, my-4*arrowDir);
+      monoCtx.lineTo(mx-4, my+4*arrowDir);
+      monoCtx.lineTo(mx+4, my+4*arrowDir);
+      monoCtx.closePath(); monoCtx.fill();
+    }
+  }
+
+  // X axis
+  monoCtx.strokeStyle = '#ccc'; monoCtx.lineWidth = 0.5;
+  monoCtx.beginPath(); monoCtx.moveTo(pad.l,pad.t+ch); monoCtx.lineTo(pad.l+cw,pad.t+ch); monoCtx.stroke();
+  monoCtx.fillStyle = '#888'; monoCtx.font = '10px sans-serif'; monoCtx.textAlign = 'center';
+  for (let i=0;i<monoN;i+=5) monoCtx.fillText(i+1,tx(i+1),pad.t+ch+14);
+
+  document.getElementById('mType').textContent = seq.type;
+  document.getElementById('mBound').textContent = seq.bounded;
+  document.getElementById('mLimit').textContent = seq.L;
+  document.getElementById('mSup').textContent = seq.sup;
+}
+
+function updateMono() { monoKey = document.getElementById('monoSelect').value; drawMono(); }
+function onMonoN(v) { monoN = parseInt(v); document.getElementById('monoN').textContent = v; drawMono(); }
+drawMono();
+window.addEventListener('resize', drawMono);
+
+/* ══════════════════════════════════════
+   QUIZ
+══════════════════════════════════════ */
+const quizData = [
+  {
+    q: 'Apa yang dimaksud dengan definisi limit ε–N?',
+    opts: [
+      'Barisan selalu mendekati nilai tertentu setelah suku ke-100',
+      'Untuk setiap ε > 0, ada N ∈ ℕ sehingga n > N menjamin |aₙ − L| < ε',
+      'Barisan terbatas dan monoton selalu konvergen',
+      'Limit hanya ada jika barisan monoton'
+    ],
+    ans: 1
+  },
+  {
+    q: 'Jika aₙ ≤ bₙ ≤ cₙ dan lim aₙ = lim cₙ = 5, apa kesimpulannya?',
+    opts: [
+      'lim bₙ tidak dapat ditentukan',
+      'lim bₙ = 0',
+      'lim bₙ = 5 (Teorema Apit)',
+      'bₙ harus konstan sama dengan 5'
+    ],
+    ans: 2
+  },
+  {
+    q: 'Barisan ((-1)ⁿ) adalah...',
+    opts: [
+      'Konvergen ke 0',
+      'Terbatas dan konvergen',
+      'Terbatas tetapi divergen (tidak monoton)',
+      'Monoton naik'
+    ],
+    ans: 2
+  },
+  {
+    q: 'Menurut Teorema Konvergensi Monoton, barisan monoton naik dan terbatas di atas konvergen ke...',
+    opts: [
+      'Nol',
+      'Supremum dari himpunan nilai barisan',
+      'Infimum dari himpunan nilai barisan',
+      'Nilai rata-rata suku pertama dan terakhir'
+    ],
+    ans: 1
+  },
+  {
+    q: 'Barisan Cauchy adalah barisan yang...',
+    opts: [
+      'Selalu monoton turun',
+      'Suku-sukunya saling berdekatan: untuk ε>0, ada N sehingga m,n>N ⇒ |aₘ−aₙ|<ε',
+      'Konvergen ke bilangan irasional saja',
+      'Dibatasi oleh nilai maksimumnya'
+    ],
+    ans: 1
+  }
+];
+
+function buildQuiz() {
+  const div = document.getElementById('quizContent');
+  div.innerHTML = quizData.map((item, qi) => `
+    <div class="quiz-q">
+      <div class="q-text">Soal ${qi+1}: ${item.q}</div>
+      <div class="quiz-opts" id="opts-${qi}">
+        ${item.opts.map((opt, oi) => `
+          <label>
+            <input type="radio" name="q${qi}" value="${oi}"> ${opt}
+          </label>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function checkQuiz() {
+  let score = 0;
+  quizData.forEach((item, qi) => {
+    const labels = document.querySelectorAll(`#opts-${qi} label`);
+    const radios = document.querySelectorAll(`input[name=q${qi}]`);
+    let selected = -1;
+    radios.forEach((r,i) => { if (r.checked) selected = i; });
+    labels.forEach((l,i) => {
+      l.classList.remove('correct','wrong');
+      if (i === item.ans) l.classList.add('correct');
+      else if (i === selected && selected !== item.ans) l.classList.add('wrong');
+    });
+    if (selected === item.ans) score++;
+    radios.forEach(r => r.disabled = true);
+  });
+  const res = document.getElementById('quizResult');
+  res.classList.add('show');
+  res.classList.toggle('pass', score >= 4);
+  res.classList.toggle('fail', score < 4);
+  res.innerHTML = score >= 4
+    ? `✅ Luar biasa! Skor Anda: <strong>${score}/5</strong>. Pemahaman Anda sangat baik!`
+    : `❌ Skor Anda: <strong>${score}/5</strong>. Silakan pelajari kembali materi dan coba lagi.`;
+}
+
+buildQuiz();
+
+/* MathJax on dynamic content */
+window.MathJax = {
+  tex: { inlineMath: [['\\(','\\)'],['$','$']], displayMath: [['\\[','\\]'],['$$','$$']] }
+};
+</script>
+</body>
+</html>
