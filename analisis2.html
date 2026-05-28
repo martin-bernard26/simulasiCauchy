@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://www.geogebra.org/apps/deployggb.js"></script>
+    <script>
+        window.MathJax = {
+            tex: {
+                inlineMath: [['$', '$'], ['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']]
+            },
+            startup: {
+                pageReady: () => {
+                    console.log('MathJax siap digunakan!');
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
+    <!-- Perbaikan Link CDN MathJax v3 -->
+    <script id="MathJax-script" async src="https://cloudflare.com"></script>
+    <style>
+    #control{
+        display:flex;
+        flex-direction:row;
+        justify-content:center;
+    }
+    #control > div > input{
+        margin:5px;
+        background-color:black;
+        color:white;
+        border-radius:5px;
+        font-size:20px;
+        font-weight:bold;
+    }
+    .my-responsive-container{
+        width:50%;
+        max-width:300px;
+        margin:auto;
+        border:2px solid red;
+        box-shadow:0 4px 15px green;
+    }
+    #command{
+        width:60%;
+        height:30px;
+        font-family:"commic sans ms";
+        font-size:30px;
+        text-align:center;
+        margin:5px;
+        border-radius:5px;
+        box-shadow:2px 2px 5px orange,-2px -2px 5px cyan;
+    }
+    #title1{
+        text-align:center;
+        font-size:40px;
+        color:green;
+        font-family:"Bauhaus 93";
+        text-shadow:2px 2px 5px red,-2px -2px 6px yellow;
+    }
+    .element{
+        margin:8px;
+        font-family:"commic sans ms";
+        font-weight:bold;
+        text-align:center;
+    }
+    .element > input{
+        margin-left:5px;
+        height:20px;
+        border:2px solid orange;
+        border-radius:5px;
+        box-shadow:2px 2px 5px blue,-2px -2px 5px blueviolet;
+    }
+    #result1, #result2, #result3{
+        margin-left:10px;
+    }
+    #function2{
+        font-family:Consolas;
+        font-size:30px;
+        text-align:center;
+        font-weight:bold;
+    }
+   
+</style>
+</head>
+
+<body>
+    <div id="title1">Convergence of Sequences and Limits</div>
+    <div style="display:flex">
+    <div style="width:50%">
+        <div id="control">
+            <div>
+                <input type="button" value="InputBox" onclick="explain1('1')" >
+            </div>
+            <div>
+                <input type="button" value="IterationList" onclick="explain1('2')" >
+            </div>
+            <div>
+                <input type="button" value="Sequence" onclick="explain1('3')" >
+            </div>
+            <div>
+                <input type="button" value="Slider" onclick="explain1('4')" >
+            </div>
+        </div>
+        <div style="text-align:center">
+            <span style="font-family:'Brush Script MT';font-size:30px">Command</span>
+            <input type="text" id="command"><input type="button" style="background-color:red;color:white;font-size:20px;width:10%;height:30px" value="clear" onclick="ggbApplet.newConstruction()">
+        </div>
+        <div id="function2">
+            
+        </div>
+    </div>
+    <div style="width:50%">
+        <div class="element">function <input type="text" id="function1"></div>
+        <div class="element">epsilon <input type="text" id="epsilon"><span id="result3"></span></div>
+        <div class="element">N <input type="text" id="Number1"><span id="result1"></span></div>
+        <div class="element">n <input type="text" id="Number2"><span id="result2"></span></div>
+    </div>
+    </div>
+    
+    <div style="display:flex;justify-content:center;width:100%">
+        <div id="ggb-element"></div>
+        <div style="margin-top:10px;width:50%;text-align:center"><iframe src='https://app.ziteboard.com/' style='height:650px;width:75%;border:2px solid blue'></iframe></div>
+    </div>
+    
+    <script>
+    var function1 = document.getElementById("function1");
+    var function2 = document.getElementById("function2");
+    var epsilon = document.getElementById("epsilon");
+    var Number1 = document.getElementById("Number1");
+    var Number2 = document.getElementById("Number2");
+    var result1 = document.getElementById("result1");
+    var result2 = document.getElementById("result2");
+    var result3 = document.getElementById("result3");
+    var params = {
+        "appName": "classic",
+        "width": 500,
+        "height": 400,
+        "showToolBar": false,
+        "showAlgebraInput": false,
+        "language": "id",
+        "scaleContainerClass": "my-responsive-container",
+        "allowUpscale":true,
+        "autoHeight":true
+    };
+    var applet = new GGBApplet(params, true);
+    window.onload = function() { 
+        applet.inject('ggb-element'); 
+    };
+    var command = document.getElementById("command");
+    command.addEventListener('change',function(){
+        ggbApplet.evalCommand(command.value);
+    })
+    function1.addEventListener('change',function(){
+        ggbApplet.evalCommand("g(x)="+function1.value);
+    })
+    epsilon.addEventListener('change',function(){
+        ggbApplet.evalCommand("e="+epsilon.value);
+        ggbApplet.evalCommand("a=g(e)");
+        result3.innerHTML = "pilih N > "+parseInt(ggbApplet.getValue("a"));
+    })
+    Number1.addEventListener('change',function(){
+        ggbApplet.evalCommand("b="+Number1.value);
+        ggbApplet.evalCommand("c=f(b)");
+        result1.innerHTML = "pilih f(N) = "+(ggbApplet.getValue("c"))+' dan n > '+parseInt(ggbApplet.getValue("b"));
+    })
+    Number2.addEventListener('change',function(){
+        ggbApplet.evalCommand("d="+Number2.value);
+        ggbApplet.evalCommand("h=f(d)");
+        result2.innerHTML = "pilih f(n) = "+(ggbApplet.getValue("h"));
+    })
+    function explain1(num){
+        var nomor = parseInt(num);
+        if(nomor==1){
+            function2.innerHTML = "InputBox(Linked Object)"
+        }else
+        if(nomor==2){
+            function2.innerHTML = "IterationList((Function),Start,End)"
+        }else
+        if(nomor==3){
+            function2.innerHTML = "Sequence((Expresion),(Variabel),Start,End)"
+        }else
+        if(nomor==4){
+            function2.innerHTML = "Slider(Min,Max,Increament)"
+        }
+    }
+    </script>
+</body>
+</html>
