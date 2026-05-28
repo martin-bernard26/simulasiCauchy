@@ -68,7 +68,37 @@
         text-align:center;
         font-weight:bold;
     }
-   
+   @media screen and (max-width: 768px) {
+        /* Mengubah susunan input dari kiri-kanan menjadi atas-bawah */
+        div[style*="display:flex"], div[style*="display: flex"] {
+            flex-direction: column !important;
+        }
+        
+        /* Memaksa lebar elemen menjadi 100% agar pas di layar HP */
+        div[style*="width:50%"], div[style*="width: 50%"], 
+        div[style*="width:60%"], div[style*="width: 60%"] {
+            width: 100% !important;
+        }
+
+        /* Menyesuaikan iframe Ziteboard agar tidak terpotong */
+        iframe {
+            width: 100% !important;
+            height: 400px !important;
+        }
+
+        /* Membuat tombol control pembantu agar membungkus rapi (wrap) */
+        #control {
+            flex-wrap: wrap !important;
+        }
+        #control > div > input {
+            font-size: 16px !important; /* Memperkecil tombol sedikit agar muat di Android */
+        }
+        
+        /* Memperkecil judul agar tidak meluap keluar layar */
+        #title1 {
+            font-size: 24px !important;
+        }
+    }
 </style>
 </head>
 
