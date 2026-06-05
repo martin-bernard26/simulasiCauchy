@@ -1,0 +1,1124 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sub Barisan & Teorema Bolzano-Weierstrass | Analisis Real</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-mml-chtml.min.js"></script>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Source+Serif+4:ital,opsz,wght@0,8..60,300;0,8..60,400;0,8..60,600;1,8..60,300;1,8..60,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+  :root {
+    --ink: #1a1008;
+    --cream: #fdf6ec;
+    --parchment: #f4e8d0;
+    --gold: #b8860b;
+    --gold-light: #d4a017;
+    --rust: #8b3a1e;
+    --teal: #1a5c5c;
+    --teal-light: #2a8080;
+    --shadow: rgba(26,16,8,0.15);
+    --border: #c8a87a;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    background: var(--cream);
+    color: var(--ink);
+    font-family: 'Source Serif 4', Georgia, serif;
+    font-size: 16px;
+    line-height: 1.8;
+  }
+
+  /* HEADER */
+  .hero {
+    background: var(--ink);
+    color: var(--cream);
+    padding: 3.5rem 2rem 3rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 30px,
+      rgba(184,134,11,0.06) 30px,
+      rgba(184,134,11,0.06) 60px
+    );
+  }
+  .hero-badge {
+    display: inline-block;
+    border: 1px solid var(--gold);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.7rem;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    padding: 0.3rem 1rem;
+    margin-bottom: 1.2rem;
+  }
+  .hero h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: clamp(2rem, 5vw, 3.2rem);
+    font-weight: 900;
+    line-height: 1.15;
+    margin-bottom: 0.6rem;
+  }
+  .hero h1 span { color: var(--gold-light); font-style: italic; }
+  .hero-sub {
+    color: #aaa;
+    font-size: 0.9rem;
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.05em;
+  }
+  .hero-meta {
+    margin-top: 1.5rem;
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    flex-wrap: wrap;
+    font-size: 0.78rem;
+    color: #999;
+    font-family: 'JetBrains Mono', monospace;
+  }
+  .hero-meta span { color: var(--gold-light); }
+
+  /* NAV */
+  .toc-bar {
+    background: var(--parchment);
+    border-bottom: 2px solid var(--border);
+    padding: 0.8rem 2rem;
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 2px 8px var(--shadow);
+  }
+  .toc-btn {
+    background: none;
+    border: 1px solid var(--border);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    padding: 0.3rem 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    letter-spacing: 0.05em;
+  }
+  .toc-btn:hover, .toc-btn.active {
+    background: var(--ink);
+    color: var(--gold-light);
+    border-color: var(--ink);
+  }
+
+  /* MAIN */
+  .container {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 2.5rem 1.5rem 4rem;
+  }
+
+  /* SECTIONS */
+  .section {
+    display: none;
+    animation: fadeUp 0.4s ease;
+  }
+  .section.active { display: block; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(16px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    border-left: 4px solid var(--gold);
+    padding-left: 1rem;
+    margin-bottom: 2rem;
+  }
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    color: var(--gold);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+  }
+  .section-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    margin-top: 0.2rem;
+  }
+
+  p { margin-bottom: 1.1rem; }
+
+  /* DEFINITION BOX */
+  .def-box {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--teal);
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .def-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -0.65rem;
+    left: 1rem;
+    background: var(--teal);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.6rem;
+  }
+
+  /* THEOREM BOX */
+  .thm-box {
+    background: #fff9f0;
+    border: 2px solid var(--gold);
+    padding: 1.4rem 1.6rem;
+    margin: 1.5rem 0;
+    position: relative;
+  }
+  .thm-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -0.7rem;
+    left: 1rem;
+    background: var(--gold);
+    color: var(--ink);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    padding: 0.15rem 0.7rem;
+    font-weight: 700;
+  }
+
+  /* PROOF BOX */
+  .proof-box {
+    background: #f0f5f5;
+    border: 1px solid #9cbfbf;
+    border-left: 5px solid var(--teal-light);
+    padding: 1.2rem 1.5rem;
+    margin: 1.2rem 0;
+    font-style: italic;
+    position: relative;
+  }
+  .proof-box::before {
+    content: 'BUKTI';
+    position: absolute;
+    top: -0.62rem;
+    left: 1rem;
+    background: var(--teal-light);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    padding: 0.12rem 0.6rem;
+    font-style: normal;
+  }
+  .proof-box .qed {
+    text-align: right;
+    font-style: normal;
+    font-size: 1.2rem;
+    color: var(--teal);
+    margin-top: 0.5rem;
+  }
+
+  /* EXAMPLE BOX */
+  .ex-box {
+    background: white;
+    border: 1px solid #d4c4a8;
+    padding: 1.3rem 1.5rem;
+    margin: 1.3rem 0;
+    position: relative;
+  }
+  .ex-box::before {
+    content: attr(data-label);
+    position: absolute;
+    top: -0.62rem;
+    left: 1rem;
+    background: var(--rust);
+    color: white;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.68rem;
+    letter-spacing: 0.15em;
+    padding: 0.12rem 0.6rem;
+    text-transform: uppercase;
+  }
+
+  /* NOTE */
+  .note-box {
+    background: #fffbe6;
+    border: 1px dashed #c8a017;
+    padding: 1rem 1.4rem;
+    margin: 1.2rem 0;
+    font-size: 0.95rem;
+  }
+  .note-box strong { color: var(--gold); }
+
+  /* CANVAS VISUALIZER */
+  .viz-container {
+    background: white;
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+    margin: 2rem 0;
+  }
+  .viz-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    margin-bottom: 1rem;
+    color: var(--teal);
+  }
+  canvas {
+    display: block;
+    width: 100%;
+    max-width: 780px;
+    height: 200px;
+    border: 1px solid #e0d5c5;
+    background: #fafafa;
+  }
+  .viz-controls {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+    margin-top: 0.8rem;
+  }
+  .viz-btn {
+    background: var(--ink);
+    color: var(--cream);
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.45rem 1rem;
+    cursor: pointer;
+    transition: background 0.2s;
+    letter-spacing: 0.04em;
+  }
+  .viz-btn:hover { background: var(--teal); }
+  .viz-btn.active { background: var(--gold); color: var(--ink); }
+  .viz-info {
+    margin-top: 0.7rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    color: #555;
+    min-height: 1.4em;
+  }
+
+  /* CONVERGENCE TABLE */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.2rem 0;
+    font-size: 0.9rem;
+  }
+  th {
+    background: var(--ink);
+    color: var(--gold-light);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+    padding: 0.5rem 0.8rem;
+    text-align: left;
+  }
+  td {
+    padding: 0.45rem 0.8rem;
+    border-bottom: 1px solid #e0d5c5;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+  }
+  tr:nth-child(even) td { background: var(--parchment); }
+
+  /* QUIZ */
+  .quiz-wrap { margin-top: 2rem; }
+  .quiz-q {
+    background: var(--parchment);
+    border: 1px solid var(--border);
+    border-left: 5px solid var(--rust);
+    padding: 1.2rem 1.4rem;
+    margin-bottom: 1.2rem;
+  }
+  .quiz-q-text {
+    font-weight: 600;
+    margin-bottom: 0.8rem;
+    font-size: 0.95rem;
+  }
+  .opt-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.6rem;
+    padding: 0.4rem 0.6rem;
+    cursor: pointer;
+    border-radius: 2px;
+    transition: background 0.15s;
+    font-size: 0.9rem;
+    margin-bottom: 0.3rem;
+  }
+  .opt-label:hover { background: rgba(184,134,11,0.1); }
+  .opt-label input { margin-top: 0.25rem; accent-color: var(--teal); }
+  .opt-label.correct { background: #e6f5e6; }
+  .opt-label.wrong { background: #fce8e6; }
+  .quiz-feedback {
+    margin-top: 0.6rem;
+    font-size: 0.85rem;
+    font-style: italic;
+    color: #555;
+    display: none;
+  }
+  .quiz-footer {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    flex-wrap: wrap;
+    margin-top: 1rem;
+  }
+  .quiz-submit {
+    background: var(--teal);
+    color: white;
+    border: none;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    padding: 0.55rem 1.4rem;
+    cursor: pointer;
+    letter-spacing: 0.05em;
+  }
+  .quiz-submit:hover { background: var(--teal-light); }
+  .quiz-score {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.85rem;
+    color: var(--rust);
+    font-weight: 700;
+  }
+  .quiz-reset {
+    background: none;
+    border: 1px solid var(--border);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.75rem;
+    padding: 0.4rem 0.8rem;
+    cursor: pointer;
+    color: var(--ink);
+  }
+
+  /* PROGRESS BAR */
+  .progress-wrap {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: rgba(0,0,0,0.1);
+    z-index: 999;
+  }
+  .progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--teal), var(--gold));
+    transition: width 0.3s;
+  }
+
+  /* FOOTER */
+  .footer {
+    background: var(--ink);
+    color: #888;
+    text-align: center;
+    padding: 1.5rem;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    letter-spacing: 0.05em;
+    margin-top: 2rem;
+  }
+  .footer span { color: var(--gold-light); }
+
+  /* SUMMARY TABLE */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    margin: 1.5rem 0;
+  }
+  @media(max-width: 600px) { .summary-grid { grid-template-columns: 1fr; } }
+  .sum-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-top: 4px solid var(--teal);
+    padding: 1rem 1.2rem;
+  }
+  .sum-card h4 {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    color: var(--teal);
+  }
+  .sum-card ul {
+    list-style: none;
+    padding: 0;
+    font-size: 0.85rem;
+  }
+  .sum-card ul li::before { content: '→ '; color: var(--gold); }
+
+  .divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+  }
+
+  h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    margin: 1.5rem 0 0.6rem;
+    color: var(--ink);
+  }
+</style>
+</head>
+<body>
+
+<div class="progress-wrap"><div class="progress-bar" id="progBar"></div></div>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-badge">Analisis Real — IKIP Siliwangi</div>
+  <h1>Sub Barisan &amp; <span>Teorema Bolzano–Weierstrass</span></h1>
+  <div class="hero-sub">Barisan Bilangan Real · Konvergensi · Titik Limit</div>
+  <div class="hero-meta">
+    <div>Dosen: <span>Martin Bernard, M.Pd.</span></div>
+    <div>Prodi: <span>Pendidikan Matematika</span></div>
+    <div>IKIP Siliwangi, <span>Cimahi</span></div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav class="toc-bar">
+  <button class="toc-btn active" onclick="showSection('s0',this)">① Pendahuluan</button>
+  <button class="toc-btn" onclick="showSection('s1',this)">② Sub Barisan</button>
+  <button class="toc-btn" onclick="showSection('s2',this)">③ Sifat-sifat</button>
+  <button class="toc-btn" onclick="showSection('s3',this)">④ Bolzano–Weierstrass</button>
+  <button class="toc-btn" onclick="showSection('s4',this)">⑤ Visualisasi</button>
+  <button class="toc-btn" onclick="showSection('s5',this)">⑥ Latihan</button>
+  <button class="toc-btn" onclick="showSection('s6',this)">⑦ Rangkuman</button>
+</nav>
+
+<main class="container">
+
+<!-- ===== SECTION 0: PENDAHULUAN ===== -->
+<section id="s0" class="section active">
+  <div class="section-header">
+    <div class="section-num">§ 01 · Pendahuluan</div>
+    <h2 class="section-title">Motivasi &amp; Konteks</h2>
+  </div>
+
+  <p>Dalam Analisis Real, memahami perilaku suatu barisan tak selalu mudah. Terkadang barisan secara keseluruhan divergen, namun <em>sebagian</em> dari barisan tersebut justru menunjukkan perilaku yang teratur. Inilah yang mendorong kita untuk mempelajari konsep <strong>sub barisan</strong>.</p>
+
+  <div class="note-box">
+    <strong>Pertanyaan Kunci:</strong> Diberikan barisan \((a_n)\) yang divergen. Apakah selalu ada bagian dari barisan itu yang konvergen? Jawaban dari teorema Bolzano–Weierstrass adalah: <em>ya</em>, asalkan barisannya terbatas!
+  </div>
+
+  <p>Materi ini mencakup dua topik yang saling berkaitan erat:</p>
+  <ul style="margin-left:1.5rem;margin-bottom:1rem;line-height:2.2">
+    <li><strong>Sub barisan</strong> — definisi, notasi, dan sifat-sifat dasarnya</li>
+    <li><strong>Teorema Bolzano–Weierstrass</strong> — salah satu teorema paling penting dalam Analisis Real, yang menjamin keberadaan sub barisan konvergen pada barisan terbatas</li>
+  </ul>
+
+  <div class="def-box" data-label="Prasyarat">
+    Mahasiswa diharapkan telah memahami: (1) definisi barisan dan notasinya, (2) definisi konvergensi barisan \(\varepsilon\text{-}N\), (3) barisan terbatas dan monoton, serta (4) Teorema konvergensi barisan monoton terbatas.
+  </div>
+
+  <p>Setelah mempelajari materi ini, mahasiswa diharapkan mampu:</p>
+  <ol style="margin-left:1.5rem;line-height:2.4">
+    <li>Mendefinisikan sub barisan dan mengidentifikasi sub barisan dari suatu barisan</li>
+    <li>Membuktikan bahwa jika barisan konvergen maka setiap sub barisannya konvergen ke limit yang sama</li>
+    <li>Memahami dan membuktikan Teorema Bolzano–Weierstrass</li>
+    <li>Mengaplikasikan teorema ini untuk menganalisis barisan dalam soal-soal analisis real</li>
+  </ol>
+</section>
+
+<!-- ===== SECTION 1: SUB BARISAN ===== -->
+<section id="s1" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 02 · Definisi</div>
+    <h2 class="section-title">Sub Barisan</h2>
+  </div>
+
+  <h3>2.1 Definisi Sub Barisan</h3>
+
+  <div class="def-box" data-label="Definisi 2.1 — Sub Barisan">
+    Misalkan \((a_n)_{n=1}^{\infty}\) adalah suatu barisan bilangan real. Misalkan \((n_k)_{k=1}^{\infty}\) adalah barisan bilangan asli yang <strong>strictly increasing</strong>, yaitu:
+    \[n_1 < n_2 < n_3 < \cdots\]
+    Maka barisan \((a_{n_k})_{k=1}^{\infty} = (a_{n_1}, a_{n_2}, a_{n_3}, \ldots)\) disebut <strong>sub barisan</strong> dari \((a_n)\).
+  </div>
+
+  <p>Kata kunci penting dalam definisi ini adalah <em>strictly increasing</em>. Indeks \(n_k\) harus terus bertambah, sehingga kita benar-benar mengambil elemen-elemen dari barisan asal <em>secara berurutan</em> (meskipun boleh melewati beberapa elemen).</p>
+
+  <div class="note-box">
+    <strong>Catatan:</strong> Karena \(n_k\) adalah barisan bilangan asli yang strictly increasing, maka berlaku \(n_k \geq k\) untuk setiap \(k \in \mathbb{N}\).
+  </div>
+
+  <h3>2.2 Contoh-contoh Sub Barisan</h3>
+
+  <div class="ex-box" data-label="Contoh 2.1">
+    <p>Misalkan \(a_n = \dfrac{1}{n}\), yaitu barisan \(\left(1,\, \tfrac{1}{2},\, \tfrac{1}{3},\, \tfrac{1}{4},\, \tfrac{1}{5},\ldots\right)\).</p>
+    <p><strong>Sub barisan 1:</strong> Ambil \(n_k = 2k\) (indeks genap):<br>
+    \((a_{n_k}) = \left(\tfrac{1}{2},\, \tfrac{1}{4},\, \tfrac{1}{6},\ldots\right)\)</p>
+    <p><strong>Sub barisan 2:</strong> Ambil \(n_k = k^2\):<br>
+    \((a_{n_k}) = \left(1,\, \tfrac{1}{4},\, \tfrac{1}{9},\, \tfrac{1}{16},\ldots\right)\)</p>
+    <p>Keduanya merupakan sub barisan yang sah karena indeksnya strictly increasing.</p>
+  </div>
+
+  <div class="ex-box" data-label="Contoh 2.2">
+    <p>Misalkan \(a_n = (-1)^n\), yaitu barisan \((-1,\, 1,\, -1,\, 1,\, -1,\ldots)\).</p>
+    <p><strong>Sub barisan ganjil:</strong> \(n_k = 2k-1 \Rightarrow (a_{n_k}) = (-1,\,-1,\,-1,\ldots)\) → konvergen ke \(-1\).</p>
+    <p><strong>Sub barisan genap:</strong> \(n_k = 2k \Rightarrow (a_{n_k}) = (1,\,1,\,1,\ldots)\) → konvergen ke \(1\).</p>
+    <p>Ini menunjukkan barisan \((-1)^n\) yang <em>divergen</em> tetap memiliki sub barisan yang konvergen.</p>
+  </div>
+
+  <div class="ex-box" data-label="Contoh 2.3 — Bukan Sub Barisan">
+    <p>Dari barisan \((a_1, a_2, a_3, a_4, \ldots)\), barisan \((a_3, a_1, a_5, a_7, \ldots)\) <strong>bukan</strong> sub barisan karena \(n_1 = 3 > n_2 = 1\), yang melanggar syarat strictly increasing.</p>
+  </div>
+
+  <h3>2.3 Tabel Indeks Sub Barisan</h3>
+
+  <table>
+    <thead>
+      <tr>
+        <th>\(k\)</th>
+        <th>\(n_k = 2k\)</th>
+        <th>\(a_{n_k} = \frac{1}{2k}\)</th>
+        <th>\(n_k = k^2\)</th>
+        <th>\(a_{n_k} = \frac{1}{k^2}\)</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>1</td><td>2</td><td>0.5000</td><td>1</td><td>1.0000</td></tr>
+      <tr><td>2</td><td>4</td><td>0.2500</td><td>4</td><td>0.2500</td></tr>
+      <tr><td>3</td><td>6</td><td>0.1667</td><td>9</td><td>0.1111</td></tr>
+      <tr><td>4</td><td>8</td><td>0.1250</td><td>16</td><td>0.0625</td></tr>
+      <tr><td>5</td><td>10</td><td>0.1000</td><td>25</td><td>0.0400</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- ===== SECTION 2: SIFAT-SIFAT ===== -->
+<section id="s2" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 03 · Teorema</div>
+    <h2 class="section-title">Sifat-sifat Sub Barisan</h2>
+  </div>
+
+  <h3>3.1 Sub Barisan dari Barisan Konvergen</h3>
+
+  <div class="thm-box" data-label="Teorema 3.1">
+    Jika barisan \((a_n)\) konvergen ke \(L\), maka setiap sub barisan \((a_{n_k})\) dari \((a_n)\) juga konvergen ke \(L\).
+    \[\lim_{n\to\infty} a_n = L \;\Rightarrow\; \lim_{k\to\infty} a_{n_k} = L \quad \text{untuk setiap sub barisan } (a_{n_k})\]
+  </div>
+
+  <div class="proof-box">
+    <p><strong>Bukti.</strong> Diberikan \(\varepsilon > 0\). Karena \(a_n \to L\), terdapat \(N \in \mathbb{N}\) sehingga untuk semua \(n > N\) berlaku \(|a_n - L| < \varepsilon\).</p>
+    <p>Karena \((n_k)\) adalah barisan bilangan asli strictly increasing, maka \(n_k \geq k\) untuk semua \(k\). Dengan demikian, untuk \(k > N\) kita punya \(n_k \geq k > N\), sehingga:</p>
+    \[|a_{n_k} - L| < \varepsilon\]
+    <p>Karena \(\varepsilon > 0\) sembarang, maka \(\displaystyle\lim_{k\to\infty} a_{n_k} = L\). \(\square\)</p>
+    <div class="qed">□</div>
+  </div>
+
+  <div class="note-box">
+    <strong>Kontraposisinya:</strong> Jika terdapat sub barisan dari \((a_n)\) yang tidak konvergen, atau terdapat dua sub barisan yang konvergen ke limit berbeda, maka \((a_n)\) divergen.
+  </div>
+
+  <h3>3.2 Aplikasi: Membuktikan Divergensi</h3>
+
+  <div class="ex-box" data-label="Contoh 3.1">
+    <p>Buktikan bahwa \(a_n = (-1)^n\) divergen.</p>
+    <p><strong>Solusi:</strong> Ambil sub barisan \((a_{2k}) = (1, 1, 1, \ldots) \to 1\) dan \((a_{2k-1}) = (-1,-1,-1,\ldots) \to -1\).</p>
+    <p>Karena terdapat dua sub barisan yang konvergen ke nilai berbeda \((1 \neq -1)\), maka berdasarkan Teorema 3.1 (kontraposisi), barisan \((a_n) = (-1)^n\) <strong>divergen</strong>. \(\square\)</p>
+  </div>
+
+  <div class="ex-box" data-label="Contoh 3.2">
+    <p>Buktikan bahwa \(a_n = \sin\!\left(\dfrac{n\pi}{2}\right)\) divergen.</p>
+    <p>Nilai-nilai: \(a_1=1,\; a_2=0,\; a_3=-1,\; a_4=0,\; a_5=1,\ldots\)</p>
+    <p>Sub barisan \(a_{4k-3} \to 1\) dan sub barisan \(a_{4k-1} \to -1\). Limitnya berbeda, sehingga barisan divergen.</p>
+  </div>
+
+  <h3>3.3 Titik Limit (Limit Point) Barisan</h3>
+
+  <div class="def-box" data-label="Definisi 3.2 — Titik Limit">
+    Bilangan \(L \in \mathbb{R}\) disebut <strong>titik limit</strong> (atau <em>cluster point</em>) dari barisan \((a_n)\) jika terdapat sub barisan \((a_{n_k})\) dari \((a_n)\) yang konvergen ke \(L\):
+    \[\lim_{k\to\infty} a_{n_k} = L\]
+  </div>
+
+  <div class="ex-box" data-label="Contoh 3.3">
+    <p>Barisan \((-1)^n\) memiliki dua titik limit: \(L_1 = -1\) dan \(L_2 = 1\).</p>
+    <p>Barisan \(\dfrac{1}{n}\) memiliki satu titik limit: \(L = 0\).</p>
+  </div>
+</section>
+
+<!-- ===== SECTION 3: BOLZANO-WEIERSTRASS ===== -->
+<section id="s3" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 04 · Teorema Utama</div>
+    <h2 class="section-title">Teorema Bolzano–Weierstrass</h2>
+  </div>
+
+  <h3>4.1 Pernyataan Teorema</h3>
+
+  <div class="thm-box" data-label="Teorema 4.1 — Bolzano–Weierstrass (1817/1861)">
+    <p><strong>Setiap barisan bilangan real yang terbatas memiliki sub barisan yang konvergen.</strong></p>
+    <p>Secara formal: Jika \((a_n)\) adalah barisan terbatas, yaitu terdapat \(M > 0\) sehingga \(|a_n| \leq M\) untuk semua \(n \in \mathbb{N}\), maka terdapat sub barisan \((a_{n_k})\) dan \(L \in \mathbb{R}\) sehingga:
+    \[\lim_{k\to\infty} a_{n_k} = L\]</p>
+  </div>
+
+  <div class="note-box">
+    <strong>Sejarah:</strong> Teorema ini pertama kali dirumuskan oleh <em>Bernard Bolzano</em> (1817) dan kemudian dibuktikan secara rigor oleh <em>Karl Weierstrass</em> (1861). Teorema ini merupakan salah satu pilar Analisis Real modern.
+  </div>
+
+  <h3>4.2 Bukti Teorema Bolzano–Weierstrass</h3>
+
+  <p>Bukti berikut menggunakan metode <strong>bisection</strong> (pembagian dua) atau dapat pula menggunakan Lemma Barisan Monoton.</p>
+
+  <div class="proof-box">
+    <p><strong>Bukti (menggunakan Lemma Barisan Monoton).</strong></p>
+    
+    <p><strong>Langkah 1 — Lemma Peak:</strong> Kita definisikan indeks \(n\) sebagai <em>peak term</em> jika \(a_n \geq a_m\) untuk semua \(m > n\).</p>
+
+    <p><strong>Kasus A: Terdapat tak berhingga banyak peak terms.</strong><br>
+    Misalkan peak terms adalah \(n_1 < n_2 < n_3 < \cdots\). Karena setiap \(n_{k+1}\) adalah peak term dan \(n_{k+1} > n_k\), maka \(a_{n_{k+1}} \leq a_{n_k}\) (karena \(n_k\) adalah peak term). Jadi \((a_{n_k})\) adalah sub barisan yang <em>monoton turun</em>. Karena \((a_n)\) terbatas, maka \((a_{n_k})\) terbatas. Berdasarkan <strong>Teorema Konvergensi Barisan Monoton Terbatas</strong>, \((a_{n_k})\) konvergen.</p>
+
+    <p><strong>Kasus B: Hanya terdapat finitely many peak terms (atau tidak ada).</strong><br>
+    Misalkan \(N_0\) adalah indeks terbesar dari peak terms (jika tidak ada, ambil \(N_0 = 0\)). Untuk setiap \(n > N_0\), maka \(n\) bukan peak term, sehingga terdapat \(m > n\) dengan \(a_m > a_n\).</p>
+    <p>Pilih \(n_1 > N_0\). Karena \(n_1\) bukan peak term, terdapat \(n_2 > n_1\) dengan \(a_{n_2} > a_{n_1}\). Secara rekursif, diperoleh sub barisan \((a_{n_k})\) yang <em>monoton naik</em>. Karena \((a_n)\) terbatas, maka \((a_{n_k})\) terbatas, dan oleh Teorema Konvergensi Monoton, \((a_{n_k})\) konvergen.</p>
+    <p>Dalam kedua kasus, diperoleh sub barisan yang konvergen. \(\square\)</p>
+    <div class="qed">□</div>
+  </div>
+
+  <h3>4.3 Bukti Alternatif: Metode Bisection</h3>
+
+  <div class="proof-box">
+    <p><strong>Sketch Bukti (Bisection).</strong> Karena \((a_n)\) terbatas, terdapat interval \([a_0, b_0]\) yang memuat semua suku. Setidaknya salah satu dari \(\left[a_0, \frac{a_0+b_0}{2}\right]\) atau \(\left[\frac{a_0+b_0}{2}, b_0\right]\) memuat tak berhingga banyak suku barisan. Pilih setengah interval tersebut sebagai \([a_1, b_1]\). Ulangi proses ini secara rekursif sehingga diperoleh barisan interval nested \([a_k, b_k]\) dengan \(b_k - a_k = \frac{b_0-a_0}{2^k} \to 0\).</p>
+    <p>Dari setiap interval, pilih satu suku barisan yang berada di dalamnya untuk membangun sub barisan \((a_{n_k})\). Oleh Teorema Interval Nested (atau Prinsip Kelengkapan \(\mathbb{R}\)), terdapat \(L \in \bigcap_{k=1}^\infty [a_k, b_k]\), dan \(a_{n_k} \to L\). \(\square\)</p>
+    <div class="qed">□</div>
+  </div>
+
+  <h3>4.4 Korolari dan Konsekuensi</h3>
+
+  <div class="thm-box" data-label="Korolari 4.2">
+    Setiap barisan terbatas memiliki titik limit di \(\mathbb{R}\).
+  </div>
+
+  <div class="thm-box" data-label="Korolari 4.3">
+    Jika \((a_n)\) adalah barisan terbatas dan <em>semua</em> sub barisan konvergennya memiliki limit yang sama, yaitu \(L\), maka \((a_n)\) konvergen ke \(L\).
+  </div>
+
+  <div class="ex-box" data-label="Contoh 4.1">
+    <p>Barisan \(a_n = \dfrac{(-1)^n \cdot n}{n+1}\) apakah memiliki sub barisan konvergen?</p>
+    <p>Perhatikan: \(|a_n| = \dfrac{n}{n+1} < 1\), sehingga barisan ini terbatas (\(|a_n| < 1\)).</p>
+    <p>Oleh Teorema Bolzano–Weierstrass, pasti terdapat sub barisan konvergen. Cek:<br>
+    – Sub barisan genap: \(a_{2k} = \dfrac{2k}{2k+1} \to 1\)<br>
+    – Sub barisan ganjil: \(a_{2k-1} = \dfrac{-(2k-1)}{2k} \to -1\)</p>
+    <p>Ada dua titik limit: \(-1\) dan \(1\). Barisan ini divergen tetapi memiliki sub barisan konvergen (sesuai Bolzano–Weierstrass).</p>
+  </div>
+
+  <div class="note-box">
+    <strong>Syarat Keterbatasan Tidak Dapat Dihilangkan!</strong> Barisan \(a_n = n\) tidak terbatas dan tidak memiliki sub barisan konvergen (setiap sub barisannya juga divergen ke \(+\infty\)).
+  </div>
+</section>
+
+<!-- ===== SECTION 4: VISUALISASI ===== -->
+<section id="s4" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 05 · Interaktif</div>
+    <h2 class="section-title">Visualisasi Sub Barisan</h2>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-title">Simulator Sub Barisan Interaktif</div>
+    <p style="font-size:0.88rem;margin-bottom:0.8rem;">Pilih barisan dan sub barisan yang ingin divisualisasikan:</p>
+    <div class="viz-controls" id="seqBtns">
+      <button class="viz-btn active" onclick="setSeq('alt',this)">aₙ = (−1)ⁿ</button>
+      <button class="viz-btn" onclick="setSeq('inv',this)">aₙ = 1/n</button>
+      <button class="viz-btn" onclick="setSeq('sin',this)">aₙ = sin(nπ/3)</button>
+      <button class="viz-btn" onclick="setSeq('bnd',this)">aₙ = (−1)ⁿ·n/(n+1)</button>
+    </div>
+    <canvas id="vizCanvas" width="780" height="200"></canvas>
+    <div class="viz-controls" id="subBtns">
+      <button class="viz-btn active" onclick="setSub('even',this)">Sub barisan genap (n_k=2k)</button>
+      <button class="viz-btn" onclick="setSub('odd',this)">Sub barisan ganjil (n_k=2k−1)</button>
+      <button class="viz-btn" onclick="setSub('sq',this)">Sub barisan kuadrat (n_k=k²)</button>
+      <button class="viz-btn" onclick="setSub('none',this)">Sembunyikan sub barisan</button>
+    </div>
+    <div class="viz-info" id="vizInfo">Titik biru = barisan utama · Titik merah = sub barisan terpilih</div>
+  </div>
+
+  <div class="viz-container">
+    <div class="viz-title">Konvergensi Sub Barisan — Tabel Numerik</div>
+    <p style="font-size:0.88rem;margin-bottom:0.8rem;">Pilih barisan untuk melihat tabel nilai sub barisan:</p>
+    <div class="viz-controls">
+      <button class="viz-btn" onclick="genTable('alt')">aₙ=(−1)ⁿ</button>
+      <button class="viz-btn" onclick="genTable('inv')">aₙ=1/n</button>
+      <button class="viz-btn" onclick="genTable('bnd')">aₙ=(−1)ⁿ·n/(n+1)</button>
+    </div>
+    <div id="numTable" style="margin-top:1rem;overflow-x:auto;font-size:0.85rem;"></div>
+  </div>
+</section>
+
+<!-- ===== SECTION 5: LATIHAN ===== -->
+<section id="s5" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 06 · Evaluasi</div>
+    <h2 class="section-title">Soal Latihan</h2>
+  </div>
+
+  <p>Kerjakan soal-soal berikut. Pilih satu jawaban yang paling tepat.</p>
+
+  <div class="quiz-wrap" id="quizArea"></div>
+
+  <div class="quiz-footer">
+    <button class="quiz-submit" onclick="gradeQuiz()">Periksa Jawaban</button>
+    <button class="quiz-reset" onclick="resetQuiz()">Reset</button>
+    <div class="quiz-score" id="scoreDisplay"></div>
+  </div>
+</section>
+
+<!-- ===== SECTION 6: RANGKUMAN ===== -->
+<section id="s6" class="section">
+  <div class="section-header">
+    <div class="section-num">§ 07 · Penutup</div>
+    <h2 class="section-title">Rangkuman &amp; Referensi</h2>
+  </div>
+
+  <div class="summary-grid">
+    <div class="sum-card">
+      <h4>Sub Barisan</h4>
+      <ul>
+        <li>Indeks \((n_k)\) strictly increasing</li>
+        <li>Berlaku \(n_k \geq k\)</li>
+        <li>Barisan konvergen → semua sub barisan konvergen ke limit sama</li>
+        <li>Digunakan membuktikan divergensi</li>
+      </ul>
+    </div>
+    <div class="sum-card">
+      <h4>Titik Limit</h4>
+      <ul>
+        <li>Limit dari sub barisan konvergen</li>
+        <li>Barisan konvergen ↔ satu titik limit</li>
+        <li>Barisan bounded: minimal satu titik limit</li>
+        <li>Barisan \((-1)^n\) punya titik limit \(\pm 1\)</li>
+      </ul>
+    </div>
+    <div class="sum-card">
+      <h4>Bolzano–Weierstrass</h4>
+      <ul>
+        <li>Barisan bounded → ada sub barisan konvergen</li>
+        <li>Bukti via Peak Term atau Bisection</li>
+        <li>Syarat bounded tidak bisa dihilangkan</li>
+        <li>Fondasi analisis real modern</li>
+      </ul>
+    </div>
+    <div class="sum-card">
+      <h4>Implikasi Penting</h4>
+      <ul>
+        <li>Bounded + semua sub barisan → limit sama ⟹ konvergen</li>
+        <li>Dua sub barisan → limit beda ⟹ divergen</li>
+        <li>Tidak bounded → mungkin tidak ada sub barisan konvergen</li>
+        <li>Berlaku di \(\mathbb{R}\), analog di \(\mathbb{R}^n\)</li>
+      </ul>
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <h3>Diagram Implikasi</h3>
+  <div style="background:var(--parchment);border:1px solid var(--border);padding:1.2rem;font-family:'JetBrains Mono',monospace;font-size:0.82rem;line-height:2.2;margin:1rem 0;">
+    \((a_n)\) konvergen \(\;\Rightarrow\;\) \((a_n)\) terbatas \(\;\Rightarrow\;\) ∃ sub barisan konvergen<br>
+    \((a_n)\) konvergen \(\;\Rightarrow\;\) setiap sub barisan konvergen ke limit sama<br>
+    Dua sub barisan → limit berbeda \(\;\Rightarrow\;\) \((a_n)\) divergen<br>
+    \((a_n)\) terbatas + hanya satu titik limit \(\;\Rightarrow\;\) \((a_n)\) konvergen
+  </div>
+
+  <h3>Referensi</h3>
+  <ol style="margin-left:1.5rem;line-height:2.3;font-size:0.9rem;">
+    <li>Bartle, R.G. &amp; Sherbert, D.R. (2011). <em>Introduction to Real Analysis</em>, 4th ed. Wiley.</li>
+    <li>Rudin, W. (1976). <em>Principles of Mathematical Analysis</em>, 3rd ed. McGraw-Hill.</li>
+    <li>Abbott, S. (2015). <em>Understanding Analysis</em>, 2nd ed. Springer.</li>
+    <li>Apostol, T.M. (1974). <em>Mathematical Analysis</em>, 2nd ed. Addison-Wesley.</li>
+    <li>Kumaresan, S. (2005). <em>Topology of Metric Spaces</em>. Narosa Publishing House.</li>
+  </ol>
+</section>
+
+</main>
+
+<footer class="footer">
+  <span>Martin Bernard, M.Pd.</span> · Pendidikan Matematika · IKIP Siliwangi, Cimahi · Analisis Real
+</footer>
+
+<script>
+// ===== NAVIGATION =====
+function showSection(id, btn) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.toc-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  btn.classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+  setTimeout(() => MathJax.typesetPromise && MathJax.typesetPromise(), 200);
+}
+
+// Progress bar
+window.addEventListener('scroll', () => {
+  const pct = window.scrollY / (document.body.scrollHeight - window.innerHeight) * 100;
+  document.getElementById('progBar').style.width = pct + '%';
+});
+
+// ===== VISUALIZER =====
+const canvas = document.getElementById('vizCanvas');
+const ctx = canvas.getContext('2d');
+let currentSeq = 'alt';
+let currentSub = 'even';
+const N = 30;
+
+function seqVal(name, n) {
+  if (name === 'alt') return Math.pow(-1, n);
+  if (name === 'inv') return 1/n;
+  if (name === 'sin') return Math.sin(n * Math.PI / 3);
+  if (name === 'bnd') return Math.pow(-1,n) * n / (n+1);
+  return 0;
+}
+
+function subIdx(name, k) {
+  if (name === 'even') return 2*k;
+  if (name === 'odd')  return 2*k - 1;
+  if (name === 'sq')   return k*k;
+  return null;
+}
+
+function drawViz() {
+  const W = canvas.offsetWidth; const H = 200;
+  canvas.width = W; canvas.height = H;
+  ctx.clearRect(0,0,W,H);
+
+  // compute range
+  let vals = [];
+  for (let n=1;n<=N;n++) vals.push(seqVal(currentSeq,n));
+  let mn = Math.min(...vals), mx = Math.max(...vals);
+  if (mx === mn) { mn -= 1; mx += 1; }
+  const pad = 20, pw = W-2*pad, ph = H-2*pad;
+
+  // zero line
+  const yZero = pad + ph - (0 - mn)/(mx-mn)*ph;
+  ctx.strokeStyle='#ccc'; ctx.lineWidth=1; ctx.setLineDash([4,4]);
+  ctx.beginPath(); ctx.moveTo(pad,yZero); ctx.lineTo(W-pad,yZero); ctx.stroke();
+  ctx.setLineDash([]);
+  ctx.fillStyle='#aaa'; ctx.font='10px JetBrains Mono';
+  ctx.fillText('0', 4, yZero+4);
+
+  const xOf = n => pad + (n-1)/(N-1)*pw;
+  const yOf = v => pad + ph - (v-mn)/(mx-mn)*ph;
+
+  // connect main series
+  ctx.strokeStyle='rgba(26,16,8,0.15)'; ctx.lineWidth=1;
+  ctx.beginPath();
+  for (let n=1;n<=N;n++) { const x=xOf(n),y=yOf(seqVal(currentSeq,n)); n===1?ctx.moveTo(x,y):ctx.lineTo(x,y); }
+  ctx.stroke();
+
+  // draw main points
+  for (let n=1;n<=N;n++) {
+    const x=xOf(n),y=yOf(seqVal(currentSeq,n));
+    ctx.beginPath(); ctx.arc(x,y,3.5,0,2*Math.PI);
+    ctx.fillStyle='#1a5c5c'; ctx.fill();
+  }
+
+  // sub barisan
+  if (currentSub !== 'none') {
+    let prev = null;
+    ctx.strokeStyle='rgba(184,134,11,0.5)'; ctx.lineWidth=1.5;
+    ctx.beginPath();
+    for (let k=1;k<=15;k++) {
+      const nk = subIdx(currentSub, k);
+      if (!nk || nk > N) break;
+      const x=xOf(nk), y=yOf(seqVal(currentSeq,nk));
+      if (!prev) ctx.moveTo(x,y); else ctx.lineTo(x,y);
+      prev={x,y};
+    }
+    ctx.stroke();
+
+    for (let k=1;k<=15;k++) {
+      const nk = subIdx(currentSub, k);
+      if (!nk || nk > N) break;
+      const x=xOf(nk), y=yOf(seqVal(currentSeq,nk));
+      ctx.beginPath(); ctx.arc(x,y,5.5,0,2*Math.PI);
+      ctx.fillStyle='#b8860b'; ctx.fill();
+      ctx.strokeStyle='white'; ctx.lineWidth=1.5; ctx.stroke();
+    }
+
+    // info
+    const subName = {'even':'n_k = 2k','odd':'n_k = 2k−1','sq':'n_k = k²'}[currentSub]||'';
+    let subVals = [];
+    for (let k=1;k<=6;k++) {
+      const nk=subIdx(currentSub,k);
+      if(!nk||nk>N) break;
+      subVals.push(seqVal(currentSeq,nk).toFixed(3));
+    }
+    document.getElementById('vizInfo').textContent = `Sub barisan [${subName}]: ${subVals.join(', ')}${subVals.length===6?', …':''}`;
+  } else {
+    document.getElementById('vizInfo').textContent = 'Menampilkan barisan utama saja.';
+  }
+}
+
+function setSeq(name, btn) {
+  currentSeq = name;
+  document.querySelectorAll('#seqBtns .viz-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawViz();
+}
+function setSub(name, btn) {
+  currentSub = name;
+  document.querySelectorAll('#subBtns .viz-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  drawViz();
+}
+
+window.addEventListener('resize', drawViz);
+drawViz();
+
+// ===== NUMERIC TABLE =====
+function genTable(seq) {
+  const rows = [];
+  rows.push(`<table><thead><tr><th>k</th><th>n_k (genap)</th><th>a_{n_k} genap</th><th>n_k (ganjil)</th><th>a_{n_k} ganjil</th></tr></thead><tbody>`);
+  for (let k=1;k<=8;k++) {
+    const ne=2*k, no=2*k-1;
+    rows.push(`<tr><td>${k}</td><td>${ne}</td><td>${seqVal(seq,ne).toFixed(6)}</td><td>${no}</td><td>${seqVal(seq,no).toFixed(6)}</td></tr>`);
+  }
+  rows.push('</tbody></table>');
+  document.getElementById('numTable').innerHTML = rows.join('');
+}
+
+// ===== QUIZ =====
+const questions = [
+  {
+    q: 'Manakah yang merupakan definisi sub barisan yang benar?',
+    opts: [
+      'Barisan yang diperoleh dengan mengambil elemen-elemen secara acak dari barisan asal',
+      'Barisan \\((a_{n_k})\\) di mana \\((n_k)\\) adalah barisan bilangan asli yang strictly increasing',
+      'Barisan yang diperoleh dengan mengambil setiap elemen kedua dari barisan asal',
+      'Barisan yang selalu konvergen'
+    ],
+    ans: 1,
+    fb: 'Sub barisan mensyaratkan indeks n_k strictly increasing, bukan acak atau hanya setiap elemen kedua.'
+  },
+  {
+    q: 'Jika \\(a_n \\to L\\), maka sub barisan \\((a_{n_k})\\) …',
+    opts: [
+      'Mungkin konvergen ke nilai yang berbeda dari \\(L\\)',
+      'Pasti divergen',
+      'Pasti konvergen ke \\(L\\) yang sama',
+      'Tidak ada hubungannya dengan \\(L\\)'
+    ],
+    ans: 2,
+    fb: 'Teorema 3.1: jika barisan konvergen ke L, maka setiap sub barisannya konvergen ke L yang sama.'
+  },
+  {
+    q: 'Teorema Bolzano–Weierstrass menyatakan bahwa …',
+    opts: [
+      'Setiap barisan memiliki sub barisan konvergen',
+      'Setiap barisan monoton memiliki sub barisan konvergen',
+      'Setiap barisan terbatas memiliki sub barisan konvergen',
+      'Setiap barisan konvergen memiliki sub barisan terbatas'
+    ],
+    ans: 2,
+    fb: 'Syarat keterbatasan (bounded) sangat penting. Barisan tak terbatas seperti a_n = n tidak memiliki sub barisan konvergen.'
+  },
+  {
+    q: 'Barisan \\((-1)^n\\) memiliki berapa titik limit?',
+    opts: ['0', '1', '2', 'Tak berhingga'],
+    ans: 2,
+    fb: 'Titik limit dari (-1)^n adalah -1 (dari sub barisan ganjil) dan +1 (dari sub barisan genap), jadi ada 2 titik limit.'
+  },
+  {
+    q: 'Dari barisan \\((1, 2, 3, 4, 5, \\ldots)\\), barisan \\((3, 1, 5, 7, \\ldots)\\) adalah …',
+    opts: [
+      'Sub barisan yang valid',
+      'Bukan sub barisan karena indeks tidak strictly increasing',
+      'Sub barisan karena mengambil elemen dari barisan asal',
+      'Sub barisan karena urutannya monoton naik'
+    ],
+    ans: 1,
+    fb: 'n₁=3, n₂=1 tidak memenuhi n₁ < n₂. Ini melanggar syarat strictly increasing, sehingga bukan sub barisan.'
+  },
+  {
+    q: 'Untuk membuktikan barisan \\(a_n = \\sin(n\\pi/2)\\) divergen, cara terbaik adalah …',
+    opts: [
+      'Menunjukkan barisan tidak terbatas',
+      'Menemukan dua sub barisan yang konvergen ke nilai berbeda',
+      'Menunjukkan barisan monoton naik',
+      'Menggunakan definisi langsung ε-N'
+    ],
+    ans: 1,
+    fb: 'Kontraposisi Teorema 3.1: jika ada dua sub barisan dengan limit berbeda, barisan tersebut divergen. Misalnya a_{4k-3}→1 dan a_{4k-1}→-1.'
+  },
+  {
+    q: 'Jika \\(n_k = k^2\\), maka \\(n_3 = \\)…',
+    opts: ['3', '6', '9', '12'],
+    ans: 2,
+    fb: 'n_k = k², jadi n₃ = 3² = 9.'
+  },
+  {
+    q: 'Manakah pernyataan yang SALAH?',
+    opts: [
+      'Barisan konvergen pasti terbatas',
+      'Barisan terbatas pasti konvergen',
+      'Barisan terbatas pasti memiliki sub barisan konvergen',
+      'Barisan divergen mungkin memiliki sub barisan konvergen'
+    ],
+    ans: 1,
+    fb: 'Barisan terbatas tidak selalu konvergen. Contoh: a_n = (-1)^n terbatas tetapi divergen.'
+  }
+];
+
+function buildQuiz() {
+  const wrap = document.getElementById('quizArea');
+  wrap.innerHTML = questions.map((q,i) => `
+    <div class="quiz-q" id="qq${i}">
+      <div class="quiz-q-text">${i+1}. ${q.q}</div>
+      ${q.opts.map((o,j) => `
+        <label class="opt-label" id="lbl${i}_${j}">
+          <input type="radio" name="q${i}" value="${j}"> ${o}
+        </label>`).join('')}
+      <div class="quiz-feedback" id="fb${i}">${q.fb}</div>
+    </div>`).join('');
+  // MathJax re-typeset
+  setTimeout(() => { if(window.MathJax) MathJax.typesetPromise(); }, 300);
+}
+
+function gradeQuiz() {
+  let score = 0;
+  questions.forEach((q,i) => {
+    const sel = document.querySelector(`input[name="q${i}"]:checked`);
+    if (!sel) return;
+    const chosen = parseInt(sel.value);
+    document.querySelectorAll(`[id^="lbl${i}_"]`).forEach((l,j) => {
+      l.classList.remove('correct','wrong');
+      if (j === q.ans) l.classList.add('correct');
+      else if (j === chosen && chosen !== q.ans) l.classList.add('wrong');
+    });
+    document.getElementById(`fb${i}`).style.display = 'block';
+    if (chosen === q.ans) score++;
+  });
+  const pct = Math.round(score/questions.length*100);
+  document.getElementById('scoreDisplay').textContent = `Skor: ${score}/${questions.length} (${pct}%)`;
+}
+
+function resetQuiz() {
+  buildQuiz();
+  document.getElementById('scoreDisplay').textContent = '';
+}
+
+buildQuiz();
+</script>
+</body>
+</html>
